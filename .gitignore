@@ -1,0 +1,22 @@
+# C++ related files
+*CMakeFiles
+*CMakeCache.txt
+*.cmake
+Makefile
+*sample.cpp
+*sample.py
+*test.cpp
+*test.py
+*sam.py
+*sam.cpp
+
+*/__pycache__/*
+*.dll
+
+.idea
+*build
+*.vscode
+*.jpg
+*.out
+*.exe
+*.csv

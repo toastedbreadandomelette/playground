@@ -1,0 +1,11 @@
+{
+  "cssTheme": "Things",
+  "interfaceFontFamily": "Ubuntu",
+  "textFontFamily": "Ubuntu Light,Roboto,Franklin Gothic Book",
+  "monospaceFontFamily": "Sono Monospace",
+  "theme": "obsidian",
+  "accentColor": "",
+  "baseFontSize": 16,
+  "baseFontSizeAction": false,
+  "translucency": false
+}

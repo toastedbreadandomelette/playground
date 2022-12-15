@@ -1,0 +1,144 @@
+{
+  "main": {
+    "id": "ad1fae1d7d7202e1",
+    "type": "split",
+    "children": [
+      {
+        "id": "50b31abc188f9a51",
+        "type": "leaf",
+        "state": {
+          "type": "markdown",
+          "state": {
+            "file": "DS/Documentation/arrays_1.md",
+            "mode": "preview",
+            "source": false
+          }
+        }
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "8cc86b5f300ab47f",
+    "type": "split",
+    "children": [
+      {
+        "id": "eab4323bdfd85247",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "7f2051d3eee60aff",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {}
+            }
+          },
+          {
+            "id": "9ca64d9bc9c2ab48",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "f8c2c6193703e311",
+            "type": "leaf",
+            "state": {
+              "type": "starred",
+              "state": {}
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "0e54c9ba79ba676e",
+    "type": "split",
+    "children": [
+      {
+        "id": "5b904855fddd304a",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "820848f361cf2f91",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "DS/Documentation/arrays_1.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "61c3989cd361ec2b",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "DS/Documentation/arrays_1.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "09ece2e8a663fe49",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true
+              }
+            }
+          },
+          {
+            "id": "68e1f4ad6a889c8b",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "DS/Documentation/arrays_1.md"
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "active": "50b31abc188f9a51",
+  "lastOpenFiles": [
+    "Strategy/sorting.md",
+    "Strategy/problem_reduction_1.md",
+    "Strategy/memoization_2d_1.md",
+    "Strategy/memoization_1d_2.md",
+    "Strategy/memoization_1d_1.md",
+    "Strategy/divide_and_conquer.md",
+    "NP/Documentation/np-hard.md",
+    "NP/Documentation/np-complete.md",
+    "NP/Documentation/np.md",
+    "Maths/Documentation/advanced_maths_1.md"
+  ]
+}
