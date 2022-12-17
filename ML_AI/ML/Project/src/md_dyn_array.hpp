@@ -70,6 +70,14 @@ public:
         return *this;
     }
 
+    inline void append(const _T &value) const {
+        __array.push_back(value);
+    }
+
+    inline void emplace(const _T &value) const {
+        __array.emplace_back(value);
+    }
+
     /**
      * @brief Add function, currently using threads
      * @param __other other array (might be of different type)

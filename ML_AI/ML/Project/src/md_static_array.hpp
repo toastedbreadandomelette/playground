@@ -39,7 +39,7 @@ template <typename _T>
 class MdStaticArray {
 public:
     _T *__array;
-    const std::vector<size_t> shape;
+    std::vector<size_t> shape;
     size_t __size;
 
     static void set_s_thread_count(const uint8_t value);
@@ -49,12 +49,27 @@ public:
     MdStaticArray(const size_t size) {
         __array = (_T*)malloc(size*sizeof(_T));
         __size = size;
+        shape.push_back(size);
     }
 
     MdStaticArray(const size_t size, const _T&value) {
         __array = (_T*)malloc(size*sizeof(_T));
         __size = size;
         for (size_t index = 0; index < size; ++index) {
+            __array[index] = value;
+        }
+        shape.push_back(size);
+    }
+
+    MdStaticArray(const std::vector<size_t> &_shape, const _T&value) {
+        size_t overall_size = 1;
+        for (auto &dim: _shape) {
+            overall_size *= dim;
+            shape.push_back(dim);
+        }
+        __array = (_T*)malloc(overall_size*sizeof(_T));
+        __size = overall_size;
+        for (size_t index = 0; index < overall_size; ++index) {
             __array[index] = value;
         }
     }
@@ -68,14 +83,21 @@ public:
         for (auto &elem: __other) {
             __array[index++] = elem;
         }
+        shape.push_back(__size);
     }
 
-    MdStaticArray(const MdStaticArray& __other) {
+    MdStaticArray(MdStaticArray& __other) {
         __array = (_T*) malloc(__other.get_size()*sizeof(_T));
         __size = __other.get_size();
+        const auto shp = __other.get_shape();
+        shape.insert(shape.end(), shp.begin(), shp.end());
         for (size_t index = 0; index < __other.get_size(); ++index) {
             __array[index] = __other.__array[index];
         }
+    }
+
+    inline std::vector<size_t> get_shape() {
+        return shape;
     }
 
     /**

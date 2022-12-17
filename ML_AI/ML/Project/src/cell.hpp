@@ -205,14 +205,14 @@ public:
      * @brief Maps the values and returns the new array.
      */
     template <typename _T>
-    MdStaticArray<_T> map(const std::function<_T(const Cell&, const size_t, const ColView&)>&func);
+    MdStaticArray<_T> st_map(const std::function<_T(const Cell&, const size_t, const ColView&)>&func);
 
     /**
      * @brief Maps the values and returns the new array.
      * Uses multi-threading
      */
     template <typename _T>
-    MdStaticArray<_T> map_mt(const std::function<_T(const Cell&, const size_t, const ColView&)>&func);
+    MdStaticArray<_T> st_map_mt(const std::function<_T(const Cell&, const size_t, const ColView&)>&func);
 
     template <typename _T>
     _T get_values(const Cell &);
@@ -233,13 +233,13 @@ public:
      * @brief Maps the values and returns the new array.
      */
     template <typename _T>
-    MdStaticArray<_T> map();
+    MdStaticArray<_T> st_map();
 
     /**
      * @brief Maps the values and returns the new array.
      */
     template <typename _T>
-    MdStaticArray<_T> map_mt();
+    MdStaticArray<_T> st_map_mt();
 };
 
 
