@@ -8,7 +8,7 @@
 using uint8_t = unsigned char;
 using uint16_t = unsigned short int;
 
-struct jpeg_header {
+struct JPEGHeader {
     uint16_t appn_format;               /// APPn format
     uint16_t length;                    /// length
     std::string identifier;             /// identifier
@@ -45,7 +45,7 @@ struct jpeg_header {
 /**
  * @brief SOF0 component
  */
-struct ycbcr {
+struct ColorAndBrightness {
     uint8_t _id;                    /// Component id
     uint8_t y_cb_cr_factor;         /// YCbCr factor (4:4:4 or 4:2:0)
     uint8_t quantization_table_id;  /// Quantization ID (luminance=0 or
@@ -67,12 +67,12 @@ struct ycbcr {
 /**
  * @brief Start of frame
  */
-struct jpeg_frame_start {
+struct JPEGStartOfFrame {
     uint8_t bits_per_channel;                     /// Bits per channel
     uint16_t resolution_width;                    /// Image width
     uint16_t resolution_height;                   /// Image height
     uint8_t number_of_components;                 /// Total Components
-    std::vector<ycbcr> component_list;            /// Component list
+    std::vector<ColorAndBrightness> component_list;            /// Component list
 
     /**
      * @brief Describe
@@ -97,20 +97,20 @@ struct jpeg_frame_start {
 /**
  * @brief A Quantization table
  */
-struct quant_table {
-    bool is_chrominance;                    /// Is chrominance or luminance table
+struct QuantizationTable {
+    bool is_chrome;                    /// Is chrominance or luminance table
     std::vector<uint8_t> quantization_table;  /// table (typically of size 8x8)
 };
 /**
  * @brief a list of quantization tables.
  */
-struct jpeg_quant_tables {
-    quant_table quantization_tables[2];  /// List of tables (maximum 2)
+struct JPEGQuantizationTables {
+    QuantizationTable quantization_tables[2];  /// List of tables (maximum 2)
 };
 /**
  * @brief Huffman code struct
  */
-struct jpeg_huffman_code {
+struct HuffmanCodes {
     uint32_t huffman_code;
     uint16_t value;
 };
@@ -118,14 +118,14 @@ struct jpeg_huffman_code {
 /**
  * @brief Huffman table
  */
-struct JPEG_HUFFMAN_TABLE {
-    std::vector<jpeg_huffman_code> ac_huffman_table[2];  /// AC Huffman tables
-    std::vector<jpeg_huffman_code> dc_huffman_table[2];  /// DC Huffman tables
+struct JPEGHuffmanTables {
+    std::vector<HuffmanCodes> ac_huffman_table[2];  /// AC Huffman tables
+    std::vector<HuffmanCodes> dc_huffman_table[2];  /// DC Huffman tables
 };
 /**
  * @brief Component with AC/DC selector
  */
-struct jpeg_component {
+struct JPEGComponent {
     uint8_t selector;
     uint8_t dc_ac;    /// First 4 bits: DC next 4 bits: AC
     /**
@@ -139,9 +139,9 @@ struct jpeg_component {
 /**
  * @brief Component info during Scan Start (SOS)
  */
-struct jpeg_component_info {
+struct JPEGComponentInfo {
     uint8_t total_components;
-    std::vector<jpeg_component> component_list;
+    std::vector<JPEGComponent> component_list;
     uint8_t spectr_start;
     uint8_t spectr_end;
     uint8_t successive_approx;

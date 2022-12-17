@@ -167,6 +167,22 @@ template MdDynArray<double> ColView::map_mt();
 template MdDynArray<int64_t> ColView::map_mt();
 template MdDynArray<uint64_t> ColView::map_mt();
 
+// template MdStaticArray<double> ColView::map(const std::function<double(const Cell&, const size_t, const ColView&)>&);
+// template MdStaticArray<int64_t> ColView::map(const std::function<int64_t(const Cell&, const size_t, const ColView&)>&);
+// template MdStaticArray<uint64_t> ColView::map(const std::function<uint64_t(const Cell&, const size_t, const ColView&)>&);
+
+// template MdStaticArray<double> ColView::map();
+// template MdStaticArray<int64_t> ColView::map();
+// template MdStaticArray<uint64_t> ColView::map();
+
+// template MdStaticArray<double> ColView::map_mt(const std::function<double(const Cell&, const size_t, const ColView&)>&);
+// template MdStaticArray<int64_t> ColView::map_mt(const std::function<int64_t(const Cell&, const size_t, const ColView&)>&);
+// template MdStaticArray<uint64_t> ColView::map_mt(const std::function<uint64_t(const Cell&, const size_t, const ColView&)>&);
+
+// template MdStaticArray<double> ColView::map_mt();
+// template MdStaticArray<int64_t> ColView::map_mt();
+// template MdStaticArray<uint64_t> ColView::map_mt();
+
 //----------------------- + operator ----------------------//
 
 /**

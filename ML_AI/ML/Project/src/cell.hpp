@@ -5,6 +5,7 @@
 #include <iostream>
 #include <functional>
 #include "md_dyn_array.hpp"
+#include "md_static_array.hpp"
 #include <iomanip>
 #include <algorithm>
 
@@ -193,13 +194,25 @@ public:
     template <typename _T>
     MdDynArray<_T> map(const std::function<_T(const Cell&, const size_t, const ColView&)>&func);
 
-    
     /**
      * @brief Maps the values and returns the new array.
      * Uses multi-threading
      */
     template <typename _T>
     MdDynArray<_T> map_mt(const std::function<_T(const Cell&, const size_t, const ColView&)>&func);
+
+    /**
+     * @brief Maps the values and returns the new array.
+     */
+    template <typename _T>
+    MdStaticArray<_T> map(const std::function<_T(const Cell&, const size_t, const ColView&)>&func);
+
+    /**
+     * @brief Maps the values and returns the new array.
+     * Uses multi-threading
+     */
+    template <typename _T>
+    MdStaticArray<_T> map_mt(const std::function<_T(const Cell&, const size_t, const ColView&)>&func);
 
     template <typename _T>
     _T get_values(const Cell &);
@@ -215,6 +228,18 @@ public:
      */
     template <typename _T>
     MdDynArray<_T> map_mt();
+    
+    /**
+     * @brief Maps the values and returns the new array.
+     */
+    template <typename _T>
+    MdStaticArray<_T> map();
+
+    /**
+     * @brief Maps the values and returns the new array.
+     */
+    template <typename _T>
+    MdStaticArray<_T> map_mt();
 };
 
 
