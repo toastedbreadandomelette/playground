@@ -37,6 +37,7 @@ template <typename _T>
 class MdDynArray {
 public:
     std::vector<_T> __array;
+    std::vector<size_t> shape;
 
     static void set_thread_count(const uint8_t value);
     
@@ -48,10 +49,18 @@ public:
 
     MdDynArray(): __array(std::vector<_T>()) {}
 
-    MdDynArray(const std::vector<_T>&__other): __array(std::vector<_T>(__other)) {}
+    MdDynArray(const std::vector<_T>&__other, const std::vector<size_t> &shape): 
+        __array(std::vector<_T>(__other)),
+        shape(shape) {}
+
+    
+    MdDynArray(const std::vector<_T>&__other): 
+        __array(std::vector<_T>(__other)) { shape.push_back(__other.size()); }
+
 
     MdDynArray(const MdDynArray& __other): __array(std::vector<_T>()) {
         __array = __other.__array;
+        shape = __other.shape;
     }
 
     /**
@@ -59,6 +68,7 @@ public:
      */
     MdDynArray &operator=(const std::vector<_T>&__other) {
         __array = std::vector<_T>(__other);
+        shape.push_back(__array.size());
         return *this;
     }
 
@@ -215,6 +225,14 @@ public:
     void __div_self_internal(const MdDynArray<_T1> &__other);
 
     /**
+     * @brief Multiply to self, using multi-threading
+     * @param __other other vector to add
+     * @returns new array
+     */
+    template <typename _T1>
+    void __mod_self_internal(const MdDynArray<_T1> &__other);
+
+    /**
      * @brief Add to self, using multi-threading
      * @param __other other vector to add
      * @returns new array
@@ -245,6 +263,14 @@ public:
      */
     template <typename _T1>
     void __div_self_iinternal(const _T1 &__other);
+    
+    /**
+     * @brief Multiply to self, using multi-threading
+     * @param __other other vector to add
+     * @returns new array
+     */
+    template <typename _T1>
+    void __mod_self_iinternal(const _T1 &__other);
 
     template <typename _T1>
     MdDynArray<bool> __comp_eq_internal(const MdDynArray<_T1> &__other) {
@@ -610,5 +636,8 @@ template <typename _T1, typename _T2>
 inline auto operator%(const _T1&__other, const MdDynArray<_T2> &first) {
     OP_INTERNAL_MACRO_EXT(__mod_iointernal)
 }
+
+#undef EN_IF
+#undef IS_ARITH
 
 #endif

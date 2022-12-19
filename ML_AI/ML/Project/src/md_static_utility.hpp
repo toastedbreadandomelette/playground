@@ -5,6 +5,13 @@
 #include <functional>
 #include "md_static_array.hpp"
 
+/**
+ * @brief Execute a one-to-one mapping function of an array,
+ * @tparam _T array type
+ * @tparam _func variable function that maps the values
+ * @param __values values to map
+ * @param 
+ */
 template <typename _T, typename _func>
 MdStaticArray<_T> execute_mapping_fn(MdStaticArray<_T> &__values, const _func& function_exec) {
     const size_t size = __values.get_size();

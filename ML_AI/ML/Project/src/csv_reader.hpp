@@ -8,9 +8,8 @@
 #include <chrono>
 #include <thread>
 #include "cell.hpp"
+#include "tables.hpp"
 #include "file_reader.hpp"
-
-namespace Table {
 
 // Attributes to classify type of a number
 enum NumberAttr {
@@ -571,6 +570,5 @@ Table read_csv(const char *filepath, uint8_t thrd_count = 8) {
     return table;
 }
 
-} // namespace Table
 
 #endif

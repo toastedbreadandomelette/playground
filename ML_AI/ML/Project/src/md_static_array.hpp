@@ -8,7 +8,6 @@
 #include <algorithm>
 
 #define EN_IF(C) std::enable_if<C>::type
-
 #define IS_ARITH(E) std::is_arithmetic<E>::value
 
 #define OP_INTERNAL_MACRO(func) \
@@ -42,18 +41,26 @@ public:
     std::vector<size_t> shape;
     size_t __size;
 
-    static void set_s_thread_count(const uint8_t value);
+    static void set_thread_count(const uint8_t value);
     
     static void set_threshold_size(const size_t size);
 
+    void init_array(const size_t size) {
+        if constexpr (std::is_fundamental<_T>::value) {
+            __array = (_T*) malloc(size*sizeof(_T));
+        } else {
+            __array = new _T[size];
+        }
+    }
+
     MdStaticArray(const size_t size) {
-        __array = (_T*)malloc(size*sizeof(_T));
+        init_array(size);
         __size = size;
         shape.push_back(size);
     }
 
     MdStaticArray(const size_t size, const _T&value) {
-        __array = (_T*)malloc(size*sizeof(_T));
+        init_array(size);
         __size = size;
         for (size_t index = 0; index < size; ++index) {
             __array[index] = value;
@@ -67,7 +74,8 @@ public:
             overall_size *= dim;
             shape.push_back(dim);
         }
-        __array = (_T*)malloc(overall_size*sizeof(_T));
+
+        init_array(overall_size);
         __size = overall_size;
         for (size_t index = 0; index < overall_size; ++index) {
             __array[index] = value;
@@ -77,7 +85,7 @@ public:
     MdStaticArray() { __array = nullptr; }
 
     MdStaticArray(const std::vector<_T>&__other) {
-        __array = (_T*) malloc(__other.size()*sizeof(_T));
+        init_array(__other.size());
         __size = __other.size();
         size_t index = 0;
         for (auto &elem: __other) {
@@ -86,26 +94,22 @@ public:
         shape.push_back(__size);
     }
 
-    MdStaticArray(MdStaticArray& __other) {
-        __array = (_T*) malloc(__other.get_size()*sizeof(_T));
+    MdStaticArray(const MdStaticArray& __other) {
         __size = __other.get_size();
-        const auto shp = __other.get_shape();
+        init_array(__size);
+        auto shp = __other.get_shape();
         shape.insert(shape.end(), shp.begin(), shp.end());
-        for (size_t index = 0; index < __other.get_size(); ++index) {
+        for (size_t index = 0; index < __size; ++index) {
             __array[index] = __other.__array[index];
         }
-    }
-
-    inline std::vector<size_t> get_shape() {
-        return shape;
     }
 
     /**
      * @brief Assignment operator (direct vector assignment)
      */
     MdStaticArray &operator=(const std::vector<_T>&__other) {
-        __array = (_T*) malloc(__other.size()*sizeof(_T));
         __size = __other.size();
+        init_array(__size);
         size_t index = 0;
         for (auto &elem: __other) {
             __array[index++] = elem;
@@ -117,12 +121,36 @@ public:
      * @brief Assignment operator 
      */
     MdStaticArray &operator=(const MdStaticArray& __other) {
-        __array = (_T*) malloc(__other.get_size()*sizeof(_T));
         __size = __other.get_size();
+        init_array(__size);
         for (size_t index = 0; index < __other.get_size(); ++index) {
             __array[index] = __other.__array[index];
         }
         return *this;
+    }
+
+    ~MdStaticArray() {
+        if constexpr (std::is_fundamental<_T>::value) {
+            free(__array);
+        } else {
+            delete []__array;
+        }
+    }
+
+    inline std::vector<size_t> get_shape() const {
+        return shape;
+    }
+
+    template <typename _T1>
+    bool is_same_shape(const MdStaticArray<_T1> &__other) {
+        if (shape.size() != __other.shape.size()) { return false; }
+        if (get_size() != __other.get_size()) { return false; }
+        for (size_t index = 0; index < shape.size(); ++index) {
+            if (shape[index] != __other.shape[index]) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
@@ -310,202 +338,40 @@ public:
     void __mod_self_iinternal(const _T1 &__other);
 
     template <typename _T1>
-    MdStaticArray<bool> __comp_eq_internal(const MdStaticArray<_T1> &__other) {
-        // assert that sizes are equal
-        const size_t size = size;
-        MdStaticArray<bool> result(size);
-        if (::s_thread_count == 1 || size <= s_threshold_size) {
-            for (size_t index = 0; index < get_size(); ++index) {
-                result.__array[index] = __array[index] == __other.__array[index];
-            }
-        } else {
-            std::vector<std::thread> st;
-            st.reserve(::s_thread_count);
-            auto _add_int = [&result, this, &__other](const size_t start, const size_t end) {
-                for (size_t index = start; index < end; ++index) {
-                    result.__array[index] = __array[index] == __other.__array[index];
-                }
-            };
-
-            const size_t block = size / s_thread_count;
-            const uint8_t thread_but_one = s_thread_count - 1;
-            for (int i = 0; i < thread_but_one; ++i) {
-                st.emplace_back(std::thread(_add_int, block * i, block * (i + 1)));
-            }
-
-            st.emplace_back(std::thread(_add_int, block * thread_but_one, size));
-
-            for (auto &th: st) {
-                th.join();
-            }
-        }
-        return result;
-    }
+    MdStaticArray<bool> __comp_eq_internal(const MdStaticArray<_T1> &__other) const;
 
     template <typename _T1>
-    MdStaticArray<bool> __comp_g_internal(const MdStaticArray<_T1> &__other) {
-        // assert that sizes are equal
-        const size_t size = __array.size();
-        MdStaticArray<bool> result(size);
-        if (MdStaticArray::s_thread_count == 1 || __array.size() <= s_threshold_size) {
-            for (size_t index = 0; index < get_size(); ++index) {
-                result.__array[index] = __array[index] > __other.__array[index];
-            }
-        } else {
-            std::vector<std::thread> st;
-            st.reserve(MdStaticArray::s_thread_count);
-            auto _add_int = [&result, this, &__other](const size_t start, const size_t end) {
-                for (size_t index = start; index < end; ++index) {
-                    result.__array[index] = __array[index] > __other.__array[index];
-                }
-            };
-
-            const size_t block = size / s_thread_count;
-            const uint8_t thread_but_one = s_thread_count - 1;
-            for (int i = 0; i < thread_but_one; ++i) {
-                st.emplace_back(std::thread(_add_int, block * i, block * (i + 1)));
-            }
-
-            st.emplace_back(std::thread(_add_int, block * thread_but_one, size));
-
-            for (auto &th: st) {
-                th.join();
-            }
-        }
-        return result;
-    }
+    MdStaticArray<bool> __comp_g_internal(const MdStaticArray<_T1> &__other) const;
 
     template <typename _T1>
-    MdStaticArray<bool> __comp_geq_internal(const MdStaticArray<_T1> &__other) {
-        // assert that sizes are equal
-        const size_t size = __array.size();
-        MdStaticArray<bool> result(size);
-        if (MdStaticArray::s_thread_count == 1 || __array.size() <= s_threshold_size) {
-            for (size_t index = 0; index < get_size(); ++index) {
-                result.__array[index] = __array[index] >= __other.__array[index];
-            }
-        } else {
-            std::vector<std::thread> st;
-            st.reserve(MdStaticArray::s_thread_count);
-            auto _add_int = [&result, this, &__other](const size_t start, const size_t end) {
-                for (size_t index = start; index < end; ++index) {
-                    result.__array[index] = __array[index] >= __other.__array[index];
-                }
-            };
-
-            const size_t block = size / s_thread_count;
-            const uint8_t thread_but_one = s_thread_count - 1;
-            for (int i = 0; i < thread_but_one; ++i) {
-                st.emplace_back(std::thread(_add_int, block * i, block * (i + 1)));
-            }
-
-            st.emplace_back(std::thread(_add_int, block * thread_but_one, size));
-
-            for (auto &th: st) {
-                th.join();
-            }
-        }
-        return result;
-    }
+    MdStaticArray<bool> __comp_geq_internal(const MdStaticArray<_T1> &__other) const;
 
     template <typename _T1>
-    MdStaticArray<bool> __comp_l_internal(const MdStaticArray<_T1> &__other) {
-        // assert that sizes are equal
-        const size_t size = __array.size();
-        MdStaticArray<bool> result(size);
-        if (MdStaticArray::s_thread_count == 1 || __array.size() <= s_threshold_size) {
-            for (size_t index = 0; index < get_size(); ++index) {
-                result.__array[index] = __array[index] < __other.__array[index];
-            }
-        } else {
-            std::vector<std::thread> st;
-            st.reserve(MdStaticArray::s_thread_count);
-            auto _add_int = [&result, this, &__other](const size_t start, const size_t end) {
-                for (size_t index = start; index < end; ++index) {
-                    result.__array[index] = __array[index] < __other.__array[index];
-                }
-            };
-
-            const size_t block = size / s_thread_count;
-            const uint8_t thread_but_one = s_thread_count - 1;
-            for (int i = 0; i < thread_but_one; ++i) {
-                st.emplace_back(std::thread(_add_int, block * i, block * (i + 1)));
-            }
-
-            st.emplace_back(std::thread(_add_int, block * thread_but_one, size));
-
-            for (auto &th: st) {
-                th.join();
-            }
-        }
-        return result;
-    }
+    MdStaticArray<bool> __comp_l_internal(const MdStaticArray<_T1> &__other) const;
 
     template <typename _T1>
-    MdStaticArray<bool> __comp_leq_internal(const MdStaticArray<_T1> &__other) {
-        // assert that sizes are equal
-        const size_t size = __array.size();
-        MdStaticArray<bool> result(size);
-        if (MdStaticArray::s_thread_count == 1 || __array.size() <= s_threshold_size) {
-            for (size_t index = 0; index < get_size(); ++index) {
-                result.__array[index] = __array[index] <= __other.__array[index];
-            }
-        } else {
-            std::vector<std::thread> st;
-            st.reserve(MdStaticArray::s_thread_count);
-            auto _add_int = [&result, this, &__other](const size_t start, const size_t end) {
-                for (size_t index = start; index < end; ++index) {
-                    result.__array[index] = __array[index] <= __other.__array[index];
-                }
-            };
-
-            const size_t block = size / s_thread_count;
-            const uint8_t thread_but_one = s_thread_count - 1;
-            for (int i = 0; i < thread_but_one; ++i) {
-                st.emplace_back(std::thread(_add_int, block * i, block * (i + 1)));
-            }
-
-            st.emplace_back(std::thread(_add_int, block * thread_but_one, size));
-
-            for (auto &th: st) {
-                th.join();
-            }
-        }
-        return result;
-    }
+    MdStaticArray<bool> __comp_leq_internal(const MdStaticArray<_T1> &__other) const;
 
     template <typename _T1>
-    MdStaticArray<bool> __comp_neq_internal(const MdStaticArray<_T1> &__other) {
-        // assert that sizes are equal
-        const size_t size = __array.size();
-        MdStaticArray<bool> result(size);
-        if (MdStaticArray::s_thread_count == 1 || __array.size() <= s_threshold_size) {
-            for (size_t index = 0; index < get_size(); ++index) {
-                result.__array[index] = __array[index] != __other.__array[index];
-            }
-        } else {
-            std::vector<std::thread> st;
-            st.reserve(MdStaticArray::s_thread_count);
-            auto _add_int = [&result, this, &__other](const size_t start, const size_t end) {
-                for (size_t index = start; index < end; ++index) {
-                    result.__array[index] = __array[index] != __other.__array[index];
-                }
-            };
+    MdStaticArray<bool> __comp_neq_internal(const MdStaticArray<_T1> &__other) const;
 
-            const size_t block = size / s_thread_count;
-            const uint8_t thread_but_one = s_thread_count - 1;
-            for (int i = 0; i < thread_but_one; ++i) {
-                st.emplace_back(std::thread(_add_int, block * i, block * (i + 1)));
-            }
+    template <typename _T1>
+    MdStaticArray<bool> __comp_eq_iinternal(const _T1 &__other) const;
 
-            st.emplace_back(std::thread(_add_int, block * thread_but_one, size));
+    template <typename _T1>
+    MdStaticArray<bool> __comp_g_iinternal(const _T1 &__other) const;
 
-            for (auto &th: st) {
-                th.join();
-            }
-        }
-        return result;
-    }
+    template <typename _T1>
+    MdStaticArray<bool> __comp_geq_iinternal(const _T1 &__other) const ;
+
+    template <typename _T1>
+    MdStaticArray<bool> __comp_l_iinternal(const _T1 &__other) const;
+
+    template <typename _T1>
+    MdStaticArray<bool> __comp_leq_iinternal(const _T1 &__other) const;
+
+    template <typename _T1>
+    MdStaticArray<bool> __comp_neq_iinternal(const _T1 &__other) const;
 
     template <typename _T1>
     inline auto operator+(const _T1 &__other) const {
@@ -607,6 +473,36 @@ public:
         return __comp_neq_internal(__other);
     }
 
+    template <typename _T1>
+    inline MdStaticArray<bool> operator==(const _T1&__other) {
+        return __comp_eq_iinternal(__other);
+    }
+
+    template <typename _T1>
+    inline MdStaticArray<bool> operator>(const _T1&__other) {
+        return __comp_g_iinternal(__other);
+    }
+
+    template <typename _T1>
+    inline MdStaticArray<bool> operator>=(const _T1&__other) {
+        return __comp_geq_iinternal(__other);
+    }
+
+    template <typename _T1>
+    inline MdStaticArray<bool> operator<(const _T1&__other) {
+        return __comp_l_iinternal(__other);
+    }
+
+    template <typename _T1>
+    inline MdStaticArray<bool> operator<=(const _T1&__other) {
+        return __comp_leq_iinternal(__other);
+    }
+
+    template <typename _T1>
+    inline MdStaticArray<bool> operator!=(const _T1&__other) {
+        return __comp_neq_iinternal(__other);
+    }
+
     inline _T &operator[](const size_t index) {
         return __array[index];
     }
@@ -640,7 +536,7 @@ if constexpr (sizeof(_T1) > sizeof(_T2)) { \
 } \
 
 template <typename _T>
-void MdStaticArray<_T>::set_s_thread_count(const uint8_t value) {
+void MdStaticArray<_T>::set_thread_count(const uint8_t value) {
     s_thread_count = value;
 }
 
@@ -673,5 +569,38 @@ template <typename _T1, typename _T2, class = typename EN_IF(IS_ARITH(_T1))>
 inline auto operator%(const _T1&__other, const MdStaticArray<_T2> &first) {
     OP_INTERNAL_MACRO_EXT(__mod_iointernal)
 }
+
+template <typename _T1, typename _T2>
+inline auto operator==(const _T1&__other, const MdStaticArray<_T2> &first) {
+    return first.__comp_eq_iinternal(__other);
+}
+
+template <typename _T1, typename _T2>
+inline auto operator!=(const _T1&__other, const MdStaticArray<_T2> &first) {
+    return first.__comp_neq_iinternal(__other);
+}
+
+template <typename _T1, typename _T2>
+inline auto operator>(const _T1&__other, const MdStaticArray<_T2> &first) {
+    return first.__comp_g_iinternal(__other);
+}
+
+template <typename _T1, typename _T2>
+inline auto operator<(const _T1&__other, const MdStaticArray<_T2> &first) {
+    return first.__comp_l_iinternal(__other);
+}
+
+template <typename _T1, typename _T2>
+inline auto operator<=(const _T1&__other, const MdStaticArray<_T2> &first) {
+    return first.__comp_leq_iinternal(__other);
+}
+
+template <typename _T1, typename _T2>
+inline auto operator>=(const _T1&__other, const MdStaticArray<_T2> &first) {
+    return first.__comp_geq_iinternal(__other);
+}
+
+#undef EN_IF
+#undef IS_ARITH
 
 #endif
