@@ -52,11 +52,9 @@ public:
     MdDynArray(const std::vector<_T>&__other, const std::vector<size_t> &shape): 
         __array(std::vector<_T>(__other)),
         shape(shape) {}
-
     
     MdDynArray(const std::vector<_T>&__other): 
         __array(std::vector<_T>(__other)) { shape.push_back(__other.size()); }
-
 
     MdDynArray(const MdDynArray& __other): __array(std::vector<_T>()) {
         __array = __other.__array;

@@ -13,7 +13,7 @@
  * @param 
  */
 template <typename _T, typename _func>
-MdStaticArray<_T> execute_mapping_fn(MdStaticArray<_T> &__values, const _func& function_exec) {
+MdStaticArray<_T> mapping_fn(MdStaticArray<_T> &__values, const _func& function_exec) {
     const size_t size = __values.get_size();
     MdStaticArray<_T> result(size);
     const uint8_t thread_count = ::s_thread_count;
@@ -47,7 +47,7 @@ MdStaticArray<_T> execute_mapping_fn(MdStaticArray<_T> &__values, const _func& f
 }
 
 template <typename _T, typename _func>
-_T execute_accumulate_fn(MdStaticArray<_T> &__values, const _func& function_exec, const _T init) {
+_T accumulate_fn(MdStaticArray<_T> &__values, const _func& function_exec, const _T init) {
     const size_t size = __values.get_size();
     _T result = init;
     const uint8_t thread_count = ::s_thread_count;
@@ -86,7 +86,7 @@ _T execute_accumulate_fn(MdStaticArray<_T> &__values, const _func& function_exec
 }
 
 template <typename _T, typename _func, typename _merge_func>
-_T execute_accumulate_n_merge_fn(MdStaticArray<_T> &__values, const _func& function_exec, const _merge_func& merge_func, const _T init, const _T merge_init) {
+_T accumulate_and_merge_fn(MdStaticArray<_T> &__values, const _func& function_exec, const _merge_func& merge_func, const _T init, const _T merge_init) {
     const size_t size = __values.get_size();
     _T result = merge_init;
     const uint8_t thread_count = ::s_thread_count;
@@ -131,7 +131,7 @@ _T execute_accumulate_n_merge_fn(MdStaticArray<_T> &__values, const _func& funct
  */
 template <typename _T>
 MdStaticArray<_T> f_sqrt(MdStaticArray<_T> &__values) {
-    return execute_mapping_fn(__values, sqrt);
+    return mapping_fn(__values, sqrt);
 }
 
 /**
@@ -141,7 +141,7 @@ MdStaticArray<_T> f_sqrt(MdStaticArray<_T> &__values) {
  */
 template <typename _T>
 MdStaticArray<_T> f_abs(MdStaticArray<_T> &__values) {
-    return execute_mapping_fn(__values, fabs);
+    return mapping_fn(__values, fabs);
 }
 
 /**
@@ -152,7 +152,7 @@ MdStaticArray<_T> f_abs(MdStaticArray<_T> &__values) {
  */
 template <typename _T>
 _T f_sum(MdStaticArray<_T> &__values, _T init = 0) {
-    return execute_accumulate_fn(__values, [](const _T prev_value, const _T current_value) { return prev_value + current_value; }, init);
+    return accumulate_fn(__values, [](const _T prev_value, const _T current_value) { return prev_value + current_value; }, init);
 }
 
 /**
@@ -163,7 +163,7 @@ _T f_sum(MdStaticArray<_T> &__values, _T init = 0) {
  */
 template <typename _T>
 long double f_mean(MdStaticArray<_T> &__values, _T init = 0) {
-    return execute_accumulate_fn(__values, [](const _T prev_value, const _T current_value) { return prev_value + current_value; }, init) / (__values.get_size() * 1.0);
+    return accumulate_fn(__values, [](const _T prev_value, const _T current_value) { return prev_value + current_value; }, init) / (__values.get_size() * 1.0);
 }
 
 /**
@@ -174,7 +174,7 @@ long double f_mean(MdStaticArray<_T> &__values, _T init = 0) {
  */
 template <typename _T>
 long double f_rms(MdStaticArray<_T> &__values, _T init = 0) {
-    long double mean_sq = execute_accumulate_n_merge_fn(__values, 
+    long double mean_sq = accumulate_and_merge_fn(__values, 
         [](const _T prev_value, const _T current_value) {
             return prev_value + (current_value * current_value); 
         }, 
@@ -196,7 +196,7 @@ long double f_rms(MdStaticArray<_T> &__values, _T init = 0) {
 template <typename _T>
 long double f_std_dev(MdStaticArray<_T> &__values) {
     long double fmean = f_mean(__values);
-    long double mean_sq_err = execute_accumulate_n_merge_fn(
+    long double mean_sq_err = accumulate_and_merge_fn(
         __values,
         [&fmean](const _T prev_value, const _T current_value) {
             return prev_value + (fmean - current_value) * (fmean - current_value);
@@ -215,7 +215,7 @@ long double f_std_dev(MdStaticArray<_T> &__values) {
  */
 template <typename _T>
 MdStaticArray<_T> f_log_10(MdStaticArray<_T> &__values) {
-    return execute_mapping_fn(__values, [](const _T &__value) {
+    return mapping_fn(__values, [](const _T &__value) {
         return log10(__value);
     });
 }
@@ -225,7 +225,7 @@ MdStaticArray<_T> f_log_10(MdStaticArray<_T> &__values) {
  */
 template <typename _T>
 MdStaticArray<_T> f_log_2(MdStaticArray<_T> &__values) {
-    return execute_mapping_fn(__values, [](const _T &__value) {
+    return mapping_fn(__values, [](const _T &__value) {
         return log2(__value);
     });
 }
@@ -235,7 +235,7 @@ MdStaticArray<_T> f_log_2(MdStaticArray<_T> &__values) {
  */
 template <typename _T>
 MdStaticArray<_T> f_ln(MdStaticArray<_T> &__values) {
-    return execute_mapping_fn(__values, [](const _T &__value) {
+    return mapping_fn(__values, [](const _T &__value) {
         return log(__value);
     });
 }
@@ -245,7 +245,7 @@ MdStaticArray<_T> f_ln(MdStaticArray<_T> &__values) {
  */
 template <typename _T, class = typename std::enable_if<std::is_integral<_T>::value>::type>
 MdStaticArray<_T> f_mod_pow(MdStaticArray<_T> &__values, size_t power, size_t _mod) {
-    return execute_mapping_fn(__values, [power, _mod](const _T __value) -> _T {
+    return mapping_fn(__values, [power, _mod](const _T __value) -> _T {
         if (power == 0) return 1;
         if (power == 1) return __value;
         uint64_t result = 1, value = __value, pow = power;
@@ -262,13 +262,12 @@ MdStaticArray<_T> f_mod_pow(MdStaticArray<_T> &__values, size_t power, size_t _m
     });
 }
 
-
 /**
  * @brief compute mod power of integers
  */
 template <typename _T, typename std::enable_if<std::is_integral<_T>::value>::value>
 MdStaticArray<_T> f_mod_pow(uint64_t n, MdStaticArray<_T> &__values, size_t _mod) {
-    return execute_mapping_fn(__values, [n, _mod](const _T __value) {
+    return mapping_fn(__values, [n, _mod](const _T __value) {
         if (__value == 0) return 1;
         if (__value == 1) return n;
         uint64_t result = 1, pow = __value, value = n;
@@ -290,7 +289,7 @@ MdStaticArray<_T> f_mod_pow(uint64_t n, MdStaticArray<_T> &__values, size_t _mod
  */
 template <typename _T>
 MdStaticArray<_T> f_pow(MdStaticArray<_T> &__values, double power) {
-    return execute_mapping_fn(__values, [power](const _T __value) {
+    return mapping_fn(__values, [power](const _T __value) {
         return pow(__value, power);
     });
 }

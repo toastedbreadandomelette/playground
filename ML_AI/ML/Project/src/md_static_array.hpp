@@ -242,6 +242,54 @@ public:
     MdStaticArray<_T2> __mod_internal(const MdStaticArray<_T1> &, const _T2) const;
 
     /**
+     * @brief Bitwise and function between two arrays
+     * @param other other array to perform bitwise and
+     * @returns new array
+    */
+    template <typename _T1, typename _T2>
+    MdStaticArray<_T2> __and_bit_internal(const MdStaticArray<_T1> &__other, const _T2) const;
+    
+    /**
+     * @brief Bitwise and function between two arrays
+     * @param other other array to perform bitwise and
+     * @returns new array
+    */
+    template <typename _T1, typename _T2>
+    MdStaticArray<_T2> __and_bit_iinternal(const _T1 &__other, const _T2) const;
+
+    /**
+     * @brief Bitwise and function between two arrays
+     * @param other other array to perform bitwise and
+     * @returns new array
+    */
+    template <typename _T1, typename _T2>
+    MdStaticArray<_T2> __or_bit_internal(const MdStaticArray<_T1> &__other, const _T2) const;
+    
+    /**
+     * @brief Bitwise and function between two arrays
+     * @param other other array to perform bitwise and
+     * @returns new array
+    */
+    template <typename _T1, typename _T2>
+    MdStaticArray<_T2> __or_bit_iinternal(const _T1 &__other, const _T2) const;
+
+    /**
+     * @brief Bitwise and function between two arrays
+     * @param other other array to perform bitwise and
+     * @returns new array
+    */
+    template <typename _T1, typename _T2>
+    MdStaticArray<_T2> __xor_bit_internal(const MdStaticArray<_T1> &__other, const _T2) const;
+    
+    /**
+     * @brief Bitwise and function between two arrays
+     * @param other other array to perform bitwise and
+     * @returns new array
+    */
+    template <typename _T1, typename _T2>
+    MdStaticArray<_T2> __xor_bit_iinternal(const _T1 &__other, const _T2) const;
+
+    /**
      * @brief Division function, currently using threads
      * @param __other other integer (might be of different type)
      * @returns new array of current type
@@ -336,6 +384,54 @@ public:
      */
     template <typename _T1>
     void __mod_self_iinternal(const _T1 &__other);
+    
+    /**
+     * @brief Multiply to self, using multi-threading
+     * @param __other other vector to add
+     * @returns new array
+     */
+    template <typename _T1>
+    void __and_bit_self_internal(const MdStaticArray<_T1> &__other);
+
+    /**
+     * @brief Multiply to self, using multi-threading
+     * @param __other other vector to add
+     * @returns new array
+     */
+    template <typename _T1>
+    void __and_bit_self_iinternal(const _T1 &__other);
+
+    /**
+     * @brief Multiply to self, using multi-threading
+     * @param __other other vector to add
+     * @returns new array
+     */
+    template <typename _T1>
+    void __or_bit_self_internal(const MdStaticArray<_T1> &__other);
+
+    /**
+     * @brief Multiply to self, using multi-threading
+     * @param __other other vector to add
+     * @returns new array
+     */
+    template <typename _T1>
+    void __or_bit_self_iinternal(const _T1 &__other);
+
+    /**
+     * @brief Multiply to self, using multi-threading
+     * @param __other other vector to add
+     * @returns new array
+     */
+    template <typename _T1>
+    void __xor_bit_self_internal(const MdStaticArray<_T1> &__other);
+
+    /**
+     * @brief Multiply to self, using multi-threading
+     * @param __other other vector to add
+     * @returns new array
+     */
+    template <typename _T1>
+    void __xor_bit_self_iinternal(const _T1 &__other);
 
     template <typename _T1>
     MdStaticArray<bool> __comp_eq_internal(const MdStaticArray<_T1> &__other) const;
@@ -421,6 +517,36 @@ public:
     template <typename _T1>
     inline auto operator%(const MdStaticArray<_T1>&__other) const {
         OP_INTERNAL_MACRO(__mod_internal)
+    }
+
+    template <typename _T1>
+    inline auto operator&(const MdStaticArray<_T1>&__other) const {
+        OP_INTERNAL_MACRO(__and_bit_internal)
+    }
+
+    template <typename _T1>
+    inline auto operator&(const _T1&__other) const {
+        OP_INTERNAL_MACRO(__and_bit_iinternal)
+    }
+
+    template <typename _T1>
+    inline auto operator|(const MdStaticArray<_T1>&__other) const {
+        OP_INTERNAL_MACRO(__or_bit_internal)
+    }
+
+    template <typename _T1>
+    inline auto operator|(const _T1&__other) const {
+        OP_INTERNAL_MACRO(__or_bit_iinternal)
+    }
+
+    template <typename _T1>
+    inline auto operator^(const MdStaticArray<_T1>&__other) const {
+        OP_INTERNAL_MACRO(__xor_bit_internal)
+    }
+
+    template <typename _T1>
+    inline auto operator^(const _T1&__other) const {
+        OP_INTERNAL_MACRO(__xor_bit_iinternal)
     }
 
     inline MdStaticArray &operator+=(const MdStaticArray&__other) {
@@ -598,6 +724,21 @@ inline auto operator<=(const _T1&__other, const MdStaticArray<_T2> &first) {
 template <typename _T1, typename _T2>
 inline auto operator>=(const _T1&__other, const MdStaticArray<_T2> &first) {
     return first.__comp_geq_iinternal(__other);
+}
+
+template <typename _T1, typename _T2, class = typename EN_IF(IS_ARITH(_T1))>
+inline auto operator&(const _T1&__other, const MdStaticArray<_T2> &first) {
+    OP_INTERNAL_MACRO_EXT(__and_bit_iinternal)
+}
+
+template <typename _T1, typename _T2, class = typename EN_IF(IS_ARITH(_T1))>
+inline auto operator|(const _T1&__other, const MdStaticArray<_T2> &first) {
+    OP_INTERNAL_MACRO_EXT(__or_bit_iinternal)
+}
+
+template <typename _T1, typename _T2, class = typename EN_IF(IS_ARITH(_T1))>
+inline auto operator^(const _T1&__other, const MdStaticArray<_T2> &first) {
+    OP_INTERNAL_MACRO_EXT(__xor_bit_iinternal)
 }
 
 #undef EN_IF
