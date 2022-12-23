@@ -4,8 +4,6 @@
 #include "column_view.hpp"
 #include <chrono>
 #include "md_utility.hpp"
-#include <iomanip>
-#include <cstring>
 
 int main (int argc, const char **argv) {
     auto start = std::chrono::system_clock::now();
@@ -18,23 +16,33 @@ int main (int argc, const char **argv) {
     auto end = std::chrono::system_clock::now();
     std::chrono::duration<double> time = end - start;
     // std::cout << time.count() << "s" << std::endl;
-    MdStaticArray<uint64_t> d(20000), e(20000);
-    // MdStaticArray<uint64_t>::set_s_thread_count(16);
+    size_t sz = 600;
+    MdStaticArray<uint64_t> d(std::vector<size_t>({sz, sz, sz}), 10);
+    MdStaticArray<int> e(std::vector<size_t>({sz, sz}), 19);
     for (int i = 0; i < d.get_size(); ++i) {
-        d[i] = i + 1;
-        e[i] = d.get_size() - i + 1;
+        d[i / (sz * sz)][(i / sz) % sz][i % sz] = i + 1;
     }
 
-    // start = std::chrono::system_clock::now();
-    auto c = 3124122 | d;
-    // end = std::chrono::system_clock::now();
-    for (int i = 0; i < 100; ++i) {
-        std::cout << c[i] << " ";
+    for (int i = 0; i < 36; ++i) {
+        std::cout << d[1][(i / sz) % sz][i % sz] << " ";
     }
 
-    // std::cout << std::endl;
-    // time = end - start;
-    // std::cout << time.count() << "s" << std::endl;
+    std::cout << std::endl;
+    start = std::chrono::system_clock::now();
+    MdStaticArray result = d[1] * pow(243, 23);
+    end = std::chrono::system_clock::now();
+    
+    for (int i = 0; i < 36; ++i) {
+        std::cout << d[1][(i / sz) % sz][i % sz] << " ";
+    }
+    std::cout << std::endl;
+    for (int i = 0; i < 36; ++i) {
+        std::cout << result[(i / sz) % sz][i % sz] << " ";
+    }
+
+    std::cout << std::endl;
+    time = end - start;
+    std::cout << time.count() << "s" << std::endl;
     
     // std::cout << table << std::endl;
     // MdStaticArray<double> sepal_length = table["sepal.length"].st_map<double>();

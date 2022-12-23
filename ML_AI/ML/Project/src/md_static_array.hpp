@@ -12,19 +12,19 @@
 
 #define OP_INTERNAL_MACRO(func) \
 if constexpr (sizeof(_T1) > sizeof(_T)) { \
-    if constexpr (std::is_floating_point<_T>::value && sizeof(_T1) == 4) { \
+    if constexpr ((std::is_floating_point<_T>::value || std::is_floating_point<_T1>::value) && sizeof(_T1) == 4) { \
         return func(__other, (float)0); \
-    } else if constexpr (std::is_floating_point<_T>::value && sizeof(_T1) == 8) { \
+    } else if constexpr ((std::is_floating_point<_T>::value || std::is_floating_point<_T1>::value) && sizeof(_T1) == 8) { \
         return func(__other, (double)0); \
     } else { \
         return func(__other, (_T1)0); \
     } \
 } else { \
-    if constexpr (std::is_floating_point<_T>::value && sizeof(_T1) == 4) { \
+    if constexpr ((std::is_floating_point<_T>::value || std::is_floating_point<_T1>::value) && sizeof(_T1) == 4) { \
         return func(__other, (double)0); \
-    } else if constexpr (std::is_floating_point<_T>::value && sizeof(_T1) == 8) { \
+    } else if constexpr ((std::is_floating_point<_T>::value || std::is_floating_point<_T1>::value) && sizeof(_T1) == 8) { \
         return func(__other, (double)0); \
-    } else if constexpr (std::is_floating_point<_T>::value && sizeof(_T1) < 4) { \
+    } else if constexpr ((std::is_floating_point<_T>::value || std::is_floating_point<_T1>::value) && sizeof(_T1) < 4) { \
         return func(__other, (float)0); \
     } else { \
         return func(__other, (_T)0); \
@@ -32,14 +32,63 @@ if constexpr (sizeof(_T1) > sizeof(_T)) { \
 } \
 
 static size_t s_threshold_size = 10000000;
-static uint8_t s_thread_count = 16;
+static uint8_t s_thread_count = 8;
 
 template <typename _T>
 class MdStaticArray {
+    MdStaticArray(MdStaticArray<_T>&__other, size_t offset) {
+        __array = &__other.__array[offset];
+        init_shape(&__other.shape[1], __other.shp_size - 1);
+        __size = __other.__size / __other.shape[0];
+    }
+    
+    void init_shape(const size_t *_shape, size_t _shp_size) {
+        shape = (size_t*)malloc(shp_size * sizeof(size_t));
+        skip_vec = (size_t*)malloc(shp_size * sizeof(size_t));
+        shp_size = _shp_size;
+        shape[shp_size - 1] = _shape[shp_size - 1];
+        skip_vec[shp_size - 1] = 1;
+        for (int16_t i = shp_size - 2; i >= 0; --i) {
+            shape[i] = _shape[i];
+            skip_vec[i] = _shape[i] * skip_vec[i + 1];
+        }
+    }
+
+    void init_shape(const size_t size) {
+        shape = (size_t*)malloc(sizeof(size_t));
+        skip_vec = (size_t*)malloc(sizeof(size_t));
+        shape[0] = size;
+        skip_vec[0] = 1;
+        shp_size = 1;
+    }
+
+    MdStaticArray(MdStaticArray<_T>&__other, const size_t offset, const uint16_t shp_offset) {
+        __array = &__other.__array[offset];
+        shape = &__other.shape[shp_offset];
+        skip_vec = &__other.skip_vec[shp_offset];
+        shp_size = __other.shp_size - shp_offset;
+        __size = __other.__size;
+        uint16_t index = 0;
+        while (index < shp_offset) {
+            __size /= __other.shape[index++];
+        }
+        dont_free = true;
+    }
+    class reference;
+    bool dont_free = false;
+    size_t *shape;
+    size_t *skip_vec;
+    size_t __size;
+    uint16_t shp_size;
+
 public:
     _T *__array;
-    std::vector<size_t> shape;
-    size_t __size;
+
+    template <typename _T1>
+    friend class MdStaticArray<_T1>::reference;
+
+    template <typename _T1>
+    friend class MdStaticArray;
 
     static void set_thread_count(const uint8_t value);
     
@@ -47,7 +96,11 @@ public:
 
     void init_array(const size_t size) {
         if constexpr (std::is_fundamental<_T>::value) {
-            __array = (_T*) malloc(size*sizeof(_T));
+#ifdef WIN32
+            __array = (_T*) _aligned_malloc(size*sizeof(_T), sizeof(_T));
+#else
+            __array = (_T*) aligned_alloc(sizeof(_T), size*sizeof(_T));
+#endif
         } else {
             __array = new _T[size];
         }
@@ -56,7 +109,7 @@ public:
     MdStaticArray(const size_t size) {
         init_array(size);
         __size = size;
-        shape.push_back(size);
+        init_shape(__size);
     }
 
     MdStaticArray(const size_t size, const _T&value) {
@@ -65,17 +118,16 @@ public:
         for (size_t index = 0; index < size; ++index) {
             __array[index] = value;
         }
-        shape.push_back(size);
+        init_shape(__size);
     }
 
     MdStaticArray(const std::vector<size_t> &_shape, const _T&value) {
         size_t overall_size = 1;
         for (auto &dim: _shape) {
             overall_size *= dim;
-            shape.push_back(dim);
         }
-
         init_array(overall_size);
+        init_shape(_shape.data(), _shape.size());
         __size = overall_size;
         for (size_t index = 0; index < overall_size; ++index) {
             __array[index] = value;
@@ -91,25 +143,39 @@ public:
         for (auto &elem: __other) {
             __array[index++] = elem;
         }
-        shape.push_back(__size);
+        init_shape(__size);
     }
 
     MdStaticArray(const MdStaticArray& __other) {
         __size = __other.get_size();
         init_array(__size);
-        auto shp = __other.get_shape();
-        shape.insert(shape.end(), shp.begin(), shp.end());
+        const auto shp = __other.get_shape();
+        init_shape(shp, __other.shp_size);
         for (size_t index = 0; index < __size; ++index) {
             __array[index] = __other.__array[index];
         }
     }
 
     /**
+     * @brief Assigning reference to the newly created array
+     */
+    MdStaticArray<_T>(const reference& __other);
+
+    inline _T operator()() const {
+        return __array[0];
+    }
+
+    operator _T () const {
+        return *__array;
+    }
+
+    /**
      * @brief Assignment operator (direct vector assignment)
      */
-    MdStaticArray &operator=(const std::vector<_T>&__other) {
+    MdStaticArray &operator=(const std::vector<_T> __other) {
         __size = __other.size();
         init_array(__size);
+        init_shape(__size);
         size_t index = 0;
         for (auto &elem: __other) {
             __array[index++] = elem;
@@ -123,29 +189,44 @@ public:
     MdStaticArray &operator=(const MdStaticArray& __other) {
         __size = __other.get_size();
         init_array(__size);
+        const auto shp = __other.get_shape();
+        init_shape(shp, __other.shp_size);
         for (size_t index = 0; index < __other.get_size(); ++index) {
             __array[index] = __other.__array[index];
         }
         return *this;
     }
 
+    /**
+     * @brief Assigning reference to the newly created array
+     */
+    MdStaticArray<_T> &operator=(const reference& __other);
+
     ~MdStaticArray() {
-        if constexpr (std::is_fundamental<_T>::value) {
-            free(__array);
-        } else {
-            delete []__array;
+        if (!dont_free) {
+            if constexpr (std::is_fundamental<_T>::value) {
+#ifdef WIN32
+                _aligned_free(__array);
+#else
+                free(__array);
+#endif
+            } else {
+                delete []__array;
+            }
+            free(shape);
+            free(skip_vec);
         }
     }
 
-    inline std::vector<size_t> get_shape() const {
+    inline size_t* get_shape() const {
         return shape;
     }
 
     template <typename _T1>
     bool is_same_shape(const MdStaticArray<_T1> &__other) {
-        if (shape.size() != __other.shape.size()) { return false; }
+        if (shp_size != __other.shape.shp_size) { return false; }
         if (get_size() != __other.get_size()) { return false; }
-        for (size_t index = 0; index < shape.size(); ++index) {
+        for (size_t index = 0; index < shp_size; ++index) {
             if (shape[index] != __other.shape[index]) {
                 return false;
             }
@@ -370,7 +451,7 @@ public:
     void __mul_self_iinternal(const _T1 &__other);
 
     /**
-     * @brief Multiply to self, using multi-threading
+     * @brief Divide to self, using multi-threading
      * @param __other other vector to add
      * @returns new array
      */
@@ -378,7 +459,7 @@ public:
     void __div_self_iinternal(const _T1 &__other);
     
     /**
-     * @brief Multiply to self, using multi-threading
+     * @brief Modulo to self, using multi-threading
      * @param __other other vector to add
      * @returns new array
      */
@@ -386,7 +467,7 @@ public:
     void __mod_self_iinternal(const _T1 &__other);
     
     /**
-     * @brief Multiply to self, using multi-threading
+     * @brief Bitwise and to self, using multi-threading
      * @param __other other vector to add
      * @returns new array
      */
@@ -394,40 +475,40 @@ public:
     void __and_bit_self_internal(const MdStaticArray<_T1> &__other);
 
     /**
-     * @brief Multiply to self, using multi-threading
-     * @param __other other vector to add
+     * @brief Bitwise and to self, using multi-threading
+     * @param __other other integer to perform bitwise AND
      * @returns new array
      */
     template <typename _T1>
     void __and_bit_self_iinternal(const _T1 &__other);
 
     /**
-     * @brief Multiply to self, using multi-threading
-     * @param __other other vector to add
+     * @brief Bitwise OR to self, using multi-threading
+     * @param __other other vector to perform bitwise OR
      * @returns new array
      */
     template <typename _T1>
     void __or_bit_self_internal(const MdStaticArray<_T1> &__other);
 
     /**
-     * @brief Multiply to self, using multi-threading
-     * @param __other other vector to add
+     * @brief Bitwise OR to self, using multi-threading
+     * @param __other other vector to perform bitwise OR
      * @returns new array
      */
     template <typename _T1>
     void __or_bit_self_iinternal(const _T1 &__other);
 
     /**
-     * @brief Multiply to self, using multi-threading
-     * @param __other other vector to add
+     * @brief Bitwise XOR to self, using multi-threading
+     * @param __other other vector to perform bitwise XOR
      * @returns new array
      */
     template <typename _T1>
     void __xor_bit_self_internal(const MdStaticArray<_T1> &__other);
 
     /**
-     * @brief Multiply to self, using multi-threading
-     * @param __other other vector to add
+     * @brief Bitwise XOR to self, using multi-threading
+     * @param __other other vector to perform bitwise XOR
      * @returns new array
      */
     template <typename _T1>
@@ -549,23 +630,63 @@ public:
         OP_INTERNAL_MACRO(__xor_bit_iinternal)
     }
 
-    inline MdStaticArray &operator+=(const MdStaticArray&__other) {
+    template <typename _T1>
+    inline MdStaticArray &operator+=(const MdStaticArray<_T1>&__other) {
         __add_self_internal(__other);
         return *this;
     }
 
-    inline MdStaticArray &operator-=(const MdStaticArray&__other) {
+    template <typename _T1>
+    inline MdStaticArray &operator-=(const MdStaticArray<_T1>&__other) {
         __sub_self_internal(__other);
         return *this;
     }
 
-    inline MdStaticArray &operator*=(const MdStaticArray&__other) {
+    template <typename _T1>
+    inline MdStaticArray &operator*=(const MdStaticArray<_T1>&__other) {
         __mul_self_internal(__other);
         return *this;
     }
 
-    inline MdStaticArray &operator/=(const MdStaticArray&__other) {
+    template <typename _T1>
+    inline MdStaticArray &operator/=(const MdStaticArray<_T1>&__other) {
         __div_self_internal(__other);
+        return *this;
+    }
+
+    template <typename _T1>
+    inline MdStaticArray &operator%=(const MdStaticArray<_T1>&__other) {
+        __mod_self_internal(__other);
+        return *this;
+    }
+
+    template <typename _T1>
+    inline MdStaticArray &operator+=(const _T1&__other) {
+        __add_self_iinternal(__other);
+        return *this;
+    }
+
+    template <typename _T1>
+    inline MdStaticArray &operator-=(const _T1&__other) {
+        __sub_self_ionternal(__other);
+        return *this;
+    }
+
+    template <typename _T1>
+    inline MdStaticArray &operator*=(const _T1&__other) {
+        __mul_self_iinternal(__other);
+        return *this;
+    }
+
+    template <typename _T1>
+    inline MdStaticArray &operator/=(const _T1&__other) {
+        __div_self_iinternal(__other);
+        return *this;
+    }
+    
+    template <typename _T1>
+    inline MdStaticArray &operator%=(const _T1&__other) {
+        __mod_self_iinternal(__other);
         return *this;
     }
 
@@ -629,8 +750,12 @@ public:
         return __comp_neq_iinternal(__other);
     }
 
-    inline _T &operator[](const size_t index) {
-        return __array[index];
+    // To do: create a reference for multi-dimensional arrays.
+    inline reference operator[](const size_t index) {
+        if (index >= __size) {
+            throw std::runtime_error("Index out of bounds.");
+        }
+        return reference(*this, index * skip_vec[0]);
     }
 
     inline size_t get_size() const {
@@ -642,19 +767,19 @@ public:
 
 #define OP_INTERNAL_MACRO_EXT(func) \
 if constexpr (sizeof(_T1) > sizeof(_T2)) { \
-    if constexpr (std::is_floating_point<_T2>::value && sizeof(_T1) == 4) { \
+    if constexpr ((std::is_floating_point<_T2>::value || std::is_floating_point<_T1>::value) && sizeof(_T1) == 4) { \
         return first.func(__other, (float)0); \
-    } else if constexpr (std::is_floating_point<_T2>::value && sizeof(_T1) == 8) { \
+    } else if constexpr ((std::is_floating_point<_T2>::value || std::is_floating_point<_T1>::value) && sizeof(_T1) == 8) { \
         return first.func(__other, (double)0); \
     } else { \
         return first.func(__other, (_T1)0); \
     } \
 } else { \
-    if constexpr (std::is_floating_point<_T2>::value && sizeof(_T1) == 4) { \
+    if constexpr ((std::is_floating_point<_T2>::value || std::is_floating_point<_T1>::value) && sizeof(_T1) == 4) { \
         return first.func(__other, (double)0); \
-    } else if constexpr (std::is_floating_point<_T2>::value && sizeof(_T1) == 8) { \
+    } else if constexpr ((std::is_floating_point<_T2>::value || std::is_floating_point<_T1>::value) && sizeof(_T1) == 8) { \
         return first.func(__other, (double)0); \
-    } else if constexpr (std::is_floating_point<_T2>::value && sizeof(_T1) < 4) { \
+    } else if constexpr ((std::is_floating_point<_T2>::value || std::is_floating_point<_T1>::value) && sizeof(_T1) < 4) { \
         return first.func(__other, (float)0); \
     } else { \
         return first.func(__other, (_T2)0); \
@@ -741,7 +866,32 @@ inline auto operator^(const _T1&__other, const MdStaticArray<_T2> &first) {
     OP_INTERNAL_MACRO_EXT(__xor_bit_iinternal)
 }
 
+#include "md_st_reference.hpp"
+
+template <typename _T>
+MdStaticArray<_T> &MdStaticArray<_T>::operator=(const reference &__other) {
+    *this = MdStaticArray<_T> (__other.size);
+    init_shape(&__other.__array_reference->shape[__other.shp_offset], __other.__array_reference->shp_size - __other.shp_offset);
+    for (size_t index = 0; index < __other.size; ++index) {
+        __array[index] = __other.__array_reference->__array[__other.offset + index];
+    }
+
+    return *this;
+}
+
+template <typename _T>
+MdStaticArray<_T>::MdStaticArray(const reference &__other) {\
+    __size = __other.size;
+    init_array(__size);
+    init_shape(&__other.__array_reference->shape[__other.shp_offset], __other.__array_reference->shp_size - __other.shp_offset);
+    for (size_t index = 0; index < __size; ++index) {
+        __array[index] = __other.__array_reference->__array[__other.offset + index];
+    }
+}
+
 #undef EN_IF
 #undef IS_ARITH
+#undef OP_INTERNAL_MACRO
+#undef OP_INTERNAL_MACRO_EXT
 
 #endif

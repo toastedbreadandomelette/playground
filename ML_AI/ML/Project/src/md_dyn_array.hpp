@@ -637,5 +637,7 @@ inline auto operator%(const _T1&__other, const MdDynArray<_T2> &first) {
 
 #undef EN_IF
 #undef IS_ARITH
+#undef OP_INTERNAL_MACRO
+#undef OP_INTERNAL_MACRO_EXT
 
 #endif

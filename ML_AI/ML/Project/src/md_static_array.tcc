@@ -6,6 +6,7 @@ MdStaticArray<_T2> MdStaticArray<_T>::__add_internal(const MdStaticArray<_T1>&__
     // assert that sizes are equal
     const size_t size = __size;
     MdStaticArray<_T2> result(size);
+    result.init_shape(shape, shp_size);
     if (::s_thread_count == 1 || __size <= s_threshold_size) {
         for (size_t index = 0; index < size; ++index) {
             result.__array[index] = __array[index] + __other.__array[index];
@@ -40,6 +41,7 @@ MdStaticArray<_T2> MdStaticArray<_T>::__add_iinternal(const _T1 &__other, const 
     // assert that sizes are equal
     const size_t size = __size;
     MdStaticArray<_T2> result(__size);
+    result.init_shape(shape, shp_size);
     if (::s_thread_count == 1 || __size <= s_threshold_size) {
         for (size_t index = 0; index < get_size(); ++index) {
             result.__array[index] = __array[index] + __other;
@@ -74,6 +76,7 @@ MdStaticArray<_T2> MdStaticArray<_T>::__sub_iinternal(const _T1 &__other, const 
     // assert that sizes are equal
     const size_t size = __size;
     MdStaticArray<_T2> result(size);
+    result.init_shape(shape, shp_size);
     if (::s_thread_count == 1 || __size <= s_threshold_size) {
         for (size_t index = 0; index < get_size(); ++index) {
             result.__array[index] = __array[index] - __other;
@@ -108,6 +111,7 @@ MdStaticArray<_T2> MdStaticArray<_T>::__sub_iointernal(const _T1 &__other, const
     // assert that sizes are equal
     const size_t size = __size;
     MdStaticArray<_T2> result(size);
+    result.init_shape(shape, shp_size);
     if (::s_thread_count == 1 || __size <= s_threshold_size) {
         for (size_t index = 0; index < get_size(); ++index) {
             result.__array[index] = __other - __array[index];
@@ -144,6 +148,7 @@ MdStaticArray<_T2> MdStaticArray<_T>::__mul_internal(const MdStaticArray<_T1>&__
     // assert that sizes are equal
     const size_t size = __size;
     MdStaticArray<_T2> result(size);
+    result.init_shape(shape, shp_size);
     if (::s_thread_count == 1 || __size <= s_threshold_size) {
         for (size_t index = 0; index < get_size(); ++index) {
             result.__array[index] = __array[index] * __other.__array[index];
@@ -178,6 +183,7 @@ MdStaticArray<_T2> MdStaticArray<_T>::__mul_iinternal(const _T1 &__other, const 
     // assert that sizes are equal
     const size_t size = __size;
     MdStaticArray<_T2> result(size);
+    result.init_shape(shape, shp_size);
     if (::s_thread_count == 1 || __size <= s_threshold_size) {
         for (size_t index = 0; index < get_size(); ++index) {
             result.__array[index] = __array[index] * __other;
@@ -214,6 +220,7 @@ MdStaticArray<_T2> MdStaticArray<_T>::__div_internal(const MdStaticArray<_T1>&__
     // assert that sizes are equal
     const size_t size = __size;
     MdStaticArray<_T2> result(size);
+    result.init_shape(shape, shp_size);
     if (::s_thread_count == 1 || __size <= s_threshold_size) {
         for (size_t index = 0; index < get_size(); ++index) {
             result.__array[index] = __array[index] / __other.__array[index];
@@ -248,6 +255,7 @@ MdStaticArray<_T2> MdStaticArray<_T>::__div_iinternal(const _T1 &__other, const 
     // assert that sizes are equal
     const size_t size = __size;
     MdStaticArray<_T2> result(size);
+    result.init_shape(shape, shp_size);
     if (::s_thread_count == 1 || __size <= s_threshold_size) {
         for (size_t index = 0; index < get_size(); ++index) {
             result.__array[index] = __array[index] / __other;
@@ -282,6 +290,7 @@ MdStaticArray<_T2> MdStaticArray<_T>::__div_iointernal(const _T1 &__other, const
     // assert that sizes are equal
     const size_t size = __size;
     MdStaticArray<_T2> result(size);
+    result.init_shape(shape, shp_size);
     if (::s_thread_count == 1 || __size <= s_threshold_size) {
         for (size_t index = 0; index < get_size(); ++index) {
             result.__array[index] = __other / __array[index];
@@ -318,6 +327,7 @@ MdStaticArray<_T2> MdStaticArray<_T>::__mod_internal(const MdStaticArray<_T1>&__
     // assert that sizes are equal
     const size_t size = __size;
     MdStaticArray<_T2> result(size);
+    result.init_shape(shape, shp_size);
     if (::s_thread_count == 1 || __size <= s_threshold_size) {
         for (size_t index = 0; index < get_size(); ++index) {
             result.__array[index] = __array[index] % __other.__array[index];
@@ -352,6 +362,7 @@ MdStaticArray<_T2> MdStaticArray<_T>::__mod_iinternal(const _T1 &__other, const 
     // assert that sizes are equal
     const size_t size = __size;
     MdStaticArray<_T2> result(size);
+    result.init_shape(shape, shp_size);
     if (::s_thread_count == 1 || __size <= s_threshold_size) {
         for (size_t index = 0; index < get_size(); ++index) {
             result.__array[index] = __array[index] % __other;
@@ -386,6 +397,7 @@ MdStaticArray<_T2> MdStaticArray<_T>::__mod_iointernal(const _T1 &__other, const
     // assert that sizes are equal
     const size_t size = __size;
     MdStaticArray<_T2> result(size);
+    result.init_shape(shape, shp_size);
     if (::s_thread_count == 1 || __size <= s_threshold_size) {
         for (size_t index = 0; index < get_size(); ++index) {
             result.__array[index] = __other % __array[index];
@@ -455,7 +467,7 @@ void MdStaticArray<_T>::__sub_self_internal(const MdStaticArray<_T1> &__other) {
     const size_t size = __size;
     if (::s_thread_count == 1 || __size <= s_threshold_size) {
         for (size_t index = 0; index < get_size(); ++index) {
-                __array[index] -= __other.__array[index];
+            __array[index] -= __other.__array[index];
         }
     } else {
         std::vector<std::thread> st;
@@ -587,6 +599,7 @@ void MdStaticArray<_T>::__add_self_iinternal(const _T1 &__other) {
     if (::s_thread_count == 1 || __size <= s_threshold_size) {
         for (size_t index = 0; index < get_size(); ++index) {
             __array[index] += __other;
+            // std::cout << "here " << index << " " << size << std::endl;
         }
     } else {
         std::vector<std::thread> st;
@@ -747,6 +760,7 @@ MdStaticArray<bool> MdStaticArray<_T>::__comp_leq_internal(const MdStaticArray<_
     // assert that sizes are equal
     const size_t size = get_size();
     MdStaticArray<bool> result(size);
+    result.init_shape(shape, shp_size);
     if (::s_thread_count == 1 || size <= s_threshold_size) {
         for (size_t index = 0; index < get_size(); ++index) {
             result.__array[index] = __array[index] <= __other.__array[index];
@@ -782,6 +796,7 @@ MdStaticArray<bool> MdStaticArray<_T>::__comp_geq_internal(const MdStaticArray<_
     // assert that sizes are equal
     const size_t size = get_size();
     MdStaticArray<bool> result(size);
+    result.init_shape(shape, shp_size);
     if (::s_thread_count == 1 || size <= s_threshold_size) {
         for (size_t index = 0; index < get_size(); ++index) {
             result.__array[index] = __array[index] >= __other.__array[index];
@@ -817,6 +832,7 @@ MdStaticArray<bool> MdStaticArray<_T>::__comp_eq_internal(const MdStaticArray<_T
     // assert that sizes are equal
     const size_t size = get_size();
     MdStaticArray<bool> result(size);
+    result.init_shape(shape, shp_size);
     if (::s_thread_count == 1 || size <= s_threshold_size) {
         for (size_t index = 0; index < get_size(); ++index) {
             result.__array[index] = __array[index] == __other.__array[index];
@@ -852,6 +868,7 @@ MdStaticArray<bool> MdStaticArray<_T>::__comp_l_internal(const MdStaticArray<_T1
     // assert that sizes are equal
     const size_t size = get_size();
     MdStaticArray<bool> result(size);
+    result.init_shape(shape, shp_size);
     if (::s_thread_count == 1 || size <= s_threshold_size) {
         for (size_t index = 0; index < get_size(); ++index) {
             result.__array[index] = __array[index] < __other.__array[index];
@@ -887,6 +904,7 @@ MdStaticArray<bool> MdStaticArray<_T>::__comp_g_internal(const MdStaticArray<_T1
     // assert that sizes are equal
     const size_t size = get_size();
     MdStaticArray<bool> result(size);
+    result.init_shape(shape, shp_size);
     if (::s_thread_count == 1 || size <= s_threshold_size) {
         for (size_t index = 0; index < get_size(); ++index) {
             result.__array[index] = __array[index] > __other.__array[index];
@@ -922,6 +940,7 @@ MdStaticArray<bool> MdStaticArray<_T>::__comp_neq_internal(const MdStaticArray<_
     // assert that sizes are equal
     const size_t size = get_size();
     MdStaticArray<bool> result(size);
+    result.init_shape(shape, shp_size);
     if (::s_thread_count == 1 || size <= s_threshold_size) {
         for (size_t index = 0; index < get_size(); ++index) {
             result.__array[index] = __array[index] != __other.__array[index];
@@ -958,6 +977,7 @@ MdStaticArray<bool> MdStaticArray<_T>::__comp_leq_iinternal(const _T1 &__other) 
     // assert that sizes are equal
     const size_t size = get_size();
     MdStaticArray<bool> result(size);
+    result.init_shape(shape, shp_size);
     if (::s_thread_count == 1 || size <= s_threshold_size) {
         for (size_t index = 0; index < get_size(); ++index) {
             result.__array[index] = __array[index] <= __other;
@@ -993,6 +1013,7 @@ MdStaticArray<bool> MdStaticArray<_T>::__comp_geq_iinternal(const _T1 &__other) 
     // assert that sizes are equal
     const size_t size = get_size();
     MdStaticArray<bool> result(size);
+    result.init_shape(shape, shp_size);
     if (::s_thread_count == 1 || size <= s_threshold_size) {
         for (size_t index = 0; index < get_size(); ++index) {
             result.__array[index] = __array[index] >= __other;
@@ -1028,6 +1049,7 @@ MdStaticArray<bool> MdStaticArray<_T>::__comp_eq_iinternal(const _T1 &__other) c
     // assert that sizes are equal
     const size_t size = get_size();
     MdStaticArray<bool> result(size);
+    result.init_shape(shape, shp_size);
     if (::s_thread_count == 1 || size <= s_threshold_size) {
         for (size_t index = 0; index < get_size(); ++index) {
             result.__array[index] = __array[index] == __other;
@@ -1063,6 +1085,7 @@ MdStaticArray<bool> MdStaticArray<_T>::__comp_l_iinternal(const _T1 &__other) co
     // assert that sizes are equal
     const size_t size = get_size();
     MdStaticArray<bool> result(size);
+    result.init_shape(shape, shp_size);
     if (::s_thread_count == 1 || size <= s_threshold_size) {
         for (size_t index = 0; index < get_size(); ++index) {
             result.__array[index] = __array[index] < __other;
@@ -1098,6 +1121,7 @@ MdStaticArray<bool> MdStaticArray<_T>::__comp_g_iinternal(const _T1 &__other) co
     // assert that sizes are equal
     const size_t size = get_size();
     MdStaticArray<bool> result(size);
+    result.init_shape(shape, shp_size);
     if (::s_thread_count == 1 || size <= s_threshold_size) {
         for (size_t index = 0; index < get_size(); ++index) {
             result.__array[index] = __array[index] > __other;
@@ -1133,6 +1157,7 @@ MdStaticArray<bool> MdStaticArray<_T>::__comp_neq_iinternal(const _T1 &__other) 
     // assert that sizes are equal
     const size_t size = get_size();
     MdStaticArray<bool> result(size);
+    result.init_shape(shape, shp_size);
     if (::s_thread_count == 1 || size <= s_threshold_size) {
         for (size_t index = 0; index < get_size(); ++index) {
             result.__array[index] = __array[index] != __other;
@@ -1167,6 +1192,7 @@ MdStaticArray<_T2> MdStaticArray<_T>::__and_bit_internal(const MdStaticArray<_T1
     // assert that sizes are equal
     const size_t size = get_size();
     MdStaticArray<_T2> result(size);
+    result.init_shape(shape, shp_size);
     if (::s_thread_count == 1 || size <= s_threshold_size) {
         for (size_t index = 0; index < get_size(); ++index) {
             result.__array[index] = __array[index] & __other.__array[index];
@@ -1201,6 +1227,7 @@ MdStaticArray<_T2> MdStaticArray<_T>::__and_bit_iinternal(const _T1 &__other, co
     // assert that sizes are equal
     const size_t size = get_size();
     MdStaticArray<_T2> result(size);
+    result.init_shape(shape, shp_size);
     if (::s_thread_count == 1 || size <= s_threshold_size) {
         for (size_t index = 0; index < get_size(); ++index) {
             result.__array[index] = __array[index] & __other;
@@ -1235,6 +1262,7 @@ MdStaticArray<_T2> MdStaticArray<_T>::__or_bit_internal(const MdStaticArray<_T1>
     // assert that sizes are equal
     const size_t size = get_size();
     MdStaticArray<_T2> result(size);
+    result.init_shape(shape, shp_size);
     if (::s_thread_count == 1 || size <= s_threshold_size) {
         for (size_t index = 0; index < get_size(); ++index) {
             result.__array[index] = __array[index] | __other.__array[index];
@@ -1269,6 +1297,7 @@ MdStaticArray<_T2> MdStaticArray<_T>::__or_bit_iinternal(const _T1 &__other, con
     // assert that sizes are equal
     const size_t size = get_size();
     MdStaticArray<_T2> result(size);
+    result.init_shape(shape, shp_size);
     if (::s_thread_count == 1 || size <= s_threshold_size) {
         for (size_t index = 0; index < get_size(); ++index) {
             result.__array[index] = __array[index] | __other;
@@ -1303,6 +1332,7 @@ MdStaticArray<_T2> MdStaticArray<_T>::__xor_bit_internal(const MdStaticArray<_T1
     // assert that sizes are equal
     const size_t size = get_size();
     MdStaticArray<_T2> result(size);
+    result.init_shape(shape, shp_size);
     if (::s_thread_count == 1 || size <= s_threshold_size) {
         for (size_t index = 0; index < get_size(); ++index) {
             result.__array[index] = __array[index] | __other.__array[index];
@@ -1337,6 +1367,7 @@ MdStaticArray<_T2> MdStaticArray<_T>::__xor_bit_iinternal(const _T1 &__other, co
     // assert that sizes are equal
     const size_t size = get_size();
     MdStaticArray<_T2> result(size);
+    result.init_shape(shape, shp_size);
     if (::s_thread_count == 1 || size <= s_threshold_size) {
         for (size_t index = 0; index < get_size(); ++index) {
             result.__array[index] = __array[index] ^ __other;
