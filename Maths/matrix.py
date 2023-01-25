@@ -230,9 +230,9 @@ class matrix:
         Multiplication of two matrices:
         """
         c = []
-        for row in range(len(self.mat)):
-            c.append([sum([self.mat[row][k] * second_matrix.mat[k][j] for k in range(len(self.mat[row]))]) \
-                                                                      for j in range(len(second_matrix.mat[0]))])
+        m, n, p = len(self.mat), len(self.mat[0]), len(second_matrix.mat[0])
+        for row in range(m):
+            c.append([sum ([self.mat[row][k] * second_matrix.mat[k][j] for k in range(n)]) for j in range(p)])
         return matrix(c)
 
     def strassen_multiplication(self, second_matrix):

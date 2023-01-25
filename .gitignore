@@ -22,3 +22,6 @@ Makefile
 *.csv
 
 .obsidian/*
+
+# rust
+*.pdb

@@ -300,13 +300,9 @@ pub mod byte_parsing {
                             return Result::Error(Error::ParsingError(ParseError::InvalidNumberParseError(self.curr_byte as char)));
                         }
                         
-                        if !read_dot && self.curr_byte == b'.' {
-                            read_dot = true;
-                        }
-                        if !read_exp && (self.curr_byte == b'e' || self.curr_byte == b'E') {
-                            read_exp = true;
-                            read_dot = true;
-                        }
+                        read_dot = read_dot || self.curr_byte == b'.' | b'e' | b'E';
+                        read_exp = read_exp || self.curr_byte == b'e' | b'E';
+                        
                         continue 'parsing_number;
                     }
                     b' ' | 09..=13 | b',' | b']' | b'}' | b')' => { self.num_read = true; break }
@@ -326,13 +322,13 @@ pub mod byte_parsing {
                         Result::Ok(Container::Number(
                             std::str::from_utf8_unchecked(
                                 std::slice::from_raw_parts(self.container.offset(start as isize), self.offset - start - 1)
-                            ).parse::<i128>().unwrap()
+                            ).parse::<i64>().unwrap()
                         ))
                     } else {
                         Result::Ok(Container::Unsigned(
                             std::str::from_utf8_unchecked(
                                 std::slice::from_raw_parts(self.container.offset(start as isize), self.offset - start - 1)
-                            ).parse::<u128>().unwrap()
+                            ).parse::<u64>().unwrap()
                         ))
                     }
                 }
