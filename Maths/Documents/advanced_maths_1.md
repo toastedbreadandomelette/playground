@@ -1,4 +1,5 @@
 # Advanced Maths
+
 ## Partitioning Numbers
 A paritition of a number is defined as a way of writing $n (\in\mathbb{N})$  as sum of integers (combinations).
 For e.g., 
@@ -78,6 +79,4 @@ Source: https://discuss.codechef.com/t/linear-recurrence-using-cayley-hamilton-t
 
 ## Solving Diophatine Equation (Pell's equation)
 
-## Fast Fourier Transform…
 
-## NTT

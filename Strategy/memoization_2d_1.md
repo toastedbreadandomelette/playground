@@ -147,5 +147,5 @@ def longest_increasing_path(matrix: list) -> int:
 
 The complexity does not differ in both cases: $O(m\times n)$.
 
-We also have another solution, but we convert the problem into a [[problem_reduction_1#memoization_2d_1 Longest Increasing Paths in a Grid https leetcode com problems longest-increasing-path-in-a-matrix Longest Increasing Path in a grid|creates a graph]].
+We also have another solution, but we converts the problem into a [[problem_reduction_1#memoization_2d_1 Longest Increasing Paths in a Grid https leetcode com problems longest-increasing-path-in-a-matrix Longest Increasing Path in a grid|graph]].
 

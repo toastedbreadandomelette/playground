@@ -187,7 +187,7 @@ i.e., By pigeonhole's principle, there are **at least** $562949953421312\text{ (
 
 Also, having $344555666677777$ strings of length $7$ amounts to $2193.6 \text{ TB}$ of memory space. Absurdly Huge Bruh.
 
-## Knuth-Morris-Pratt (KMP) Method.
+## Knuth - Morris - Pratt (KMP) Method.
 It's one of the well known method to find a pattern in a string, using prefix function. We'll suppose $S$ to be the string to search and $T$ as substring pattern
 ### Prefix function
 Prefix function is an array of length $|T|$ (say $\pi$). The prefix value of $i^{th}$ position is the next position from which substring check needs to be done.

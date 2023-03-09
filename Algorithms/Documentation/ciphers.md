@@ -1,6 +1,6 @@
 # Ciphers
 
-## ROT-13 algorithm
+## ROT - 13 algorithm
 
 String is replaced with the $13^{\textrm{th}}$ next character in the alphabet series.
 e.g.,

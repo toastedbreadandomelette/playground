@@ -32,7 +32,7 @@ graph TD
 ```
 We traverse an array similar to inorder traversal, except that each time we jump from one to another node, we store the record of it.
 
-Assume that array is $I$. The below array shows the node values (top ones, say $I_1$) with the depth (below, say $I_2$) as well.
+Assume that array is $I$. The below array shows the node values (top ones, say $I_1$) with the depth (bottom ones, say $I_2$).
 
 $$
 I=\left\{\begin{array}{cl}

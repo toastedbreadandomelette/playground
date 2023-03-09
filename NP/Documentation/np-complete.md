@@ -1,4 +1,4 @@
-# NP-Complete
+# NP - Complete
 A problem is called NP-complete if a problem is:
 - [[np|NP problem]] (decision problem, and decisive)
 - [[np-hard|NP-hard]] (reducible from problem $L$ to $H$)

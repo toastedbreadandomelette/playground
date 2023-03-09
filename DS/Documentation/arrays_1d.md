@@ -150,11 +150,11 @@ The path of $i$ is taken from array starting element, moving forward and $j$ fro
 ### For solving range queries faster.
 The queries for an array are as defined as display $dq$ and update queries $uq$ (modification of a value).
 $$
-\begin{matrix}
-\textrm{dq} = \{\ \{L,R\}:\ L,R \in \mathbb{W},\ 0\leq L<R\leq |a|\ \} \\
-\textrm{uq} = \{\ \{L,R,\textrm{value}\}:\ L,R \in \mathbb{W},\ 0\leq L\leq R\leq |a|\ \} \\
-\textrm{q}=(\textrm{dq}\ \cup\ \textrm{uq})
-\end{matrix}
+\begin{array}{ccl}
+\textrm{dq} &=& \{(L,R):L,R \in \mathbb{W},\ 0\leq L<R\leq |a|\} \\
+\textrm{uq} &=& \{(L,R,\textrm{value}):L,R \in \mathbb{W},\ 0\leq L\leq R\leq |a|\} \\
+\textrm{q}&=&(\textrm{dq}\ \cup\ \textrm{uq})
+\end{array}
 $$
 #### $sqrt$ Decomposition
 A basic idea of sqrt decomposition for array of size $n$ is to combine the results of $\sqrt{n}$ blocks in an array of size $\sqrt n$.

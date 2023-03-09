@@ -1,5 +1,5 @@
-# NP-hard
-NP-hard problem are a set that are 'at least as hard as hardest problem in [[np|NP]] set.'
+# NP - hard
+NP - hard problem are a set that are 'at least as hard as hardest problem in [[np|NP]] set.'
 
 Statement:
 A problem $H$ is $NP$-hard (say $NPH$= set of NP-hard problems) when every problem $L$ in $NP$ set can be reduced in polynomial time to $H$.

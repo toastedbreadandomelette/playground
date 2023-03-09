@@ -1,3 +1,6 @@
 [submodule "ML_AI/ML/Projects/modified_array"]
 	path = ML_AI/ML/Projects/modified_array
 	url = https://github.com/toastedbreadandomelette/modified_array
+[submodule "Maths/Expression"]
+	path = Maths/Expression
+	url = https://github.com/toastedbreadandomelette/expression

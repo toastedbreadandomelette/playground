@@ -78,17 +78,10 @@ impl Clone for Container {
             Container::Decimal(ref element) => Container::Decimal(*element),
             Container::Boolean(ref element) => Container::Boolean(*element),
             Container::Str(ref element) => Container::Str(String::from(element)),
+            Container::Array(ref array) => Container::Array(array.clone()),
+            Container::Object(ref object) => Container::Object(object.clone()),
+            Container::Set(ref set) => Container::Set(set.clone()),
             Container::Null => Container::Null,
-            // Object, Array and Set containers
-            Container::Array(ref array) => {
-                Container::Array(array.clone())
-            }
-            Container::Object(ref object) => {
-                Container::Object(object.clone())
-            }
-            Container::Set(ref set) => {
-                Container::Set(set.clone())
-            }
         }
     }
 }
@@ -139,19 +132,18 @@ impl PartialEq for Container {
                 this_value == other_value
             }
             (Container::Array(ref array), Container::Array(ref other_array)) => {
-                array.len() == other_array.len() &&
-                array.iter().zip(other_array.iter()).all(|(a, b)| a == b)
+                array.len() == other_array.len()
+                    && array.iter().zip(other_array.iter()).all(|(a, b)| a == b)
             }
             (Container::Set(ref set), Container::Set(ref other_set)) => {
-                (set.len() == other_set.len()) &&
-                !set.iter()
-                    .all(|value| other_set.get(value) == Some(value))
+                (set.len() == other_set.len())
+                    && !set.iter().all(|value| other_set.get(value) == Some(value))
             }
             (Container::Object(ref map_object), Container::Object(ref other_map_object)) => {
-                (map_object.len() == other_map_object.len()) &&
-                !map_object
-                    .iter()
-                    .all(|(key, value)| other_map_object.get(key) == Some(value))
+                (map_object.len() == other_map_object.len())
+                    && !map_object
+                        .iter()
+                        .all(|(key, value)| other_map_object.get(key) == Some(value))
             }
             (Container::Null, Container::Null) => true,
             _ => false,
@@ -227,23 +219,37 @@ impl Container {
         match *self {
             Container::Array(ref value) => {
                 if indent == false {
-                    format!("[{}]", value
-                        .iter()
-                        .map(|element| element.dump_object(indent, indent_size, white_space))
-                        .collect::<Vec<String>>()
-                        .join(", ")
+                    format!(
+                        "[{}]",
+                        value
+                            .iter()
+                            .map(|element| element.dump_object(indent, indent_size, white_space))
+                            .collect::<Vec<String>>()
+                            .join(", ")
                     )
                 } else {
-                    let mut space: String = (0..indent_size).into_iter().map(|c| ' ').collect::<Vec<char>>().into_iter().collect();
+                    let mut space: String = (0..indent_size)
+                        .into_iter()
+                        .map(|c| ' ')
+                        .collect::<Vec<char>>()
+                        .into_iter()
+                        .collect();
                     if value.len() == 0 {
                         "[]".to_string()
                     } else {
                         space += white_space;
-                        format!("[\n{}\n{}]", value
-                            .iter()
-                            .map(|element| format!("{}{}", space, element.dump_object(indent, indent_size, &space)))
-                            .collect::<Vec<String>>()
-                            .join(",\n"), white_space
+                        format!(
+                            "[\n{}\n{}]",
+                            value
+                                .iter()
+                                .map(|element| format!(
+                                    "{}{}",
+                                    space,
+                                    element.dump_object(indent, indent_size, &space)
+                                ))
+                                .collect::<Vec<String>>()
+                                .join(",\n"),
+                            white_space
                         )
                     }
                 }
@@ -278,7 +284,11 @@ impl Container {
                         }
                         for (key, val) in value {
                             object_str.push_str(&space);
-                            object_str.push_str(&format!("\"{}\": {}", key, val.dump_object(indent, indent_size, &space)));
+                            object_str.push_str(&format!(
+                                "\"{}\": {}",
+                                key,
+                                val.dump_object(indent, indent_size, &space)
+                            ));
                             index += 1;
                             if index != value.len() {
                                 object_str.push_str(",\n");
@@ -291,23 +301,37 @@ impl Container {
             }
             Container::Set(ref value) => {
                 if indent == false {
-                    format!("({})", value
-                        .iter()
-                        .map(|element| element.dump_object(indent, indent_size, white_space))
-                        .collect::<Vec<String>>()
-                        .join(", ")
+                    format!(
+                        "({})",
+                        value
+                            .iter()
+                            .map(|element| element.dump_object(indent, indent_size, white_space))
+                            .collect::<Vec<String>>()
+                            .join(", ")
                     )
                 } else {
-                    let mut space: String = (0..indent_size).into_iter().map(|c| ' ').collect::<Vec<char>>().into_iter().collect();
+                    let mut space: String = (0..indent_size)
+                        .into_iter()
+                        .map(|c| ' ')
+                        .collect::<Vec<char>>()
+                        .into_iter()
+                        .collect();
                     if value.len() == 0 {
                         "()".to_string()
                     } else {
                         space += white_space;
-                        format!("(\n{}\n{})", value
-                            .iter()
-                            .map(|element| format!("{}{}", space, element.dump_object(indent, indent_size, &space)))
-                            .collect::<Vec<String>>()
-                            .join(",\n"), white_space
+                        format!(
+                            "(\n{}\n{})",
+                            value
+                                .iter()
+                                .map(|element| format!(
+                                    "{}{}",
+                                    space,
+                                    element.dump_object(indent, indent_size, &space)
+                                ))
+                                .collect::<Vec<String>>()
+                                .join(",\n"),
+                            white_space
                         )
                     }
                 }

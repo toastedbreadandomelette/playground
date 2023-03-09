@@ -18,13 +18,53 @@ Generalizing for $n$ and $r$, ${}^nP_r=\dfrac{n!}{(n-r)!}$, where $n!$ is a [[ba
 	Result: $(r-1)!\cdot\dbinom{n}{r}=(r-1)!\cdot\dfrac{n!}{r!\cdot(n-r)!}=\dfrac{{}^nP_r}r$.
 4. Grouping objects, number of permutations where $k<r$ objects are grouped together: $P=\dfrac{(n-k+1)!}{(n-r)!}\cdot k!$
 5. Permutation with repitition: selecting $n$ objects: $n^n$; selecting $r$ out of $n$ objects: $n^r$.
-6. 
+
 ## Combination:
 Combination is a selection of $r$ elements out of $n$ elements. Here, order of element do not matter.
 
 For e.g., out of $4$ elements in set $A=\{1,2,3,4\}$, if we want to select $2$ items, then there are $6$ ways to do: $\{1,2\},\{1,3\},\{1,4\},\{2,3\},\{2,4\},\{3,4\}$.
 
 We denote this by ${}^nC_r$ or $\dbinom{n}r=\dfrac{n!}{r!\cdot(n-r)!}$.
+
+```rust
+fn ncr(n: usize, r: usize) -> u128 {
+    if r > n {
+        0
+    } else if r == 0 || r == n {
+        1
+    } else {
+        ncr(n - 1, r - 1) + ncr(n - 1, r)
+    }
+}
+
+fn ncr_memoize(n: usize, r: usize, mem: &mut Vec<Vec<u128>>) -> u128 {
+    if r > n {
+        0
+    } else if r == 0 || r == n {
+        1
+    } else if mem[n][r] == 0 {
+        mem[n][r] = ncr_memoize(n - 1, r, mem) + ncr_memoize(n - 1, r - 1, mem);
+        mem[n][r] as u128
+    } else {
+        mem[n][r] as u128
+    }
+}
+
+#[test]
+pub fn test_ncr() {
+    assert_eq!(ncr(10, 5), 252);
+}
+
+#[test]
+pub fn test_ncr_memoize() {
+    assert_eq!(
+        ncr_memoize(50, 25, &mut vec![vec![0; 51]; 51]),
+        126410606437752
+    );
+
+    assert_eq!(ncr_memoize(15, 10, &mut vec![vec![0; 51]; 51]), ncr(15, 10));
+}
+```
 
 ## Some results
 1. In an equation: $E=(a_{11}+a_{12}+\ldots+a_{1k_1})\cdot (a_{21}+a_{22}+\ldots+a_{2k_2})\cdots(a_{m1}+a_{m2}+\ldots+a_{mk_m})$, total terms generated are: $k_1\cdot k_2\cdot k_3\cdots k_m=\prod\limits_{i=1}^mk_i$. A particular case is [[perm_and_comb#Multinomial expansion|multinomial expansion]], where a sequence of number to the power $n$ is performed.
@@ -327,3 +367,24 @@ P(A)=\dfrac{|!n|}{|n!|}=\dfrac{\left(\dfrac{n!}{e}\right)}{n!}=\dfrac1e
 $$
 This happens when $n$ is too big of a number or $n\rightarrow \infty$.
 A good explaination is also given on [wikipedia](https://en.wikipedia.org/wiki/Derangement#Derivation_by_inclusion%E2%80%93exclusion_principle).
+
+```rust
+fn derangement(n: usize) -> u128 {
+    let mut result: i128 = 0;
+    let mut mul = 1;
+    let mut sign: i128 = if n & 1 == 0 { 1 } else { -1 };
+    for x in ((0 as i128)..=(n as i128)).rev() {
+        result += sign * mul;
+        sign = -sign;
+        mul *= x;
+    }
+    result as u128
+}
+
+#[test]
+pub fn test_derangement() {
+    assert_eq!(derangement(9), 133496);
+    assert_eq!(derangement(8), 14833);
+    assert_eq!(derangement(10), 1334961);
+}
+```

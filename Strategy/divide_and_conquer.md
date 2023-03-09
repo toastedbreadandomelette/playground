@@ -52,7 +52,7 @@ C_{21}=P_2+P_4\\
 C_{22}=P_1-P_2+P_3+P_6
 \end{array}
 $$
-This is perfomed recursively till it can be divided no further/matrix becomes small enough to outperform the naive multiplication.
+This is perfomed recursively till it can be divided no further/matrix becomes small enough to not be able to outperform the naive multiplication.
 
 Complexity: since the recurrence relation is
 $$
