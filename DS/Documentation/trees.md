@@ -75,12 +75,11 @@ There are mainly three types of tree traversals:
 The order for pre-order traversal from root $v$ in graph $G$ is current node, left node, and right node ($op$ here is user's desired operation).
 
 $$
-pre(v)=\left\{
-\begin{array}{cl}
+pre(v)=
+\begin{cases}
 -,&\not\exists\ v\\
 op(v),\ pre(v\rightarrow L),\ pre(v\rightarrow R),&\exists\ v\in V
-\end{array}
-\right.
+\end{cases}
 $$
 
 ```python
@@ -97,13 +96,12 @@ For the above tree: the nodes will be processed in this order:
 
 $$\begin{matrix}4&3&1&2&6&5&7\end{matrix}$$.
 ### In-order traversal
+
 $$
-in(v)=\left\{
-\begin{array}{cl}
+in(v)=\begin{cases}
 -,&\not\exists\ v\\
 pre(v\rightarrow L),\ op(v),\ pre(v\rightarrow R),&\exists\ v\in V
-\end{array}
-\right.
+\end{cases}
 $$
 
 ```python
@@ -121,13 +119,12 @@ For the above tree: the nodes will be processed in this order:
 $$\begin{matrix}1&2&3&4&5&6&7\end{matrix}$$
 
 ### Post-order
+
 $$
-post(v)=\left\{
-\begin{array}{cl}
+post(v)=\begin{cases}
 -,&\not\exists\ v\\
 post(v\rightarrow L),\ post(v\rightarrow R),\ op(v),&v\in V
-\end{array}
-\right.
+\end{cases}
 $$
 ```python
 def postorder(root_node):
@@ -147,15 +144,14 @@ $$\begin{matrix}1&3&2&5&7&6&4\end{matrix}$$
 A generalized approach for max depth using adjacency matrix is [[problem_reduction_1#memoization_2d_1 Longest Increasing Paths in a Grid https leetcode com problems longest-increasing-path-in-a-matrix Longest Increasing Path in a grid|solved here]]. For binary tree (general binary tree or BST), the solution for given vertex $v$ and their child $v\rightarrow L$ and $v\rightarrow R$ is:
 
 $$
-d(v)=\left\{
-\begin{array}{cl}
+d(v)=
+\begin{cases}
 0,&\not\exists\ v\\
 1,&v\in V,\not\exists\ (v\rightarrow L,v\rightarrow R)\\
 1+d(v\rightarrow L),&v\in V,v\rightarrow L\in V,\not\exists\ v\rightarrow R\\
 1+d(v\rightarrow R),&v\in V,v\rightarrow R\in V,\not\exists\ v\rightarrow L\\
 1+\max(d(v\rightarrow L), d(v\rightarrow R)),&v\in V,v\rightarrow L,v\rightarrow R\in V
-\end{array}
-\right.
+\end{cases}
 $$
 
 This is a simple algorithm that considers all the possibilities of children.

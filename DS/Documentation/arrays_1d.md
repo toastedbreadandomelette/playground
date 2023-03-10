@@ -53,12 +53,10 @@ graph BT
 The parent of this binary tree at $i^{th}$ index is defined as:
 
 $$
-p(i) = \left\{
-	\begin{array}{ c l }
-	\left\lfloor\dfrac{i}{2}\right\rfloor,&a\textrm{ is 1-indexed array}\\
-	\left\lfloor\dfrac{i-1}{2}\right\rfloor,&a\textrm{ is 0-indexed array}
-	\end{array}
-\right.
+p(i) =\begin{cases}
+\left\lfloor\dfrac{i}{2}\right\rfloor,&a\textrm{ is 1-indexed array}\\
+\left\lfloor\dfrac{i-1}{2}\right\rfloor,&a\textrm{ is 0-indexed array}
+\end{cases}
 $$
 
 Childs of a node $i^{th}$ node are $(2i, 2i+1)$ for $1$-indexed array, $(2i+1, 2i+2)$ for $0$-indexed.
@@ -69,7 +67,9 @@ This type of value storing is useful iff there is a parent-child relationship (t
 ```
 
 ### In linear fashion
+
 #### Cumulative function
+
 An array with certain values:
 
 $$
@@ -111,7 +111,7 @@ $$
 where 
 
 $$
-pf=sf=\left\{\begin{array} {cl}
+pf=sf=\begin{cases}
 \sum, & \text{summation}\\
 \prod, & \text{product}\\
 \bigwedge, & \text{and}\\
@@ -122,7 +122,7 @@ pf=sf=\left\{\begin{array} {cl}
 \gcd, & \text{gcd of first numbers}\\
 \text{lcm}, & \text{Lowest common Multiple}\\
 \vdots
-\end{array}\right.
+\end{cases}
 $$
 
 To find sub-array values $a[i\ldots j]$, a function should have an inverse operator.
@@ -190,8 +190,8 @@ A basic idea of sqrt decomposition for array of size $n$ is to combine the resul
 The below e.g. are for sum and min function, although the reduce function `q_function` can be different, with parameter as sub-array:
 
 $$
-\textrm{q\_functions} = \left\{
-\begin{array}{ c l }
+\textrm{q\_functions} =
+\begin{cases}
 \gcd(a_L,\ a_{L+1},\ \ldots,\ a_R),\\
 \max(a_L,\ a_{L+1},\ \ldots,\ a_R),\\
 \min(a_L,\ a_{L+1},\ \ldots,\ a_R),\\
@@ -199,8 +199,7 @@ $$
 \prod\limits_{i=L}^{R}a_i,\\
 \bigoplus\limits_{i=L}^{R}a_i, & \text{xor operation}\\
 \vdots
-\end{array}
-\right.
+\end{cases}
 $$
 
 Here, $a\oplus b\equiv a\textrm{ xor }b$.
@@ -304,21 +303,20 @@ For certain problem that contains range update queries ($uq$) only, and finding 
 
 Some of the operations that are straightforward include:
 $$
-\begin{matrix}
-\forall\ i\in[L,\ R],\ \\f(a_i) = \left\{\begin{array} { c l }
+\forall\ i\in[L,\ R],\ \ 
+f(a_i) = \begin{cases}
 k + a_i, & \text{summation}\\
 k \times a_i, & \text{product}\\
 \bigoplus, & \text{xor}\\
 \vdots
-\end{array}\right.
-\end{matrix}
+\end{cases}
 $$
+
 These above operations works because after each of these operators have a inverse operator.
 
 To update the difference array (say $da$ for array $a$, we perform)
-$$
-\begin{array}{c l}da_L=f(a_i), & da_R = f^{-1}(a_i)\end{array}
-$$
+
+$$\begin{array}{c l}da_L=f(a_i), & da_R = f^{-1}(a_i)\end{array}$$
 
 ```python
 def difference_array_queries(array: list, diff_array: list, queries: list, operation, inv_operation) -> list:

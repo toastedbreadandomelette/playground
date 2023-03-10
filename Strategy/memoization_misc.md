@@ -4,15 +4,18 @@ Given a knight in a $n\times n$ chessboard, return the probability that after $k
 
 In a chess, a knight changes it posiiton $b=1$ or $b=2$ blocks in one direction and remaining $3-b$ block in a direction perpendicular to the previous directions. (one move)
 i.e., from $(i,j)$, there are $8$ possible moves: $\{(i\pm1,j\pm2),(i\pm2,j\pm1)\}=M$ (say). 
-$N(T_1)$: The number of possible moves when $(k=1)=8$
-$N(T_2)$: The number of possible moves when $(k=2)=8^2=64$
-$\vdots$
-$N(T_k)$: The number of possible moves is $=8^k$
-$N(A_{ijk})$: The number of possible moves that are within chessboard when knight position is $(i,j)$. 
-then $P(A_{ijk})=\dfrac{N(A_{ijk})}{N(T_k)}$.
 
-Generalizing this. for $P(A_{ijk})=\dfrac{N(A_{ijk})}{8^k}$.
-We need to evaluate $N(A_{ijk})$, which can be done via memoization.
+$N(T_1)$: The number of possible moves when $(k=1)=8$
+
+$N(T_2)$: The number of possible moves when $(k=2)=8^2=64$
+
+$\vdots$
+
+$N(T_k)$: The number of possible moves is $=8^k$
+
+$N(A_{ijk})$: The number of possible moves that are within chessboard when knight position is $(i,j)$.  then $P(A_{ijk})=\dfrac{N(A_{ijk})}{N(T_k)}$.
+
+Generalizing this. for $P(A_{ijk})=\dfrac{N(A_{ijk})}{8^k}$. We need to evaluate $N(A_{ijk})$, which can be done via memoization.
 
 # Algorithm:
 

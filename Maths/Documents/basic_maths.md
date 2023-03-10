@@ -116,14 +116,11 @@ The recursive definition for this function can be defined $(\textrm{for }k \in \
 
 $$
 \text{expm}(n, k, m) = 
-\left\{ 
-\begin{array}{cl}
+\begin{cases}
 \text{expm}\left(n,\left\lfloor\dfrac{k}{2}\right\rfloor,m\right)^2\pmod m,&k \geq 2,\ k\equiv0\pmod{2}\\
 n\cdot \text{expm}\left(n,\left\lfloor\dfrac{k}{2}\right\rfloor, m\right)^{2}\pmod{m}, &k\geq2,\ k\equiv1\pmod 2\\
 n,&k=1\\
-1,&k=0
-    \end{array}
-\right.
+1,&k=0\end{cases}
 $$
 
 An iterative example for example $2^{27}$ based on below example (without modulus):
@@ -187,12 +184,10 @@ a\equiv0\pmod x, & b\equiv0 \pmod x
 
 $$
 \therefore\gcd(a,b) = 
-\left\{
-\begin{array}{cl}
+\begin{cases}
 a,&b=0\\
 \gcd(b,a\pmod b),&b\neq0\\
-\end{array}
-\right.
+\end{cases}
 $$
 
 ```python

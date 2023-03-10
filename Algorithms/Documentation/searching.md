@@ -55,12 +55,12 @@ The constraints with the binary search is that the search space should be in a s
 Binary search on space $S$ in a given frame $L$ and $R$ to find value $T$ is given as:
 
 $$
-\text{b\_search}(S,L,R,T,f)=\left\{
+\text{bsearch}(S,L,R,T,f)=\left\{
 \begin{array}{cl}
 -1,&L\geq R\\
 M,&M=\dfrac{L+R}{2}, f(S,M,T)=0\\
-\text{b\_search}(S,M+1,R,T),&M=\dfrac{L+R}{2},f(S,M,T)<0\\
-\text{b\_search}(S,L,M-1,T),&M=\dfrac{L+R}{2},f(S,M,T)>0\\
+\text{bsearch}(S,M+1,R,T),&M=\dfrac{L+R}{2},f(S,M,T)<0\\
+\text{bsearch}(S,L,M-1,T),&M=\dfrac{L+R}{2},f(S,M,T)>0\\
 \end{array}
 \right.
 $$

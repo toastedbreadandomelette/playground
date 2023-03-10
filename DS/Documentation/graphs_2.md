@@ -69,13 +69,12 @@ Let us denote $Tin_u$ as in time for vertex $u$. So by visiting each vertex, we 
 With this, we'll introduce $L_u$ as:
 
 $$
-L_u=\min\left\{
-\begin{array}{cl}
+L_u=\min
+\begin{cases}
 Tin_u,\\
 Tin_p,&\forall\ p\in V,(u,p)\in E\ \wedge\ ((u\rightarrow p)\text{ is a back-edge})\\
 L_p,&\forall\ p\in V,\ (u,p)\in E,\ \wedge\ (u\rightarrow p\text{ is a tree edge} )
-\end{array}
-\right.
+\end{cases}
 $$
 
 Considering that there is back edge: i.e., an edge from descendants of $p$ to ancestors of $u$ (or $u$ itself). In that case, $L_p\leq Tin_u$. Otherwise the edge $u\rightarrow p$ is a bridge.

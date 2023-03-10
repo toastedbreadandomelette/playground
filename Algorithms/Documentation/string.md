@@ -6,23 +6,23 @@ Sequence of characters (either ASCII/Unicode UTF-8). These are stored similar to
 A recursive definition of palindrome $pldr$ is:
 
 $$
-pldr(S, L, R) = \left\{\begin{array} {cl}
+pldr(S,L,R) = \begin{cases}
 \textrm{true},&\quad L\geq R\\
 \textrm{false},&\quad L<R\wedge S[L]\neq S[R]\\
 pldr(S, L+1, R-1),&\quad L<R\wedge S[L]=S[R]\\
-\end{array}
-\right.
+\end{cases}
+
 $$
+
 More formal definition of palindrome is a string that reads the same forwards and backwards.
 
 $\therefore$ By this definition
 
 $$
-pldr\textrm{(S)} = \left\{\begin{array} { c l }
+pldr(S) = \begin{cases}
 	\textrm{true}, & \quad S=\textrm{ reverse}(S)\\
 \textrm{false}, & \quad S \neq\textrm{ reverse}(S)
-\end{array}
-\right.
+\end{cases}
 $$
 ```python
 def is_palindrome(string: str) -> bool:
@@ -50,9 +50,7 @@ def is_palindrome(string: str) -> bool:
 Rabin karp method is a way to identify a string with a certain integer value.
 Each of the values is constructed as:
 
-$$
-\text{hash}(s) = \left(\sum\limits_{i=0}^{\text{len(s)}}s[i].p^{i}\right)(\bmod m)
-$$
+$$\text{hash}(s) = \left(\sum\limits_{i=0}^{\text{len(s)}}s[i].p^{i}\right)(\bmod m)$$
 
 where $p$ and $m$ is a prime number.  For a character set $C$ used in a string, prime number $p$ is selected such that $p > |C|$ where $|C|$ is size of that set.
 
