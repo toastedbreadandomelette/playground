@@ -77,18 +77,18 @@ can have a cumulative function (function for first $i$ values in array)
 For e.g., for sum of first $n$ number:
 
 $$
-\textrm{prefix}(A) = \lbrace65,120,154,195,247, 273, 306, 336, 376\rbrace
+P(A) = \lbrace65,120,154,195,247, 273, 306, 336, 376\rbrace
 $$
 i.e., 
 
 $$
-\textrm{prefix\_sum}(A, i) = \sum\limits_{k=0}^{i}A_k.
+P(A, i) = \sum\limits_{k=0}^{i}A_k.
 $$
-These are called a **prefix sum**.
+These are called a **prefix sum** (say $P$).
 A reverse cumulative sum are used as well certain times:
 
 $$
-\text{suffix\_sum}(A,i) = \sum\limits_{k=i}^{\text{|A|}}A_k
+S(A,i) = \sum\limits_{k=i}^{\text{|A|}}A_k
 $$
 
 These are called **suffix sums**.
@@ -171,10 +171,11 @@ The path of $i$ is taken from array starting element, moving forward and $j$ fro
 [[stack|See stack implementation]]
 
 ### For solving range queries faster.
+
 The queries for an array are as defined as display $dq$ and update queries $uq$ (modification of a value).
 
 $$
-\begin{array}{ccl}
+\begin{array}{}
 \textrm{dq} &=& \{(L,R):L,R \in \mathbb{W},\ 0\leq L<R\leq |a|\} \\
 \textrm{uq} &=& \{(L,R,\textrm{value}):L,R \in \mathbb{W},\ 0\leq L\leq R\leq |a|\} \\
 \textrm{q}&=&(\textrm{dq}\ \cup\ \textrm{uq})
@@ -185,10 +186,10 @@ $$
 A basic idea of sqrt decomposition for array of size $n$ is to combine the results of $\sqrt{n}$ blocks in an array of size $\sqrt n$.
 
 1. Pre-processing.
-The below e.g. are for sum and min function, although the reduce function `q_function` can be different, with parameter as sub-array:
+The below e.g. are for sum and min function, although the reduce function `q_function` or $Q$ can be different, with parameter as sub-array:
 
 $$
-\textrm{q\_functions} =
+Q =
 \begin{cases}
 \gcd(a_L,\ a_{L+1},\ \ldots,\ a_R),\\
 \max(a_L,\ a_{L+1},\ \ldots,\ a_R),\\
@@ -283,7 +284,7 @@ def sqrt_decomposition_solve_queries(array: list, queries: list, q_function) -> 
 	 e.g., inverse operator for
 	 - adding ($\text{sum}+a$) is subtracting ($\text{sum}-a$), 
 	 - $prod \times a$  is $\dfrac{prod}{a}$
-	 - inverse of $\text{xor\_sum}\oplus b$ is $\text{xor\_sum}\oplus b$.
+	 - inverse of $a\oplus b$ is $a\oplus b$ itself.
 - [ ] To do: code.
 
 #### MO's algorithm
@@ -300,6 +301,7 @@ MO's algorithm helps by pre-processing queries => this is a offline range query 
 For certain problem that contains range update queries ($uq$) only, and finding the resultant array after making such modifications, difference array are very effective.
 
 Some of the operations that are straightforward include:
+
 $$
 \forall\ i\in[L,\ R],\ \ 
 f(a_i) = \begin{cases}

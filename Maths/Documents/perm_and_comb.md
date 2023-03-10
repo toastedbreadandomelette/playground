@@ -1,7 +1,7 @@
 # Permutations and Combinations
 ## Permutation
 Permutation is an arrangement of elements.
-For e.g., total permutation set of a set $S=\{1,2,3\}$ are $P(S)=\{ \{1,2,3 \},\{ 1,3,2 \}, \{2,1,3 \}, \{2,3,1 \}, \{3,1,2 \}, \{3,2,1 \} \}$.
+For e.g., total permutation set of a set $S=\{1,2,3\}$ are $P(S)=\lbrace\lbrace1,2,3\rbrace,\lbrace1,3,2\rbrace, \lbrace2,1,3 \rbrace, \lbrace2,3,1 \rbrace, \lbrace3,1,2 \rbrace, \lbrace3,2,1 \rbrace \rbrace$.
 
 Total permutation of $r$ objects out of $n$ objects is denoted by $P^n_r$.
 In above case it's $P^3_3=6$.
@@ -25,7 +25,7 @@ Combination is a selection of $r$ elements out of $n$ elements. Here, order of e
 
 For e.g., out of $4$ elements in set $A=\{1,2,3,4\}$, if we want to select $2$ items, then there are $6$ ways to do: 
 
-$$\{ 1,2 \}, \{ 1,3 \} , \{ 1,4 \} , \{ 2,3 \} , \{ 2,4 \} , \{ 3,4 \}$$
+$$\lbrace 1,2 \rbrace, \lbrace 1,3 \rbrace , \lbrace 1,4 \rbrace , \lbrace 2,3 \rbrace , \lbrace 2,4 \rbrace , \lbrace 3,4 \rbrace$$
 
 We denote this by ${}^nC_r$ or $\dbinom{n}r=\dfrac{n!}{r!\cdot(n-r)!}$.
 
@@ -213,7 +213,7 @@ $$
 +{}^nC_{r}\cdot {}^{n-r}C_{m-1}
 +{}^nC_{r}\cdot{}^rC_m\\
 \dfrac{(n+1)!}{r!\cdot  m!\cdot(n-r-m+1)!}&=&\dfrac{n!}{(r-1)!\cdot m!\cdot(n-r-m+1)!}+\dfrac{n!}{r!\cdot(m-1)!\cdot (n-r-m+1)!}+\\&&\dfrac{n!}{r!\cdot m!\cdot(n-r-m)!}\\
-\dbinom{n+1}{r,m,n-r-m+1}&=&\dbinom{n}{r-1,m,n-r-m+1}+\dbinom{n}{r,m-1,n-r-m+1}+\\&&\dbinom{n}{r,m,n-r-m}
+\dbinom{n+1}{r,m,n-r-m+1}&=&\dbinom{n}{r-1,m,n-r-m+1}+\dbinom{n}{r,m-1,n-r-m+1}+\dbinom{n}{r,m,n-r-m}
 \end{matrix}
 $$
 
@@ -392,7 +392,7 @@ Given a set $A$, we're finding total arrangement where none of the values are in
 
 For e.g., $A=\{1,2,3,4\}$, there are $9$ derangements: 
 
-$$\{ 2,3,4,1 \} , \{ 3,4,1,2 \} , \{ 4,1,2,3 \} , \{ 3,4,2,1 \} , \{ 4,3,1,2 \} , \{ 3,1,4,2 \} , \{ 2,4,1,3 \} , \{ 4,3,2,1 \}, \{ 2,1,4,3 \}$$
+$$\lbrace 2,3,4,1 \rbrace , \lbrace 3,4,1,2 \rbrace , \lbrace 4,1,2,3 \rbrace , \lbrace 3,4,2,1 \rbrace , \lbrace 4,3,1,2 \rbrace , \lbrace 3,1,4,2 \rbrace , \lbrace 2,4,1,3 \rbrace , \lbrace 4,3,2,1 \rbrace, \lbrace 2,1,4,3 \rbrace$$
 
 Note that none of the values in these arrangements are in same position as in set $A$. Number of such arrangements $!n$ can be evaluated step by step:
 

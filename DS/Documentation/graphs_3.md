@@ -35,10 +35,10 @@ We traverse an array similar to inorder traversal, except that each time we jump
 Assume that array is $I$. The below array shows the node values (top ones, say $I_1$) with the depth (bottom ones, say $I_2$).
 
 $$
-I=\left\{\begin{array}{cl}
+I=\left\lbrace\begin{matrix}
 1&2&5&2&6&2&7&2&8&2&1&3&9&3&1&4&10&4&11&4&12&13&12&14&12&4&1\\
 1&2&3&2&3&2&3&2&3&2&1&2&3&2&1&2&3&2&3&2&3&4&3&4&3&2&1
-\end{array}\right\}
+\end{matrix}\right\rbrace
 $$
 The size of this array $I$ would be exactly $2\cdot n-1$.
 

@@ -7,7 +7,8 @@ Topological sorting is a way to sort the vertices $v$ based on the incoming edge
 The pre-requisite is the graph $G$ should be DAG (Directed Acyclic Graph). $\implies$ If the cycles exists or the graph is undirected, then the solution for the program does not exists.
 
 ### Explaination: 
-$\forall\ v\in V$, we perform the following operations (say $\text{dfs}(v,V_s,C=\{\})$):
+
+$\forall\ v\in V$, we perform the following operations (say $\text{dfs}(v,V_s,C=\lbrace\rbrace)$):
 	- If $v\in C$ then we exit. 
 	- otherwise, we put $v$ into visited set $V_s$ and cycle set $C$
 	- For each neighbor of vertex $v$ (say $nv$)
@@ -168,7 +169,8 @@ Floyd Warshall's shortest path algorithm is a simple algorithm that finds shorte
 Let us consider [[graphs_1#Matrix|2D matrix]] as input (say $M$) of size $n\times n$. Then, the shortest path from $i\rightarrow j$ (we'll denote by $S_{ij}$) is done by:
 
 $$
-\forall\ (i,j)\in[1,n], S_{ij}=\min\limits_{\begin{matrix}k=1\\(i,k)\in E,\ (k,j)\in E\end{matrix}}^{n}(S_{ik}+S_{kj})
+\forall\ (i,j)\in[1,n], S_{ij}=\min\limits_{\begin{matrix}k=1\\
+(i,k)\in E,\ (k,j)\in E\end{matrix}}^{n}(S_{ik}+S_{kj})
 $$
 
 We can see why the complexity is $O(n^3)$. We work on every pair $i,j$ and we check closest distance for every existing path from $i\rightarrow j$ via every possible intermediate vertex $k$ (so the route would be $i\rightarrow \cdots \rightarrow k\rightarrow\cdots\rightarrow j$).
