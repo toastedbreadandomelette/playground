@@ -163,7 +163,7 @@ pub fn test_bubble_cmp() {
     bubble_sort_cmp(&mut s, &|a, b| a < b);
     assert_eq!(s, [1, 2, 3, 4, 5, 6, 123, 132, 556]);
 
-    let mut count_bits = |mut c| {
+    let count_bits = |mut c| {
         let mut count = 0;
         while c > 0 {
             count += c & 1;
@@ -194,7 +194,7 @@ pub fn test_select_cmp() {
     selection_sort_cmp(&mut s, &|a, b| a < b);
     assert_eq!(s, [1, 2, 3, 4, 5, 6, 123, 132, 556]);
 
-    let mut count_bits = |mut c| {
+    let count_bits = |mut c| {
         let mut count = 0;
         while c > 0 {
             count += c & 1;
@@ -207,7 +207,7 @@ pub fn test_select_cmp() {
     // If bits are same then sort according to their magnitude
     s = vec![4, 3, 2, 1, 6, 5, 123, 132, 556];
     selection_sort_cmp(&mut s, &|a, b| {
-        (count_bits(a) < count_bits(b) || (count_bits(a) == count_bits(b) && a < b))
+        count_bits(a) < count_bits(b) || (count_bits(a) == count_bits(b) && a < b)
     });
     assert_eq!(s, [1, 2, 4, 3, 5, 6, 132, 556, 123]);
 }
@@ -221,7 +221,7 @@ pub fn test_insertion() {
 
 #[test]
 pub fn test_quick() {
-    let mut count_bits = |mut c| {
+    let count_bits = |mut c| {
         let mut count = 0;
         while c > 0 {
             count += c & 1;
@@ -232,7 +232,7 @@ pub fn test_quick() {
 
     let mut s = vec![4, 3, 2, 1, 6, 5, 123, 132, 556];
     quick_sort_cmp(&mut s, &|a, b| {
-        (count_bits(a) < count_bits(b) || (count_bits(a) == count_bits(b) && a < b))
+        count_bits(a) < count_bits(b) || (count_bits(a) == count_bits(b) && a < b)
     });
     assert_eq!(s, [1, 2, 4, 3, 5, 6, 132, 556, 123]);
 }
@@ -258,7 +258,7 @@ pub fn merge_sort<T: std::cmp::PartialOrd + Copy>(array: &mut Vec<T>) {
 }
 
 fn main() {
-    let mut count_bits = |mut c| {
+    let count_bits = |mut c| {
         let mut count = 0;
         while c > 0 {
             count += c & 1;
@@ -271,7 +271,7 @@ fn main() {
     // If bits are same then sort according to their magnitude
     let mut s = vec![4, 3, 2, 1, 6, 5, 123, 132, 556];
     quick_sort_cmp(&mut s, &|a, b| {
-        (count_bits(a) < count_bits(b) || (count_bits(a) == count_bits(b) && a < b))
+        count_bits(a) < count_bits(b) || (count_bits(a) == count_bits(b) && a < b)
     });
     assert_eq!(s, [1, 2, 4, 3, 5, 6, 132, 556, 123]);
 }
