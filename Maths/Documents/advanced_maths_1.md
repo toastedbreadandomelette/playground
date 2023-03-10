@@ -5,7 +5,19 @@ A paritition of a number is defined as a way of writing $n (\in\mathbb{N})$  as 
 For e.g., 
 If $n=6$, then there are $11$ combinations:
 
-$$\begin{array}{l}6\\5+1\\4+2\\4+1+1\\3+3\\3+2+1\\3+1+1+1\\2+2+2\\2+2+1+1\\2+1+1+1+1\\1+1+1+1+1+1\end{array}$$
+$$\begin{array}{l}
+6\\
+5+1\\
+4+2\\
+4+1+1\\
+3+3\\
+3+2+1\\
+3+1+1+1\\
+2+2+2\\
+2+2+1+1\\
+2+1+1+1+1\\
+1+1+1+1+1+1
+\end{array}$$
 
 The parititon numbers $p(n)$ will be defined as possible parititon of the number $n$: for e.g., $p(6)=11$.
 A function $p(n)$ is defined:
