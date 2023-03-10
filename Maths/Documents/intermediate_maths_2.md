@@ -5,16 +5,15 @@ A relation where a term is evaluated depending on values of previous terms:
 
 $$
 f(n) =
-\left\{
-	\begin{array} { c l }
-	c_0, & \quad n = 0\\
-	c_1, & \quad n = 1\\
-	c_2, & \quad n = 2\\
-	\vdots\\
-	c_k, & \quad n = k\\
-	a_0.\ f(n - 1) + a_1.\ f(n - 2) + a_2.\ f(n - 3) + ... + a_{k}.\ f(n - k), & \quad n > k
-	\end{array}
-\right.
+
+\begin{cases}
+c_0, & \quad n = 0\\
+c_1, & \quad n = 1\\
+c_2, & \quad n = 2\\
+\vdots\\
+c_k, & \quad n = k\\
+a_0.\ f(n - 1) + a_1.\ f(n - 2) + a_2.\ f(n - 3) + ... + a_{k}.\ f(n - k), & \quad n > k
+\end{cases}
 $$
 
 where $a_0,\ a_1,\ a_2,\ ...\ a_k, c_0,\ c_1,\ c_2,\ ...\ c_k \in \mathbb{R}$ (although these can be complex numbers $\mathbb{C}$ as well, but for simplicity we keep real numbers $\mathbb{R}$). 
@@ -142,13 +141,12 @@ $$
 For tribonacci, the base matrix would be:
 
 $$
-f(n) = \left\{
-\begin{array}{ c l }
+f(n)=
+\begin{cases}
 0,&\quad n \in \{0,\ 1\}\\
 1,&\quad n=2,\\
 f(n-1)+f(n-2)+f(n-3),&\quad n>2,\ n\in\mathbb{N}
-\end{array}
-\right.
+\end{cases}
 $$
 
 The matrices will be:
@@ -190,12 +188,10 @@ For pell recurrence relation:
 
 $$
 f(n) = 
-\left\{
-\begin{array}{ c l }
+\begin{cases}
 n, & \quad n \in \{0,\ 1\}\\
 2\cdot f(n-1)+f(n-2),&\quad n>1
-\end{array}
-\right.
+\end{cases}
 $$
 
 the matrix for recurrence relation would be:
@@ -211,16 +207,15 @@ M = \begin{bmatrix}
 $$
 
 #### Pell's recurrence, with a constant value.
+
 If there are constants involved in the equation:
 
 $$
 f(n) = 
-\left\{
-\begin{array}{ c l }
+\begin{cases}
 n, & \quad n \in \{0,\ 1\}\\
 2\cdot f(n-1) + f(n-2) + 7, & \quad n > 1
-\end{array}
-\right.
+\end{cases}
 $$
 
 The equivalent matrix form would be:

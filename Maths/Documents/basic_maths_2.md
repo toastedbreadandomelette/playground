@@ -46,12 +46,10 @@ $AM(A)=\dfrac{\sum\limits_{i=1}^n a_i}{n}=\dfrac{a_1+a_2+a_3+\ldots+a_n}{n}$.
 If consecutive pairs are equidistant (i.e., they are in Arithmetic progression with $a_i$ being the $i^{th}$ term), then average is:
 
 $$
-AM(A)=\left\{
-\begin{array}{cl}
+AM(A)=\begin{cases}
 a_k,&k=\left\lceil\dfrac{n}{2}\right\rceil,\ n\equiv1\pmod{2}\\
 \dfrac{a_k+a_{k+1}}{2},&k=\dfrac{n}{2},\ n\equiv0\pmod{2}\\
-\end{array}
-\right.
+\end{cases}
 $$
 
 - Arithmetic point tells us the center of distribution of uniform points: in a line it defines a middle average of all the points.

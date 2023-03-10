@@ -1,7 +1,7 @@
 # Permutations and Combinations
 ## Permutation
 Permutation is an arrangement of elements.
-For e.g., total permutation set of a set $S=\{1,2,3\}$ are $P(S)=\left\{\left\{1,2,3\right\},\left\{1,3,2\right\},\left\{2,1,3\right\},\left\{2,3,1\right\},\left\{3,1,2\right\},\left\{3,2,1\right\}\right\}$.
+For e.g., total permutation set of a set $S=\{1,2,3\}$ are $P(S)=\{ \{1,2,3 \},\{ 1,3,2 \}, \{2,1,3 \}, \{2,3,1 \}, \{3,1,2 \}, \{3,2,1 \} \}$.
 
 Total permutation of $r$ objects out of $n$ objects is denoted by $P^n_r$.
 In above case it's $P^3_3=6$.
@@ -25,7 +25,7 @@ Combination is a selection of $r$ elements out of $n$ elements. Here, order of e
 
 For e.g., out of $4$ elements in set $A=\{1,2,3,4\}$, if we want to select $2$ items, then there are $6$ ways to do: 
 
-$$\{1,2\},\{1,3\},\{1,4\},\{2,3\},\{2,4\},\{3,4\}$$
+$$\{ 1,2 \}, \{ 1,3 \} , \{ 1,4 \} , \{ 2,3 \} , \{ 2,4 \} , \{ 3,4 \}$$
 
 We denote this by ${}^nC_r$ or $\dbinom{n}r=\dfrac{n!}{r!\cdot(n-r)!}$.
 
@@ -155,9 +155,16 @@ $$
 
 Substitute $i=r,\ j=m, k=n-r-m$, and summing all the solutions we get:
 
-$$T=\sum\limits_{\begin{matrix}i,j,k\\i+j+k=n\end{matrix}}\dfrac{n!}{i!\cdot j!\cdot k!}\cdot a^i\cdot b^j\cdot c^k$$
+$$T=\sum\limits_{
+\begin{matrix}
+i,j,k\\
+i+j+k=n\end{matrix}} \dfrac{n!}{i!\cdot j!\cdot k!}\cdot a^i\cdot b^j\cdot c^k$$
 
-Putting values $a=b=c=1$, we get result $\sum\limits_{\begin{matrix}i,j,k\\i+j+k= n\end{matrix}}\dfrac{n!}{i!\cdot j!\cdot k!}=3^n$.
+Putting values $a=b=c=1$, we get result: 
+
+$$\sum\limits_{
+\begin{matrix}i,j,k\\
+i+j+k= n\end{matrix}} \dfrac{n!}{i!\cdot j!\cdot k!}=3^n$$
 
 A good explaination for [generalized solution is given here](https://en.wikipedia.org/wiki/Multinomial_theorem#Number_of_ways_to_select_according_to_a_distribution).
 
@@ -178,7 +185,9 @@ The generator for this pascal pyramid:
 Let us consider again 
 
 $$
-(a+b+c)^n=T=\sum\limits_{\begin{matrix}i,j,k\geq0\\i+j+k=n\end{matrix}}\dfrac{n!}{i!\cdot j!\cdot k!}\cdot a^i\cdot b^j\cdot c^k
+(a+b+c)^n=T=\sum\limits_{
+\begin{matrix}i,j,k\geq0\\
+i+j+k=n\end{matrix}} \dfrac{n!}{i!\cdot j!\cdot k!}\cdot a^i\cdot b^j\cdot c^k
 $$
 
 We'll consider $i=r, j=m, k=n-r-m$ for simplicity:
@@ -220,18 +229,16 @@ $$
 \dbinom{n+1}{i,j,k}=\dbinom{n}{i-1,j,k}+\dbinom{n}{i,j-1,k}+\dbinom{n}{i,j,k-1}
 $$
 
-Here, $0<i,j,k<n$. One look at the recursive definition and the problem can be rephrased as: Find ways in a $3$-D Maze to move from top left ($(x,y,z)=(0,0,0)$) to opposite right bottom ($(x,y,z)=(m,n,p),\ m,n,p\in\mathbb{N}$), where only three moves are allowed: right ($X$ Axis), down ($Y$-Axis) or away ($Z$-Axis).
+Here, $0 < (i, j, k) < n$. One look at the recursive definition and the problem can be rephrased as: Find ways in a $3$-D Maze to move from top left ($(x,y,z)=(0,0,0)$) to opposite right bottom ($(x,y,z)=(m,n,p),\ m,n,p\in\mathbb{N}$), where only three moves are allowed: right ($X$ Axis), down ($Y$-Axis) or away ($Z$-Axis).
 
 A recurrence relation for pascal pyramid is:
 
 $$
-P(n,i,j,k)=\left\{
-\begin{array}{cl}
+P(n,i,j,k)=\begin{cases}
 0,&i\notin[0,n],\ j\notin[0,i],\ k\notin[0,j]\\
-1,&(i\leq 1)\ \vee (j\in\{0,i\}\ \wedge\ (k=j\ \vee (j=i,k=0)))\\\\
-\begin{matrix}P(n,i-1,j,k)\\+\ P(n,i-1,j-1,k)\\+\ P(n,i-1,j-1,k-1)\end{matrix},&\text{otherwise}.
-\end{array}
-\right.
+1,&(i\leq 1)\ \vee (j\in\{0,i\}\ \wedge\ (k=j\ \vee (j=i,k=0)))\\
+\begin{matrix}P(n,i-1,j,k)+P(n,i-1,j-1,k)+P(n,i-1,j-1,k-1)\end{matrix},&\text{otherwise}.
+\end{cases}
 $$
 
 ```cpp
@@ -337,8 +344,8 @@ Generalizing above value, we've
 
 $$
 \begin{array}{cl}
-(x_1+x_2+\ldots+x_m)^n=E&=&\sum\limits_{\begin{matrix}k_1,k_2,\ldots,k_m>0\\k_1+k_2+\cdots+k_m=n\end{matrix}}\dfrac{n!}{k_1!\cdot k_2!\cdot k_3!\ldots k_m!}\cdot\prod\limits_{i=0}^m x_i^{k_i}\\
-&=&\sum\limits_{\begin{matrix}k_1,k_2,\ldots,k_m>0\\k_1+k_2+\cdots+k_m=n\end{matrix}}\dbinom{n}{k_1,k_2,\ldots k_m}\cdot\prod\limits_{i=0}^m x_i^{k_i}
+(x_1+x_2+\ldots+x_m)^n=E&=&\sum\limits_{\begin{matrix}k_1,k_2,\ldots,k_m>0\\ k_1+k_2+\cdots+k_m=n\end{matrix}}\dfrac{n!}{k_1!\cdot k_2!\cdot k_3!\ldots k_m!}\cdot\prod\limits_{i=0}^m x_i^{k_i}\\
+&=&\sum\limits_{\begin{matrix}k_1,k_2,\ldots,k_m>0\\ k_1+k_2+\cdots+k_m=n\end{matrix}}\dbinom{n}{k_1,k_2,\ldots k_m}\cdot\prod\limits_{i=0}^m x_i^{k_i}
 \end{array}
 $$
 
@@ -363,13 +370,11 @@ $$
 Similarly, a recurrence relation of $K=\{k_1,k_2,\ldots,k_m\}$will be:
 
 $$
-P(n,k_1,k_2,\ldots,k_m)=\left\{
-\begin{array}{cl}
+P(n,k_1,k_2,\ldots,k_m)=\begin{cases}
 1,&(\exists!\ i\in[1,m],\ k_i=0)\ \vee (\forall\ i\in[1,m],\ k_{i}=k_1) \text{ (To be checked)}\\
 0,&k_1\notin[0,n], \forall\ i\in[2,m],\ k_i\notin[0,k_{i-1}]\\
 \sum\limits_{i=1}^mP(n,k_1',k_2',\ldots,k_{i-1}',k_i',k_{i+1},\ldots,k_m),&\forall\ l\in[1,i],\ k_l'
-=k_l-1\end{array}
-\right.
+=k_l-1\end{cases}
 $$
 
 The first expression simply states that value is $1$ if it's one of the corner vertices of a $n$-dimensional tetrahedron.
@@ -385,7 +390,7 @@ Given a set $A$, we're finding total arrangement where none of the values are in
 
 For e.g., $A=\{1,2,3,4\}$, there are $9$ derangements: 
 
-$$\{2,3,4,1\},\{3,4,1,2\},\{4,1,2,3\},\{3,4,2,1\},\{4,3,1,2\},\{3,1,4,2\},\{2,4,1,3\},\{4,3,2,1\},\{2,1,4,3\}$$
+$$\{ 2,3,4,1 \} , \{ 3,4,1,2 \} , \{ 4,1,2,3 \} , \{ 3,4,2,1 \} , \{ 4,3,1,2 \} , \{ 3,1,4,2 \} , \{ 2,4,1,3 \} , \{ 4,3,2,1 \}, \{ 2,1,4,3 \}$$
 
 Note that none of the values in these arrangements are in same position as in set $A$. Number of such arrangements $!n$ can be evaluated step by step:
 
@@ -408,9 +413,11 @@ $$
 These are the first $n$ terms of [[intermediate_maths#Taylor series for e x|taylor series]] of $e^x$ with $x=-1$. With this, we can approximate the value $!n\approx \dfrac{n!}{e}$. 
 
 Also, [[probability]] that none of the permutations are in place will be:
+
 $$
 P(A)=\dfrac{|!n|}{|n!|}=\dfrac{\left(\dfrac{n!}{e}\right)}{n!}=\dfrac1e
 $$
+
 This happens when $n$ is too big of a number or $n\rightarrow \infty$.
 A good explaination is also given on [wikipedia](https://en.wikipedia.org/wiki/Derangement#Derivation_by_inclusion%E2%80%93exclusion_principle).
 

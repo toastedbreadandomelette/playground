@@ -21,7 +21,13 @@ $$\begin{bmatrix}1&10&8&9&6\end{bmatrix}$$
 ## Column vector
 These are $n\times 1$ vector. (Below is a $5\times 1$ matrix)
 
-$$\begin{bmatrix}1\\10\\8\\9\\6\end{bmatrix}$$
+$$\begin{bmatrix}
+1\\
+10\\
+8\\
+9\\
+6
+\end{bmatrix}$$
 
 ## Square matrices
 
