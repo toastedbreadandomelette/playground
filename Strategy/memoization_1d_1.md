@@ -67,13 +67,11 @@ The recurrence relation we chose are simple and contains consecutive $n$ terms. 
 
 - Tribonacci
 
-$$
-f(n)=\left\{\begin{array}{cl}
+$$f(n)=\left\{\begin{array}{cl}
 n, & n\leq 1\\
 1, & n=2\\
 f(n-1)+f(n-2)+f(n-3), & n>2
-\end{array}\right.
-$$
+\end{array}\right.$$
 
 - Number of ways/paths to climb the stairs: A guy on $k^{th}$ step can take either skip one and go to next (landing on $(k+2)^{th}$ step) or just climb (landing on $(k+1)^{th}$ step). (Here, $f(0)=1, f(1)=1$). This is similar to fibonacci, except that base condition is changed (skipped by $1$).
 	- Why $f(0)=1$?: The number of ways to climb the stairs concerns about the total paths from $0\rightarrow n$ (for e.g., for $f(2)$, there are two paths that can be taken: $0\rightarrow1\rightarrow2$ and $0\rightarrow2$). But for $0$, the path is $0$, which is still a valid path.

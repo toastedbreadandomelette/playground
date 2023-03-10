@@ -7,13 +7,13 @@ $$\begin{array}{lll}S=1+2+3+\ldots+n  && -\ (1)\end{array}$$
 Also, by commutative law $a + b = b + a$
 
 $$\begin{array}{cl}S=n+(n-1)+(n-2)+\ldots+3+2+1 && -\ (2)\end{array}$$
+
 Adding $1$ and $2$ we get
 
 $$
 \begin{matrix}
 &S&=&1 + 2 + 3 + .... + (n - 2) + (n - 1) + n\\
 +&S&=&n + (n - 1) + (n - 2) + ... + 3 + 2 + 1\\
-&\textcolor{black}{\rule{5ex}{0.25ex}}& &\textcolor{black}{\rule{40ex}{0.25ex}}&\\
 &2\cdot S&=&\underbrace{(1 + n) + (2 + n - 1) + ... + (n + 1)}_{n \text{ terms}}
 \end{matrix}
 $$
@@ -342,12 +342,19 @@ def pascal_triangle(n: int) -> list:
 This pattern create a fibonacci series????
 
 $P_{00}=1$
+
 $P_{11}+P_{20}=2$
+
 $P_{21}+P_{30}=3$
+
 $P_{22}+P_{31}+P_{40}=5$
+
 $P_{32}+P_{41}+P_{50}=8$
+
 $P_{33}+P_{42}+P_{51}+P_{60}=13$
+
 $P_{43}+P_{52}+P_{61}+P_{70}=21$
+
 $P_{44}+P_{53}+P_{62}+P_{71}+P_{80}=1+10+15+7+1=34$.
 
 ___
