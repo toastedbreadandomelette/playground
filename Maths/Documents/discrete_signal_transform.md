@@ -2,17 +2,21 @@
 Fourier Transform is a transform on a function that converts into another function defining frequencies present in fourier. It's output is a complex - valued function.
 
 It's mathematical form:
+
 $$
 \begin{array}{}
 f'(\xi)=\int_{-\infty}^{\infty} f(x)\cdot e^{-i2\pi\xi x} dx& \forall\  x\in R
 \end{array}
 $$
+
 It's inverse is also evaluated as:
+
 $$
 \begin{array}{}
 f(x)=\int_{-\infty}^{\infty} f'(\xi)\cdot e^{-i2\pi\xi x} d\xi &\forall\ x\in R
 \end{array}
 $$
+
 ## Discrete Fourier Transform (DFT)
 Discrete Fourier Transform (DFT) is an operation on finite and equally separated values (or say function $f$) to complex - valued function.
 
