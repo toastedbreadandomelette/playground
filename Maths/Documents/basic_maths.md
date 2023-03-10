@@ -7,13 +7,13 @@ $$\begin{array}{lll}S=1+2+3+\ldots+n  && -\ (1)\end{array}$$
 Also, by commutative law $a + b = b + a$
 
 $$\begin{array}{cl}S=n+(n-1)+(n-2)+\ldots+3+2+1 && -\ (2)\end{array}$$
+
 Adding $1$ and $2$ we get
 
 $$
 \begin{matrix}
 &S&=&1 + 2 + 3 + .... + (n - 2) + (n - 1) + n\\
 +&S&=&n + (n - 1) + (n - 2) + ... + 3 + 2 + 1\\
-&\textcolor{black}{\rule{5ex}{0.25ex}}& &\textcolor{black}{\rule{40ex}{0.25ex}}&\\
 &2\cdot S&=&\underbrace{(1 + n) + (2 + n - 1) + ... + (n + 1)}_{n \text{ terms}}
 \end{matrix}
 $$
