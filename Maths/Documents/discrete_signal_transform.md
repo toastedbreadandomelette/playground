@@ -122,12 +122,15 @@ Fast - Fourier Transform (FFT) is a technique used to solve DFT operation (or ID
 
 **1**. **Divide**.
 This is done by dividing values (considering it as polynomial of degree $N-1$), into odd and even coefficient for array of values $A=\{a_0,a_1,\ldots,a_{n-1}\}$.
-i.e., 
-For polynomial
+
+i.e., For polynomial
+
 $$
 A(x)=a_0+a_1\cdot x+a_2\cdot x^2+\ldots+a_{n-1}\cdot x^{n-1}
 $$
+
 We recursively divide it (evenly) into two parts, until it cannot be divided evenly:
+
 $$
 \begin{matrix}
 A_{\text{odd}}(x)=a_1+a_3\cdot x+a_5\cdot x^2+\ldots+a_{n-1}\cdot x^{n-1}\\
@@ -135,6 +138,7 @@ A_{\text{even}}(x)=a_0+a_2\cdot x+a_4\cdot x^2+\ldots+a_{n-2}\cdot x^{n-2}\\ \\
 \implies A(x)=x\cdot A_{\text{odd}}(x^2)+A_{\text{even}}(x^2)
 \end{matrix}
 $$
+
 Then we perform DFT (or FFT if it can be divided evenly again) on these separately. This is done till size of the array is 2.
 
 **2**. **Combine**
