@@ -10,10 +10,10 @@ To solve such problems we need to identify what are the possible next steps (say
 [[basic_maths#Fibonacci series|Fibonacci series]] uses a recurrence relation:
 
 $$
-fib(n)=\left\{\begin{array}{cl}
+fib(n)=\begin{cases}
 n, & n \leq 1\\
 fib(n-1) + fib(n-2), & n>1
-\end{array}\right.
+\end{cases}
 $$
 
 Here, $n\in\mathbb{N}$. 
@@ -21,11 +21,11 @@ We're certain the $n^{th}$ term determines the value with certain base case, so 
 i.e., 
 
 $$
-memo_n = fib(n)=\left\{\begin{array}{cl}
+memo_n = fib(n)=\begin{cases}
 n, & n \leq 1\\
 memo_n, & n\in memo\\
 fib(n-1) + fib(n-2), & n\notin memo,\ n>1
-\end{array}\right.
+\end{cases}
 $$
 
 This computes and stores the results of $memo[n-1], memo[n-2], \ldots, memo[3], memo[2]$: and are used twice (once during computation recursive computation, and once during direct returning from $memo$).
@@ -47,16 +47,14 @@ This kind of building solution is a **Bottom-up iterative approach**.
 Extending this to any recursive function:
 
 $$
-memo_n=f(n)=\left\{
-\begin{array}{cl}
+memo_n=f(n)=\begin{cases}
 c_0, & n = 0\\
 c_1, & n = 1\\
 \vdots\\
 c_k, & n = k\\
 memo_n, & n\in memo\\
 a_0\cdot f(n-1)^{p_0}+a_1\cdot f(n-2)^{p_1}+\cdots+ a_{k}\cdot f(n-k-1)^{p_k}, & n\notin memo, n>k
-\end{array}
-\right.
+\end{cases}
 $$
 
 ```ad-note
@@ -67,20 +65,21 @@ The recurrence relation we chose are simple and contains consecutive $n$ terms. 
 
 - Tribonacci
 
-$$f(n)=\left\{\begin{array}{cl}
+$$f(n)=\begin{cases}
 n, & n\leq 1\\
 1, & n=2\\
 f(n-1)+f(n-2)+f(n-3), & n>2
-\end{array}\right.$$
+\end{cases}
+$$
 
 - Number of ways/paths to climb the stairs: A guy on $k^{th}$ step can take either skip one and go to next (landing on $(k+2)^{th}$ step) or just climb (landing on $(k+1)^{th}$ step). (Here, $f(0)=1, f(1)=1$). This is similar to fibonacci, except that base condition is changed (skipped by $1$).
 	- Why $f(0)=1$?: The number of ways to climb the stairs concerns about the total paths from $0\rightarrow n$ (for e.g., for $f(2)$, there are two paths that can be taken: $0\rightarrow1\rightarrow2$ and $0\rightarrow2$). But for $0$, the path is $0$, which is still a valid path.
 
 $$
-f(n)=\left\{\begin{array}{cl}
+f(n)=\begin{cases}
 1, & n\leq 1\\
 f(n-1)+f(n-2), & n>1
-\end{array}\right.
+\end{cases}
 $$
 
 - The above problem looks attached to the real world, it's mathematically number of ways (different arrangements are considered different) you can add numbers upto $n$ using only $1$ and $2$. (for tribonacci, it's $1$, $2$ and $3$).
@@ -139,22 +138,18 @@ def dice_combinations(n: int) -> int:
 Collatz conjecture (say $f(n)$) defines function as
 
 $$
-f(n)=\left\{
-\begin{array}{cl}
+f(n)=\begin{cases}
 \dfrac{n}{2}, & n\equiv0 \pmod{2}\\
 3n+1, & n\equiv1\pmod{2}
-\end{array}
-\right.
+\end{cases}
 $$
 One can also define this in new way:
 
 $$
-f(n)=\left\{
-\begin{array}{cl}
+f(n)=\begin{cases}
 \dfrac{n}{2}, & n\equiv0 \pmod{2}\\
 \dfrac{3n+1}{2}, & n\equiv1\pmod{2}
-\end{array}
-\right.
+\end{cases}
 $$
 
 To skip the odd part, since $\forall\ n\in\mathbb{N},\ 3n+1\equiv0\pmod{2}$.
@@ -162,13 +157,11 @@ To skip the odd part, since $\forall\ n\in\mathbb{N},\ 3n+1\equiv0\pmod{2}$.
 We evaluate the steps taken to reduce from $n$ to $1$ using this function, and storing the count against $n$ (let's call it $f(n)$).
 
 $$
-f(n)=\left\{
-\begin{array}{cl}
+f(n)=\begin{cases}
 0,&n=1\\
 1+f\left(\dfrac{n}{2}\right),&n\equiv 0\pmod2\\
 2+f\left(\dfrac{3n+1}{2}\right),&n\equiv 1\pmod2\\
-\end{array}
-\right.
+\end{cases}
 $$
 
 i.e., For $n=8$, $memo[8]=3,\because f(f(f(8)))=f(f(4))=f(2)=1$.
@@ -195,13 +188,11 @@ So the total cost from the starting till the $i^{th}$ current house can be calcu
 i.e., 
 
 $$
-cst(v,\ i)=\left\{
-\begin{array}{cl}
+cst(v,\ i)=\begin{cases}
 0, & i<0\\
 v[i], & i = 0\\
 \max(cst(v,i-1),\ v[i]+cst(v,i-2)), & i>1
-\end{array}
-\right.
+\end{cases}
 $$
 
 ```python
@@ -234,13 +225,13 @@ A recursive approach for coin change of value $n$ from available coin set $w$ (s
 i.e., 
 
 $$
-cc(w,n,i)=\left\{\begin{array}{cl}
+cc(w,n,i)=\begin{cases}
 0, & n=0\\
 -1, & i>|w|\ \|\ n<0\\
 \min(1+r_1,r_0), &r_1\geq0,\ r_0\geq0\\
 1+r_1,&r_0=-1,r_1\geq0\\
 r_0,&r_1=-1,r_0\geq0
-\end{array}\right.
+\end{cases}
 $$
 
 **Note that** this approach assumes that you have infinite amount of reserve of coins, using them as many times as you want.
@@ -249,12 +240,11 @@ A memiozation approach:
 The memoization approach can be made as follows:
 
 $$
-memo_n=cc(w,n)=\left\{
-\begin{array}{cl}
+memo_n=cc(w,n)=\begin{cases}
 0,&n=0\\
 -1,&n<0\vee(\forall\ k\in[0,|w|), cc(w,n-w[k])=-1) \\
-\min\limits_{k=0,\ cc(w,n-w[k])\neq-1}^{|w|}(1+cc(w,n-w[k])),&n>0,cc(w,n-w[k])\neq1\end{array}
-\right.
+\min\limits_{k=0,\ cc(w,n-w[k])\neq-1}^{|w|}(1+cc(w,n-w[k])),&n>0,cc(w,n-w[k])\neq 1
+\end{cases}
 $$
 
 ## Subset sum with divisibility
@@ -282,13 +272,11 @@ is determined by two ways:
 If either of the value returns true, then there exists such subset.
 
 $$
-g(A,s,p,i)=\left\{
-\begin{array}{cl}
+g(A,s,p,i)=\begin{cases}
 \text{true},&|A|\geq p\ \vee (s\equiv0\bmod{p},\ s\neq0)\\
 \text{false},&i\geq|A|,s\not\equiv 0\bmod{p}\\
 g(A,s+A_i,p,i+1)\vee g(A,s,p,i+1),&\text{otherwise}
-\end{array}
-\right.
+\end{cases}
 $$
 
 This can be stored in a $memo$ that would take $O(p)$ space.
@@ -339,10 +327,10 @@ Generalizing this: we have for $f(n)$ two ways:
 - We now have remaining value to fill $A_{n}$, in the previous point since we considered repeated values, we ignore them. So the results of this is $f(n-1)\cdot(M-1)$
 
 $$
-f(n)=\left\{\begin{array}{cl}
+f(n)=\begin{cases}
 M^n,&1\leq n\leq2,n\in\mathbb{N}\\
 (M-1)\cdot(f(n-1)+f(n-2)),&n>2
-\end{array}\right.
+\end{cases}
 $$
 
 This can be done efficiently by [[intermediate_maths_2#Linear Recurrence|matrix exponentiation]] in $O(2^3\log_2{n})$.
@@ -385,16 +373,15 @@ Memoization approach:
 - $i>0, S[(i-1)\ldots i]='()'$, then combine last result and add $2$.
 - $i > 0, S[(i-1)\ldots i]='))'$, then we look back at the previous results:
 	- Using value computed at $f(i-1)=k$ (say), and from $(i-1)^{th}$ position, we move back $k$ steps. If $S[i-1-k]='('$, then we found the balancing bracket for $S[i]$: increment the  and add results previous to this position i.e., $S[i-k-2]$ as well to see if there are any results that are balanced.
+
 $$
-f(n)=\left\{
-\begin{array}{cl}
+f(n)=\begin{cases}
 0, & i \leq 0\\
 f(n-2)+2, & S[(i-1)\ldots i]='()'\\
 f(n-1)+f(n-f(n-1)-2)+2, & S[(i-1)\ldots i]='))'\wedge
 S[n-f(n-1)-1]='('\\
 0, & \text{otherwise}
-\end{array}
-\right.
+\end{cases}
 $$
 
 The resultant of $f(n)$ can be stored in $memo_n$, so that it can be retrieved later.

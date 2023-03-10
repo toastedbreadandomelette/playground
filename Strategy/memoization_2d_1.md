@@ -22,13 +22,11 @@ The answer would be sum of these values.
 **Note that** the function is similar to the finding any one solution, only difference is being adding all the combinations that lead to the sum $S$.
 
 $$
-C(S,W,T,i)=\left\{
-\begin{array}{cl}
+C(S,W,T,i)=\begin{cases}
 1,&S=T\\
 0,&S>T\ \vee\ i\geq|W|\\
 C(S,W,T,i+1)+C(S+W_i,W,T,i),&\text{otherwise}
-\end{array}
-\right.
+\end{cases}
 $$
 
 We can see that the variable $S$ and $i$ are two variables that are varying with the states, we can use these variables for storing the memo.
@@ -52,12 +50,10 @@ The longest path is 4: i.e., $A_{32}\rightarrow A_{31}\rightarrow A_{21}\rightar
 The allowed directions are from $A_{xy}$ to $(A_{(x-1)y},A_{(x+1)y},A_{x(y-1)},A_{x(y+1)})$ given $x\pm1,y\pm1\in[1,n]$. Let $dr=[(x+1,y),(x-1,y),(x,y+1),(x,y-1)]$ be the list of possible directions. Then $\forall\ (x,y): \ x\in[1,n]\ ,y\in[1,m]$, the longest path $l(A,x,y)$ is calculated as maximum value from any one of these indices:
 
 $$
-l(A,x,y)=\left\{
-\begin{array}{cl}
+l(A,x,y)=\begin{cases}
 1,&\forall (r,c)\in dr, A_{rc}<A_{xy}\\
 \max\limits_{(r,c)\ \in\ dr\ \wedge\ (r,c)\in[1,n]}(1+l(A,r,c)),&A_{rc}>A_{xy}
-\end{array}
-\right.
+\end{cases}
 $$
 
 Since there are two variables $x,y$ the function depends on, we'll need to store in a $2$-Dimensional memo as $memo_{xy}$.

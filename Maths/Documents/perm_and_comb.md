@@ -344,8 +344,10 @@ Generalizing above value, we've
 
 $$
 \begin{array}{cl}
-(x_1+x_2+\ldots+x_m)^n=E&=&\sum\limits_{\begin{matrix}k_1,k_2,\ldots,k_m>0\\ k_1+k_2+\cdots+k_m=n\end{matrix}}\dfrac{n!}{k_1!\cdot k_2!\cdot k_3!\ldots k_m!}\cdot\prod\limits_{i=0}^m x_i^{k_i}\\
-&=&\sum\limits_{\begin{matrix}k_1,k_2,\ldots,k_m>0\\ k_1+k_2+\cdots+k_m=n\end{matrix}}\dbinom{n}{k_1,k_2,\ldots k_m}\cdot\prod\limits_{i=0}^m x_i^{k_i}
+(x_1+x_2+\ldots+x_m)^n=E&=&\sum\limits_{\begin{matrix}k_1,k_2,\ldots,k_m>0\\ 
+k_1+k_2+\cdots+k_m=n\end{matrix}}\dfrac{n!}{k_1!\cdot k_2!\cdot k_3!\ldots k_m!}\cdot\prod\limits_{i=0}^m x_i^{k_i}\\
+&=&\sum\limits_{\begin{matrix}k_1,k_2,\ldots,k_m>0\\ 
+k_1+k_2+\cdots+k_m=n\end{matrix}}\dbinom{n}{k_1,k_2,\ldots k_m}\cdot\prod\limits_{i=0}^m x_i^{k_i}
 \end{array}
 $$
 

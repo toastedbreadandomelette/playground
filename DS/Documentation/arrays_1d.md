@@ -5,13 +5,13 @@
 	1. An efficient way to rotate an array is to either use [Juggling algorithm](https://www.geeksforgeeks.org/array-rotation/) or use [reversal algorithm](https://www.geeksforgeeks.org/program-for-array-rotation-continued-reversal-algorithm/):
 2. For any array $A$:
 	1. Total subarrays = $\dfrac{|A|\cdot(|A|+1)}{2}$.
-	2. Total subsequences of $A$ (say $S(A)$)$=2^{|A|}-1$. (excluding an empty subsequence).
+	2. Total subsequences of $A$ i.e, $S(A)=2^{|A|}-1$. (excluding an empty subsequence).
 
 ## Various ways of using #arrays (Applications):
 ### In non-linear fashion.
 a. Use to store parent of a vertex (Example in Disjoint Set Union: DSU).
 
-For example, for an array with 6 vertices: $P = \begin{array}{cl}\{1,&2,&3,&4,&5,&6\}\end{array}$, (a 1-indexed array where the element at $i^{th}$ index defines parent of node $i$) each are linked to itself (we're removing self-links).
+For example, for an array with 6 vertices: $P = \lbrace1,2,3,4,5,6\rbrace$, (a 1-indexed array where the element at $i^{th}$ index defines parent of node $i$) each are linked to itself (we're removing self-links).
 
 ```mermaid
 graph TD
@@ -23,7 +23,7 @@ graph TD
 	f(6)
 ```
 
-After setting $\textrm{parent} = \begin{array}{ c l }\{1, & 1, & 1, & 2, & 3, & 3\}\end{array}$, we get the following graph:
+After setting $P=\lbrace1,1,1,2,3,3\rbrace$, we get the following graph:
 
 ```mermaid
 graph BT
@@ -36,7 +36,7 @@ graph BT
 
 b. As a sequential complete k-ary tree (e.g., trees constructed in binary heaps): 
 
-Given array $\textrm{a} = \begin{array}{ c l }\{65, & 55, & 34, & 41, & 52, & 26, & 33, & 30, & 40\}\end{array}$, is an example of an [[heaps|max-heap array]]:
+Given array $A=\lbrace65,55,34,41,52,26,33,30,40\rbrace$, is an example of an [[heaps|max-heap array]]:
 
 ```mermaid
 graph BT
@@ -70,17 +70,14 @@ This type of value storing is useful iff there is a parent-child relationship (t
 
 #### Cumulative function
 
-An array with certain values:
-
-$$
-A = \begin{array}{ c l }\{65, & 55, & 34, & 41, & 52, & 26, & 33, & 30, & 40\}\end{array}
-$$
+An array with certain values:$A = \lbrace65,55,34,41,52,26,33,30,40\rbrace$
 
 can have a cumulative function (function for first $i$ values in array)
 
 For e.g., for sum of first $n$ number:
+
 $$
-\textrm{prefix}(A) = \begin{array}{cl}\{65, & 120, & 154, & 195, & 247, & 273, & 306, & 336, & 376\}\end{array}
+\textrm{prefix}(A) = \lbrace65,120,154,195,247, 273, 306, 336, 376\rbrace
 $$
 i.e., 
 
@@ -139,8 +136,9 @@ Otherwise, user need to make a work-around/evaluate $f$ for other function every
 - Segregate values: an array:
 
 $$
-a = \begin{array}{ c l }\{65, & 55, & 34, & 41, & 52, & 26, & 33, & 30, & 40\}\end{array}
+a = \lbrace65,55,34,41,52,26,33,30,40\rbrace
 $$
+
 can be segregated in two parts based on user-condition:
 
 ```python

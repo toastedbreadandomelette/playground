@@ -36,6 +36,7 @@ S_n&=\sum\limits_{i=1}^{n}(a+(i-1)\cdot d)\\
 \end{array}
 $$
 ### Arithmetic mean of a number/series
+
 Arithmetic mean is defined as an average of all the number.
 
 Consider set $A=\{a_1,\ a_2,\ a_3,\ \ldots,\ a_n\}$. Arithmetic mean for this series is defined as:
@@ -59,7 +60,7 @@ $$AM(A,M)=\dfrac{\sum\limits_{i=1}^{n}a_i\cdot m_i}{\sum\limits_{i=1}^{n}m_i}=\d
 # Geometric Series
 The $n^{th}$ term with the starting value of series as $a$ and factor as $r$ is: $t_n=a\cdot r^{n-1}$
 
-Given $t_L$ and $t_R$ ($L<R$), it's factor $r$ can be evaluated as:
+Given $t_L$ and $t_R$  ($L < R$), it's factor $r$ can be evaluated as:
 
 $$r=\sqrt[(R-L)]{\dfrac{t_R}{t_L}}$$
 (Read as $(R-L)^{th}$ root of ratio of $t_R$ and $t_L$).
@@ -81,6 +82,7 @@ Geometric mean on set $A$ is defined as
 $$GM(A)=\sqrt[n]{\prod\limits_{i=1}^{n}a_i}=\sqrt[n]{a_1\cdot a_2\ldots\cdot a_n}$$
 
 ## Chinese Remainder Theorem (CRT)
+
 We're given system of linear equations:
 
 $$
@@ -91,7 +93,7 @@ a\equiv a_2\pmod{p_2}\\
 a\equiv a_k\pmod{p_k}\\
 \end{matrix}
 $$
-where $\forall\ i,j\in[1,k],i<j,\gcd(p_i,p_j)=1$. (Every pair are co-prime).
+where $\forall\ i,j\in[1,k], i < j, \gcd(p_i,p_j)=1$. (Every pair are co-prime).
 
 It states that given set of congruence always has *one and exactly one* solution.
 
@@ -112,6 +114,7 @@ a_2&\equiv & x_2\pmod{p_2}\equiv (a_1+x_2\cdot p_1)\pmod{p_2}\\
 (a_2-x_1)\cdot r_{12}&\equiv&x_2\pmod{p_2}&-\ (\text{multiply by }\ p_1^{-1}=r_{12})
 \end{matrix}
 $$
+
 Similarly:
 
 $$((a_3-x_1)\cdot r_{13}-x_2)\cdot r_{23}\equiv x_3\pmod{p_3}$$

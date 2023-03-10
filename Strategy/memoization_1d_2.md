@@ -12,12 +12,10 @@ E.g., for $n=3$, we leave the root and we're left with $n-1=2$ nodes. The possib
 These left and right subtrees are computed recursively. And for each of the $c(v)$ left unique arrangement, there are $c(n-1-v)$ subtrees.
 
 $$
-\therefore c(n)=\left\{
-\begin{array}{cl}
+\therefore c(n)=\begin{cases}
 1,&n\leq1,n\in\mathbb{N}\\
 \sum\limits_{v=0}^{n-1}\left(c(v)\cdot c(n-1-v)\right),&n\geq2,n\in\mathbb{N}
-\end{array}
-\right.
+\end{cases}
 $$
 
 This is $1$-Dimensional so it requires only $1$ dimensional memoization.

@@ -14,12 +14,10 @@ With this, we can also count incoming edges $in[v]\ \forall\ v\in p$, and we sel
 The max-depth for a vertex $v$ (say $d(p,in,v)$) is defined as:
 
 $$
-d(p,in,v)=\left\{
-\begin{array}{cl}
+d(p,in,v)=\begin{cases}
 1,&|p[v]|=0\\
 1+\max\limits_{(\omega\ \in\ p[v])}(d(p,in,\omega)),&|p[v]| >0
-\end{array}
-\right.
+\end{cases}
 $$
 
 The overall sub-graphs having max depth is the answer:

@@ -1,4 +1,4 @@
-# Sorting
+	# Sorting
 Sorting is a method of rearrangement of similar values in container in such a way that they follow certain ordering.
 
 ## Bubble Sort
