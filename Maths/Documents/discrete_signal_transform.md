@@ -22,7 +22,9 @@ Discrete Fourier Transform of set of points $X = \{x_0,x_1,\ldots,x_{n-1}\}$, i.
 $$
 x'_k=\sum_{p=0}^{N-1}x_p\cdot \exp\left(-i\cdot2\pi\cdot k\cdot \dfrac{p}{N}\right)
 $$
+
 It's inverse (Inverse Discrete Fourier Transform or IDFT) is defined as:
+
 $$
 x_k=\dfrac{1}N\sum_{p=0}^{N-1}x'_p\cdot \exp\left(i\cdot2\pi\cdot k\cdot \dfrac{p}{N}\right)
 $$
