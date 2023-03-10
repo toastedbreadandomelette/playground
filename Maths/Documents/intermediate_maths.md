@@ -3,54 +3,63 @@
 ## [Trigonometric series](https://en.wikipedia.org/wiki/Trigonometric_functions)
 All equation of a floating number $x$, where $x$ is an angle in radian.
 ### Sine: $\textrm{sin}(x)$
+
 For an angle $x$, $\sin(x) = \dfrac{\textrm{opposite side to the angle}}{\textrm{hypotenuse}} = \dfrac{a}{\sqrt{a^2+b^2}}$
 
+$$\begin{array}{rll}\sin(x)&=&\sum\limits_{n=0}^{\infty}\dfrac{(-1)^nx^{2n+1}}{(2n+1)!}\\
+\sin(x)&=&x-\dfrac{x^3}{3!}+\dfrac{x^5}{5!}-\dfrac{x^7}{7!} +\cdots\end{array}
 $$
-\textrm{sin}(x) = \sum\limits_{n=0}^{\infty}\frac{(-1)^nx^{2n+1}}{(2n+1)!}
-$$
-$$
-\textrm{sin}(x) = x - \frac{x^3}{3!}+\frac{x^5}{5!}-\frac{x^7}{7!} +...
-$$
+
 ```desmos-graph
 y=\sin(x)
 ```
 
 ### Cosine: $\textrm{cos}(x)$
+
 For an angle $x$, $\cos(x) = \dfrac{\textrm{adjacent side to the angle}}{\textrm{hypotenuse}} = \dfrac{b}{\sqrt{a^2+b^2}}$
+
 $$
-\textrm{cos}(x) = \sum\limits_{n=0}^{\infty}\frac{(-1)^nx^{2n}}{(2n)!}
+\begin{array}{rll}\cos(x)&=&\sum\limits_{n=0}^{\infty}\dfrac{(-1)^nx^{2n}}{(2n)!}\\
+\cos(x) &=& 1-\dfrac{x^2}{2!}+\dfrac{x^4}{4!}-\dfrac{x^6}{6!}+\cdots\end{array}
 $$
-$$
-\textrm{cos}(x) = 1 - \frac{x^2}{2!}+\frac{x^4}{4!}-\frac{x^6}{6!} +...
-$$
+
 ```desmos-graph
 y=\cos(x)
 ```
 ### Tangent: $\textrm{tan}(x)$
+
 $$
 \textrm{tan}(x) = \frac{\textrm{sin}(x)}{\textrm{cos}(x)}
 $$
+
 ```desmos-graph
 y=\tan(x)
 ```
 ### Cotangent: $\textrm{cot}(x)$
+
 $$
 \textrm{cot}(x) = \frac{1}{\textrm{tan}(x)} = \frac{\textrm{cos}(x)}{\textrm{sin}(x)}
 $$
+
 ```desmos-graph
 y=\cot(x)
 ```
 ### Secant: $\textrm{sec}(x)$
+
 $$
 \textrm{sec}(x) = \frac{1}{\textrm{cos}(x)}
 $$
+
 ```desmos-graph
 y=\sec(x)
 ```
+
 ### Cosecant: $\textrm{cosec}(x)$ or $\textrm{csc}(x)$
+
 $$
 \textrm{csc}(x) = \frac{1}{\textrm{sin}(x)}
 $$
+
 ```desmos-graph
 y=\csc(x)
 ```
@@ -125,9 +134,11 @@ def cosecant(x : float) -> float:
 ___
 ### [Inverse trigonometric functions](https://en.wikipedia.org/wiki/Inverse_trigonometric_functions)
 #### Sine inverse: $\textrm{arcsin}(x)$
+
 $$
 \textrm{arcsin}(x) = \sum\limits_{n=0}^{\infty}\frac{(2n)!}{(2^n.n!)^2}\cdot\frac{z^{2n+1}}{2n+1},\ \ |x| < 1
 $$
+
 This series is evaluated and expanded as:
 
 $$
@@ -152,9 +163,11 @@ def arcsine(x: float) -> float:
     return answer
 ```
 #### Cos inverse: $\textrm{arccos}(x)$
+
 $$
 \textrm{arccos}(x) = \frac{\pi}{2} - \textrm{arcsin}(x)
 $$
+
 ```python
 def arccosine(x: float) -> float:
     """
@@ -208,12 +221,15 @@ def arctan(x: float) -> float:
 ```
 ___
 ### Taylor series for $e^x$
+
 $$
 e^x = \sum\limits_{n=0}^{\infty}\frac{x^n}{n!}
 $$
+
 $$
 e^x = 1 + \frac{x}{1!} + \frac{x^2}{2!} + \frac{x^3}{3!} + \frac{x^4}{4!} + \cdots
 $$
+
 ```desmos-graph
 top=150; bottom=-20;
 left=-10; right=10;
@@ -247,9 +263,11 @@ def e_power(power: float) -> float:
 ```
 ___
 ### Logarithm: $\ln(x)$
+
 $$
 \ln(x) = \sum\limits_{n=0}^{\infty}\frac{1}{2n+1}\left(\frac{x-1}{x+1}\right)^{n},\ \ |x| < 1
 $$
+
 ```desmos-graph
 y=\ln(x)
 ```
@@ -275,22 +293,23 @@ def lnp(x: float) -> float:
 ___
 ## Square root of a number: $\sqrt{n}$
 The method to find square root is by newton's method. Let us assume for function $f(n) = \sqrt{n}$, if the function satisfies the condition, then:
+
 $$
 x_n = x_{n-1} - \frac{f(x_{n-1})}{f'(x_{n-1})}
 $$
+
 would be a better approximate value than $x_{n-1}$. The above equation is derived by solving for $x_n$:
+
 $$
 f'(x_{n-1}) = \frac{f(x_{n-1}) - 0}{x_{n-1} - x_{n}}
 $$
 Starting from $x_0$ (which can be an arbitrary value, but the closer to zero, the better), we evaluate the method till certain condition is satisfied (the below solution keeps the precision check upto $10^{-18}$).
 
 For solving $x^2 - n = 0$,
-$$
-x_{n+1} = x_{n} - \frac{x_n^2-n}{2x_n}
-$$
-$$
-x_{n+1} = \frac{1}{2} \left(x_n + \frac{n}{x_n} \right)
-$$
+
+$$x_{n+1} = x_{n} - \frac{x_n^2-n}{2x_n}$$
+
+$$x_{n+1} = \frac{1}{2} \left(x_n + \frac{n}{x_n} \right)$$
 The convergence is very high for this method.
 
 ```python
@@ -345,6 +364,7 @@ An integer square root can be defined as
 $$
 \textrm{isqrt}(n) = \lfloor\sqrt{n}\rfloor
 $$
+
 In this case, the algorithm can be terminated when value of $x_n = 0.$
 
 ```python
@@ -441,13 +461,17 @@ For finding prime values between range $a$ and $b$ (given that the difference is
 - For a given value $b$, Evaluate all prime values from $2$ to $\sqrt{b}$: let this be stored in set $P$
 - For each prime $p$ in $P$:
 - Find starting value $x$  ($b \geq x \geq a$). If $p^2$ is not a starting value, then find one such that: $x\mod{p} = 0$
+
 $$
 x = \max\left(p^2,\ p.\left\lceil\frac{a}{p}\right\rceil\right)
 $$
+
 - From $x$ till $b$, by skipping $p$ numbers, mark values as true (say $M$ as marker).
+
 $$
 M_{x-a} = \textrm{false}
 $$
+
 ```python
 def segmented_sieve(left: int, right: int) -> list:
     """

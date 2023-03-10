@@ -19,6 +19,7 @@ $$
 \end{array}
 \right.
 $$
+
 This is $1$-Dimensional so it requires only $1$ dimensional memoization.
 
 ```python

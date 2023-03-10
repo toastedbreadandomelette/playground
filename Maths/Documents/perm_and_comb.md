@@ -1,11 +1,12 @@
 # Permutations and Combinations
 ## Permutation
 Permutation is an arrangement of elements.
-For e.g., total permutation set of a set $S=\{1,2,3\}$ are $P(S)=\{\{1,2,3\},\{1,3,2\},\{2,1,3\},\{2,3,1\},\{3,1,2\},\{3,2,1\}\}$.
+For e.g., total permutation set of a set $S=\{1,2,3\}$ are $P(S)=\left\{\left\{1,2,3\right\},\left\{1,3,2\right\},\left\{2,1,3\right\},\left\{2,3,1\right\},\left\{3,1,2\right\},\left\{3,2,1\right\}\right\}$.
 
 Total permutation of $r$ objects out of $n$ objects is denoted by $P^n_r$.
 In above case it's $P^3_3=6$.
 Generalizing for $n$ and $r$, ${}^nP_r=\dfrac{n!}{(n-r)!}$, where $n!$ is a [[basic_maths#Factorial of a number|factorial operation]]. 
+
 ### Note:
 1. Arranging $n$ items where $m_1$ are of same kind, $m_2$ are of same kind (and so on): ${}^nP_r=\dfrac{n!}{(n-r)!\cdot m_1!\cdot m_2!\cdot \cdots}$. (Here, $m_1+m_2+\cdot+m_k\leq r\leq n$). This are called multiset permutation.
 2. Permutation of $n$ objects in circle: $(n-1)!$
@@ -16,13 +17,15 @@ Generalizing for $n$ and $r$, ${}^nP_r=\dfrac{n!}{(n-r)!}$, where $n!$ is a [[ba
 	1. Selecting $r$ objects out of $n$ objects: $\dbinom{n}{r}$ or ${}^nC_r$.
 	2. Permutation of these $r$ objects in a circle: $(r-1)!$.
 	Result: $(r-1)!\cdot\dbinom{n}{r}=(r-1)!\cdot\dfrac{n!}{r!\cdot(n-r)!}=\dfrac{{}^nP_r}r$.
-4. Grouping objects, number of permutations where $k<r$ objects are grouped together: $P=\dfrac{(n-k+1)!}{(n-r)!}\cdot k!$
+4. Grouping objects, number of permutations where $k < r$ objects are grouped together: $P=\dfrac{(n-k+1)!}{(n-r)!}\cdot k!$
 5. Permutation with repitition: selecting $n$ objects: $n^n$; selecting $r$ out of $n$ objects: $n^r$.
 
 ## Combination:
 Combination is a selection of $r$ elements out of $n$ elements. Here, order of element do not matter.
 
-For e.g., out of $4$ elements in set $A=\{1,2,3,4\}$, if we want to select $2$ items, then there are $6$ ways to do: $\{1,2\},\{1,3\},\{1,4\},\{2,3\},\{2,4\},\{3,4\}$.
+For e.g., out of $4$ elements in set $A=\{1,2,3,4\}$, if we want to select $2$ items, then there are $6$ ways to do: 
+
+$$\{1,2\},\{1,3\},\{1,4\},\{2,3\},\{2,4\},\{3,4\}$$
 
 We denote this by ${}^nC_r$ or $\dbinom{n}r=\dfrac{n!}{r!\cdot(n-r)!}$.
 
@@ -87,43 +90,53 @@ $B=\sum\limits_{r=0}^n{}^nC_r\cdot a^{n-r}\cdot b^r$.
 We can see that there are $(n+1)$ terms in the series.
 ### Generator.
 There are certain results of interest: e.g., ${}^{n+1}C_r={}^nC_r+{}^nC_{r-1}$.
+
 Given that $(a+b)^n=\sum\limits_{r=0}^n{}^nC_r\cdot a^{n-r}\cdot b^r$.
+
 Multiplying this by $(a+b)$ again:
+
 $$
 \begin{array}{ccl}
 (a+b)^n\cdot(a+b)&=&\left(\sum\limits_{r=0}^n{}^nC_r\cdot a^{n-r}\cdot b^r\right)\cdot(a+b)\\
 \sum\limits_{i=0}^{n+1}{}^{n+1}C_r\cdot a^{n+1-r}\cdot b^r&=&\sum\limits_{r=0}^n{}^nC_r\cdot a^{n+1-r}\cdot b^r+\sum\limits_{r=0}^n{}^nC_r\cdot a^{n-r}\cdot b^{r+1}
 \end{array}
 $$
+
 Now equating terms $a^{n+1-r}\cdot b^r$ alike, we get the result ${}^{n+1}C_r={}^nC_r+{}^nC_{r-1},\quad r>0,\ n>0$.
+
 Now, putting $a=b=1$ in expression $(a+b)^n$ we get result:
-$$
-\sum\limits_{i=0}^n{}^nC_i=2^n
-$$
-This also states that there are $2^n$ terms generated after multiplying terms $(a+b)$ '$n$' times.
-This is also used in constructing a [[basic_maths#Pascal Triangle|pascal triangle]].
+
+$$\sum\limits_{i=0}^n{}^nC_i=2^n$$
+
+This also states that there are $2^n$ terms generated after multiplying terms $(a+b)$ '$n$' times. This is also used in constructing a [[basic_maths#Pascal Triangle|pascal triangle]].
 
 ### Corollary
+
 $$
 \begin{array}{cl}
 (1+x)^{2n}=(1+x)^n\cdot (1+x)^n\\\\
 \sum\limits_{i=0}^{2n}\dbinom{2n}{i}x^i=\left(\sum\limits_{i=0}^{n}\dbinom{n}{i}x^i\right)\cdot \left(\sum\limits_{i=0}^{n}\dbinom{n}{i}x^i\right)\\\\
 \end{array}
 $$
+
 We're interested in all terms related to power $x^n$:
+
 $$
 \begin{array}{cl}
 \dbinom{2n}{n}x^n=\sum\limits_{r=0}^{n}\dbinom{n}{r}\cdot \dbinom{n}{n-r}\cdot x^n\\ \\
 \implies \dbinom{2n}{n}=\sum\limits_{r=0}^{n}\dbinom{n}{r}^2,&\because\dbinom{n}{r}=\dbinom{n}{n-r}
 \end{array}
 $$
+
 Both of these relations can be used. The expression ${}^{2n}C_n=\sum\limits_{r=0}^n{}^nC_r\cdot {}^nC_{n-r}$ is called a catalan number, and has a lot of interpretations.
 - [[memoization_1d_2#Total unique BST's https leetcode com problems unique-binary-search-trees of n nodes|Total number of binary trees that can be constructed with $n$ nodes.]].
 - Total number of balancing bracket construction, where the size is $2n$.
 - Total number of path that does no go above the main diagonal of the matrix (if the point starts from the bottom). Same can be said from top left to bottom right, the path does not cross the bottom of the diagonal.
 
 ## Trinomial Expansion
+
 Trinomial expansion is exactly like binomial but with three terms, i.e., $T=(a+b+c)^n$.
+
 Writing $T=\underbrace{(a+b+c)\cdot(a+b+c)\cdot(a+b+c)\cdot\ldots\cdot(a+b+c)}_{n \text{ terms}}$
 Now:
 - There is only $1$ way in which we can select $a$ term $n$ times: making the term $a^n$.
@@ -131,6 +144,7 @@ Now:
 - There are $\dfrac{n(n-1)}2$ to select $a$ $n-2$ times and for each of these combinations, we've to take either $b$ or $c$ or both $2$ times: $\implies \dfrac{n(n-1)}2\cdot(a^{n-2}\cdot b^2+a^{n-2}\cdot c^2+2\cdot a^{n-2}\cdot b\cdot c)$.
 - There are $\dfrac{n(n-1)(n-2)}6$ to select $a$ $n-3$ times and for each of these combinations $\implies \dfrac{n(n-1)(n-2)}6\cdot(a^{n-3}\cdot b^3+3\cdot a^{n-3}\cdot b^2\cdot c+3\cdot a^{n-3}\cdot b\cdot c^2+a^{n-3}\cdot c^3)$.
 - Generalizing this: we can see there are ${}^nC_r$ ways to select $a$ $r$ times, and for each of these combinations, the ways to select $p$ $b$'s and $q$ $c$'s $(q+p=n-r)$ times in total, making this expansion as 
+
 $$
 \begin{array}
 \implies T&=&\dfrac{n!}{r!\cdot (n-r)!}\cdot a^r\cdot\left(\sum\limits_{m=0}^{n-r} {}^{n-r}C_m\cdot b^m\cdot c^{n-r-m}\right)\\
@@ -138,13 +152,17 @@ $$
 &=&\sum\limits_{m=0}^{r}\dfrac{n!}{m!\cdot r!\cdot(n-r-m)!}a^{r}\cdot b^m\cdot c^{n-r-m}
 \end{array}
 $$
+
 Substitute $i=r,\ j=m, k=n-r-m$, and summing all the solutions we get:
-$$
-T=\sum\limits_{\begin{matrix}i,j,k\\i+j+k=n\end{matrix}}\dfrac{n!}{i!\cdot j!\cdot k!}\cdot a^i\cdot b^j\cdot c^k
-$$
+
+$$T=\sum\limits_{\begin{matrix}i,j,k\\i+j+k=n\end{matrix}}\dfrac{n!}{i!\cdot j!\cdot k!}\cdot a^i\cdot b^j\cdot c^k$$
+
 Putting values $a=b=c=1$, we get result $\sum\limits_{\begin{matrix}i,j,k\\i+j+k= n\end{matrix}}\dfrac{n!}{i!\cdot j!\cdot k!}=3^n$.
+
 A good explaination for [generalized solution is given here](https://en.wikipedia.org/wiki/Multinomial_theorem#Number_of_ways_to_select_according_to_a_distribution).
+
 ### Total terms in the series:
+
 Increasing power of $a$ step by step:
 - For $a=0$, there are $n+1$ terms involving $b$ and $c$. (as mentioned above)
 - For $a=1$, there are $n$ combination of terms involving $b$ and $c$. (as mentioned above)
@@ -158,11 +176,15 @@ This is an extension of pascal triangle into a $3$-dimensional like structure ca
 The generator for this pascal pyramid:
 
 Let us consider again 
+
 $$
 (a+b+c)^n=T=\sum\limits_{\begin{matrix}i,j,k\geq0\\i+j+k=n\end{matrix}}\dfrac{n!}{i!\cdot j!\cdot k!}\cdot a^i\cdot b^j\cdot c^k
 $$
+
 We'll consider $i=r, j=m, k=n-r-m$ for simplicity:
+
 Multiply by $(a+b+c)$
+
 $$
 \begin{array}{ccl}
 (a+b+c)^{n+1}&=&\left(\sum\limits_{r=0}^n\dfrac{n!}{r!\cdot(n-r)!}\cdot a^{r}\cdot\left(\sum\limits_{m=0}^{n-r}\dfrac{(n-r)!}{m!\cdot(n-r-m)!}\cdot b^m\cdot c^{n-r-m}\right)\right)\cdot(a+b+c)\\
@@ -173,7 +195,9 @@ RHS&=&\left(\sum\limits_{r=0}^n{}^nC_r\cdot a^{r+1}\cdot\left(\sum\limits_{m=0}^
 \end{array}
 $$
 
+
 Matching coefficients of $a$, $b$ and $c$:
+
 $$
 \begin{matrix}
 {}^{n+1}C_r\cdot{}^{n+1-r}C_m&=&{}^nC_{r-1}\cdot{}^{n+1-r}C_m
@@ -185,16 +209,21 @@ $$
 $$
 
 Substitute $i=r,j=m,$ and $k=n-r-m$, we get
+
 $$
 \dbinom{n+1}{i,j,k+1}=\dbinom{n}{i-1,j,k+1}+\dbinom{n}{i,j-1,k+1}+\dbinom{n}{i,j,k}
 $$
+
 or we get a final expression of same nature by keeping $k$ as $k-1$:
+
 $$
 \dbinom{n+1}{i,j,k}=\dbinom{n}{i-1,j,k}+\dbinom{n}{i,j-1,k}+\dbinom{n}{i,j,k-1}
 $$
+
 Here, $0<i,j,k<n$. One look at the recursive definition and the problem can be rephrased as: Find ways in a $3$-D Maze to move from top left ($(x,y,z)=(0,0,0)$) to opposite right bottom ($(x,y,z)=(m,n,p),\ m,n,p\in\mathbb{N}$), where only three moves are allowed: right ($X$ Axis), down ($Y$-Axis) or away ($Z$-Axis).
 
 A recurrence relation for pascal pyramid is:
+
 $$
 P(n,i,j,k)=\left\{
 \begin{array}{cl}
@@ -204,6 +233,7 @@ P(n,i,j,k)=\left\{
 \end{array}
 \right.
 $$
+
 ```cpp
 #include <bits/stdc++.h>
 
@@ -304,17 +334,22 @@ int main () {
 
 # Multinomial expansion:
 Generalizing above value, we've
+
 $$
 \begin{array}{cl}
 (x_1+x_2+\ldots+x_m)^n=E&=&\sum\limits_{\begin{matrix}k_1,k_2,\ldots,k_m>0\\k_1+k_2+\cdots+k_m=n\end{matrix}}\dfrac{n!}{k_1!\cdot k_2!\cdot k_3!\ldots k_m!}\cdot\prod\limits_{i=0}^m x_i^{k_i}\\
 &=&\sum\limits_{\begin{matrix}k_1,k_2,\ldots,k_m>0\\k_1+k_2+\cdots+k_m=n\end{matrix}}\dbinom{n}{k_1,k_2,\ldots k_m}\cdot\prod\limits_{i=0}^m x_i^{k_i}
 \end{array}
 $$
+
 There is a generalized relation for $m$-dimensional pyramid (note: $\sum\limits_{i=1}^mk_i=n$):
+
 $$
 \dbinom{n+1}{k_1,k_2,\ldots,k_m}=\dbinom{n}{k_1-1,k_2,\ldots,k_m}+\dbinom{n}{k_1,k_2-1,\ldots,k_m}+\cdots+\dbinom{n}{k_1,k_2,\ldots,k_m-1}
 $$
+
 **Proof**: performing operation on $RHS$:
+
 $$
 \begin{array}{cll}
 RHS&=&\dfrac{n!}{\prod\limits_{i=1}^m(k_i-1)!}\cdot\left(\dfrac{1}{k_2\cdot k_3\cdots k_m}+\dfrac{1}{k_1\cdot k_3\cdots k_m}+\cdots+\dfrac{1}{k_1\cdot k_2\cdots k_{m-1}}\right)\\
@@ -324,7 +359,9 @@ RHS&=&\dfrac{n!}{\prod\limits_{i=1}^m(k_i-1)!}\cdot\left(\dfrac{1}{k_2\cdot k_3\
 &=&\dfrac{(n+1)!}{\prod\limits_{i=1}^m k_i!}=LHS
 \end{array}
 $$
+
 Similarly, a recurrence relation of $K=\{k_1,k_2,\ldots,k_m\}$will be:
+
 $$
 P(n,k_1,k_2,\ldots,k_m)=\left\{
 \begin{array}{cl}
@@ -334,15 +371,22 @@ P(n,k_1,k_2,\ldots,k_m)=\left\{
 =k_l-1\end{array}
 \right.
 $$
+
 The first expression simply states that value is $1$ if it's one of the corner vertices of a $n$-dimensional tetrahedron.
+
 The last expression stands for simply:
+
 $$
 P(n,k_1-1,k_2,\ldots,k_m)+P(n,k_1-1,k_2-1,\ldots,k_m)+P(n,k_1-1,k_2-1,k_3-1,\ldots,k_m)+\cdots+P(n,k_1-1,k_2-1,\ldots,k_m-1)
 $$
+
 # Derangement of a permutation.
 Given a set $A$, we're finding total arrangement where none of the values are in their original position.
 
-For e.g., $A=\{1,2,3,4\}$, there are $9$ derangements: $\{2,3,4,1\},\{3,4,1,2\},\{4,1,2,3\},\{3,4,2,1\},\{4,3,1,2\},\{3,1,4,2\},\{2,4,1,3\},\{4,3,2,1\},\{2,1,4,3\}$
+For e.g., $A=\{1,2,3,4\}$, there are $9$ derangements: 
+
+$$\{2,3,4,1\},\{3,4,1,2\},\{4,1,2,3\},\{3,4,2,1\},\{4,3,1,2\},\{3,1,4,2\},\{2,4,1,3\},\{4,3,2,1\},\{2,1,4,3\}$$
+
 Note that none of the values in these arrangements are in same position as in set $A$. Number of such arrangements $!n$ can be evaluated step by step:
 
 ### Expression: evaluate $D(A)=!n$.
@@ -356,9 +400,11 @@ Assume that size of set $A=|A|=n$.
 
 At the point where $r=n$, we've evaluated the derangement of the values. 
 The expression:
+
 $$
 !n=n!\cdot\left(\dfrac{1}{0!}-\dfrac{1}{1!}+\dfrac{1}{2!}-\dfrac{1}{3!}+\dfrac{1}{4!}+\cdots+(-1)^n\cdot\dfrac{1}{n!}\right)
 $$
+
 These are the first $n$ terms of [[intermediate_maths#Taylor series for e x|taylor series]] of $e^x$ with $x=-1$. With this, we can approximate the value $!n\approx \dfrac{n!}{e}$. 
 
 Also, [[probability]] that none of the permutations are in place will be:

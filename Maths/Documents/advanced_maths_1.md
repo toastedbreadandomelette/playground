@@ -4,20 +4,12 @@
 A paritition of a number is defined as a way of writing $n (\in\mathbb{N})$  as sum of integers (combinations).
 For e.g., 
 If $n=6$, then there are $11$ combinations:
-$\begin{array}{cl}6\end{array}$
-$\begin{array}{cl}5+1\end{array}$
-$\begin{array}{cl}4+2\end{array}$
-$\begin{array}{cl}4+1+1\end{array}$
-$\begin{array}{cl}3+3\end{array}$
-$\begin{array}{cl}3+2+1\end{array}$
-$\begin{array}{cl}3+1+1+1\end{array}$
-$\begin{array}{cl}2+2+2\end{array}$
-$\begin{array}{cl}2+2+1+1\end{array}$
-$\begin{array}{cl}2+1+1+1+1\end{array}$
-$\begin{array}{cl}1+1+1+1+1+1\end{array}$
+
+$$\begin{array}{l}6\\5+1\\4+2\\4+1+1\\3+3\\3+2+1\\3+1+1+1\\2+2+2\\2+2+1+1\\2+1+1+1+1\\1+1+1+1+1+1\end{array}$$
 
 The parititon numbers $p(n)$ will be defined as possible parititon of the number $n$: for e.g., $p(6)=11$.
 A function $p(n)$ is defined:
+
 $$
 \begin{array}{cl}
 p(n)=
@@ -27,6 +19,7 @@ p(n)=
 -\underbrace{p(n-22)-p(n-26)}_{\triangle=4}+\cdots\\
 \end{array}
 $$
+
 ```python
 def partitioning_numbers(n: int) -> int:
     """

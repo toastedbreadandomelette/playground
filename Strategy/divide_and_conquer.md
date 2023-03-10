@@ -8,6 +8,7 @@ A sorted array/space is searched by splitting that space into two halves.
 In terms of computer algorithm, the matrix multiplication is much faster than naive multiplication for large matrices.
 
 Considering matrices $A$ and $B$:
+
 $$
 \begin{array}{cc}
 A=\begin{bmatrix}
@@ -21,7 +22,9 @@ C_{11}&C_{12}\\C_{21}&C_{22}
 \end{bmatrix}&
 \end{array}
 $$
+
 The resultant $C$ is evaluated by multiplying submatices 8 times:
+
 $$
 C=\begin{bmatrix}
 C_{11}&C_{12}\\C_{21}&C_{22}
@@ -31,7 +34,9 @@ A_{21} B_{11}+A_{22}B_{21}&A_{21}B_{12}+A_{22}B_{22}\\
 \end{bmatrix}
 $$
 
+
 The strassen's method introduces 7 new matrices:
+
 $$
 \begin{array}{l}
 P_1=(A_{11}+A_{12})\cdot(B_{11}+B_{22})\\
@@ -43,7 +48,9 @@ P_6=(A_{21}-A_{11})\cdot(B_{11}+B_{12})\\
 P_7=(A_{21}-A_{22})\cdot(B_{21}+B_{22})
 \end{array}
 $$
+
 With this, matrix $C$ is evaluated:
+
 $$
 \begin{array}{l}
 C_{11}=P_1+P_4-P_5+P_7\\
@@ -52,9 +59,11 @@ C_{21}=P_2+P_4\\
 C_{22}=P_1-P_2+P_3+P_6
 \end{array}
 $$
+
 This is perfomed recursively till it can be divided no further/matrix becomes small enough to not be able to outperform the naive multiplication.
 
 Complexity: since the recurrence relation is
+
 $$
 \begin{array}{c}
 T(n)&=&7\cdot T\left(\dfrac{n}2\right)+k\\
@@ -63,7 +72,9 @@ T(n)&=&7\cdot T\left(\dfrac{n}2\right)+k\\
 &\approx&n^{2.8073...}
 \end{array}
 $$
+
 where $2^p\leq n<2^{p+1}$. We're considering $2^p=n$.
+
 $$
 \implies T(n)=O(n^{2.8073...})\text{ (strassen's method)} < O(n^3) \text{ (Naive multiplication)}
 $$

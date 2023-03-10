@@ -5,14 +5,14 @@
 
 The given problem can also be converted into a DFS:
 Let $(i,j)$ tuple be considered as a unique number (for convenience we'll consider transform function $t(i,j,n,m)=i\cdot n+j$), then their adjacent graph $p$ can be computed as:
-$$
-p[t(i,j,n,m)]=\{t(x,y,n,m): (x,y)\in dr, x\in[1,n], y\in[1,m],A_{ij}<A_{xy}\}
-$$
+
+$$p[t(i,j,n,m)]=\{t(x,y,n,m): (x,y)\in dr, x\in[1,n], y\in[1,m],A_{ij}<A_{xy}\}$$
 This turns out from finding longest path to finding the depth of a directed graph with no cycles. (Cycles in such a graph would not make sense, as it create a paradox; where parent root has value less than a child and the last child linked to root is less than the root; and would be a never ending increasing value). Note that there $\exists\ v: |p[v]|=0$. 
 
 With this, we can also count incoming edges $in[v]\ \forall\ v\in p$, and we select those vertex $v$ such that $in[v]=0$.
 
 The max-depth for a vertex $v$ (say $d(p,in,v)$) is defined as:
+
 $$
 d(p,in,v)=\left\{
 \begin{array}{cl}
@@ -21,10 +21,10 @@ d(p,in,v)=\left\{
 \end{array}
 \right.
 $$
+
 The overall sub-graphs having max depth is the answer:
-$$
-res=\max\limits_{v\ \in\ p,\ in[v]=0}(d(p, in,v))
-$$
+
+$$res=\max\limits_{v\ \in\ p,\ in[v]=0}(d(p, in,v))$$
 ```python
 def longest_increasing_path(self, matrix: List[List[int]]) -> int:
 	"""

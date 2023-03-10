@@ -4,6 +4,7 @@ Sequence of characters (either ASCII/Unicode UTF-8). These are stored similar to
 # Operations
 ## Palindrome
 A recursive definition of palindrome $pldr$ is:
+
 $$
 pldr(S, L, R) = \left\{\begin{array} {cl}
 \textrm{true},&\quad L\geq R\\
@@ -13,7 +14,9 @@ pldr(S, L+1, R-1),&\quad L<R\wedge S[L]=S[R]\\
 \right.
 $$
 More formal definition of palindrome is a string that reads the same forwards and backwards.
-By this definition
+
+$\therefore$ By this definition
+
 $$
 pldr\textrm{(S)} = \left\{\begin{array} { c l }
 	\textrm{true}, & \quad S=\textrm{ reverse}(S)\\
@@ -46,11 +49,12 @@ def is_palindrome(string: str) -> bool:
 
 Rabin karp method is a way to identify a string with a certain integer value.
 Each of the values is constructed as:
+
 $$
 \text{hash}(s) = \left(\sum\limits_{i=0}^{\text{len(s)}}s[i].p^{i}\right)(\bmod m)
 $$
-where $p$ and $m$ is a prime number. 
-For a character set $C$ used in a string, prime number $p$ is selected such that $p > |C|$ where $|C|$ is size of that set.
+
+where $p$ and $m$ is a prime number.  For a character set $C$ used in a string, prime number $p$ is selected such that $p > |C|$ where $|C|$ is size of that set.
 
 Below example uses $p=131$ (since character set are used from $0$ to $127$ but we increment them by $1$, counting from $1$  to $128$), and $m=344555666677777$.
 

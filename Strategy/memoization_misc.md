@@ -13,17 +13,20 @@ then $P(A_{ijk})=\dfrac{N(A_{ijk})}{N(T_k)}$.
 
 Generalizing this. for $P(A_{ijk})=\dfrac{N(A_{ijk})}{8^k}$.
 We need to evaluate $N(A_{ijk})$, which can be done via memoization.
+
 # Algorithm:
-- We perform the below operations $k$ times:
-	- From $i,j$, we add the number of values since these are the ways that knight can end up.
-		i.e., $\forall\ (i,j)\in[1,n],$ we perform the following operations
-	$$
-	\begin{matrix}
-	\forall (x,y)\in M, (x,y)\in[1,n],memo_{ij}>0,\\
-	memo\_next_{xy}:=memo\_next_{xy}+memo_{ij}
-	\end{matrix}
-	$$
-	- The $memo\_next$ will be used in place of $memo$, and the $memo$ is discarded.
+
+1. From $i,j$, we add the number of values since these are the ways that knight can end up. That is: $\forall\ (i,j)\in[1,n],$ we perform the following operations:
+
+$$
+\begin{matrix}
+\forall (x,y)\in M, (x,y)\in[1,n],\ X_{ij}>0,\\
+X'_{xy}:=X'_{xy}+X_{ij}
+\end{matrix}
+$$
+
+2. The $X'$ will be used in place of $X$, and the dictionary or llok-up table $X$ is discarded.
+3. This is repeated from step 1 again $k$ times.
 
 This will take space $O(n^2)$. The time complexity will be $O(n^2\cdot k)$.
 

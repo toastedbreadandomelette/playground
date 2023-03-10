@@ -4,14 +4,17 @@ Probability is numerical value of a event/proposition that will turn out to be t
 From a sample possible set of events: called sample space $\Omega$, an event is defined as a statement that covers some part (possibly none or all events) of the sample space.
 
 For e.g., in a dice throw event, set $\Omega=\{1,2,3,4,5,6\}$, the probabilty that during dice throw, the value is greater than $4$ (say event $A$), the set $A=\{5,6\}$. And the probability, denoted by $P(A)$ is:
+
 $$
 P(A)=\dfrac{n(A)}{n(\Omega)}=\dfrac{|A|}{|\Omega|}=\dfrac{1}{3}
 $$
+
 A complement of an event is denoted as the event that will not occur: denoted by $A'$ (or $A^c,\neg A, \sim A, \bar{A}$): it's probability is $P(A')=1-P(A)$. In our example, the set $A'=\{1,2,3,4\}$, and $P(A')=1-P(A)=1-\dfrac13=\dfrac23$. (A complementary event).
 
 # Types of events
 ## Independent events
 These are events that has joint probability:
+
 $$
 P(A\cap B)=P(A)\cdot P(B).
 $$

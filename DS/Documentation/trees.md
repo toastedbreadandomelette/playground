@@ -82,6 +82,7 @@ op(v),\ pre(v\rightarrow L),\ pre(v\rightarrow R),&\exists\ v\in V
 \end{array}
 \right.
 $$
+
 ```python
 def preorder(root_node):
     """
@@ -92,7 +93,9 @@ def preorder(root_node):
         preorder(root_node.left)
         preorder(root_node.right)
 ```
-For the above tree: the nodes will be processed in this order: $\begin{matrix}4&3&1&2&6&5&7\end{matrix}$.
+For the above tree: the nodes will be processed in this order: 
+
+$$\begin{matrix}4&3&1&2&6&5&7\end{matrix}$$.
 ### In-order traversal
 $$
 in(v)=\left\{
@@ -113,7 +116,10 @@ def inorder(root_node):
         print(root_node.data)
         inorder(root_node.right)
 ```
-For the above tree: the nodes will be processed in this order: $\begin{matrix}1&2&3&4&5&6&7\end{matrix}$.
+For the above tree: the nodes will be processed in this order: 
+
+$$\begin{matrix}1&2&3&4&5&6&7\end{matrix}$$
+
 ### Post-order
 $$
 post(v)=\left\{
@@ -133,9 +139,13 @@ def postorder(root_node):
         postorder(root_node.right)
         print(root_node.data)
 ```
-For the above tree: the nodes will be processed in this order: $\begin{matrix}1&3&2&5&7&6&4\end{matrix}$.
+For the above tree: the nodes will be processed in this order: 
+
+$$\begin{matrix}1&3&2&5&7&6&4\end{matrix}$$
+
 ## Max-depth of a tree
 A generalized approach for max depth using adjacency matrix is [[problem_reduction_1#memoization_2d_1 Longest Increasing Paths in a Grid https leetcode com problems longest-increasing-path-in-a-matrix Longest Increasing Path in a grid|solved here]]. For binary tree (general binary tree or BST), the solution for given vertex $v$ and their child $v\rightarrow L$ and $v\rightarrow R$ is:
+
 $$
 d(v)=\left\{
 \begin{array}{cl}

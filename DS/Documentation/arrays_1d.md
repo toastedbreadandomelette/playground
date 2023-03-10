@@ -1,7 +1,7 @@
 # Playground for Array (note observation)
 
 ## Interesting Observations
-1. For array of size $n$: reversing window from $i = 0 \textrm{ to } n - \textrm{window\_size}$ (or from $i = n - \textrm{window\_size} \textrm{ to } 0$) is the same as rotating array to the left by $\textrm{window\_size}-1$, if $\textrm{window\_size}\ (\bmod 2) = 1$, otherwise, the last $\textrm{window\_size} - 1$ elements are in reverse order as they were in original array.
+1. For array of size $n$: reversing window of size $w$ from $i = 0 \rightarrow n - w$ (or from $i = n - w \rightarrow 0$) is the same as rotating array to the left by $w-1$, if $w\equiv 1(\bmod 2)$, otherwise, the last $w - 1$ elements are in reverse order as they were in original array.
 	1. An efficient way to rotate an array is to either use [Juggling algorithm](https://www.geeksforgeeks.org/array-rotation/) or use [reversal algorithm](https://www.geeksforgeeks.org/program-for-array-rotation-continued-reversal-algorithm/):
 2. For any array $A$:
 	1. Total subarrays = $\dfrac{|A|\cdot(|A|+1)}{2}$.
@@ -10,7 +10,9 @@
 ## Various ways of using #arrays (Applications):
 ### In non-linear fashion.
 a. Use to store parent of a vertex (Example in Disjoint Set Union: DSU).
-e.g., for an array with 6 vertices: $\textrm{parent} = \begin{array}{ c l }\{1, & 2, & 3, & 4, & 5, & 6\}\end{array}$, (a 1-indexed array, the element at $i^{th}$ index defines parent of node $i$) each are linked to itself (we're removing self-links).
+
+For example, for an array with 6 vertices: $P = \begin{array}{cl}\{1,&2,&3,&4,&5,&6\}\end{array}$, (a 1-indexed array where the element at $i^{th}$ index defines parent of node $i$) each are linked to itself (we're removing self-links).
+
 ```mermaid
 graph TD
 	a(1)
@@ -20,7 +22,9 @@ graph TD
 	e(5)
 	f(6)
 ```
+
 After setting $\textrm{parent} = \begin{array}{ c l }\{1, & 1, & 1, & 2, & 3, & 3\}\end{array}$, we get the following graph:
+
 ```mermaid
 graph BT
 	b(2) --> a(1)
@@ -29,6 +33,7 @@ graph BT
 	e(5) --> c(3)
 	f(6) --> c(3)
 ```
+
 b. As a sequential complete k-ary tree (e.g., trees constructed in binary heaps): 
 
 Given array $\textrm{a} = \begin{array}{ c l }\{65, & 55, & 34, & 41, & 52, & 26, & 33, & 30, & 40\}\end{array}$, is an example of an [[heaps|max-heap array]]:
@@ -46,6 +51,7 @@ graph BT
 ```
 
 The parent of this binary tree at $i^{th}$ index is defined as:
+
 $$
 p(i) = \left\{
 	\begin{array}{ c l }
@@ -54,41 +60,56 @@ p(i) = \left\{
 	\end{array}
 \right.
 $$
+
 Childs of a node $i^{th}$ node are $(2i, 2i+1)$ for $1$-indexed array, $(2i+1, 2i+2)$ for $0$-indexed.
 Generalizing, replace factor $2$ with $k$ for k-ary tree, also, there would be at most $k$ childs for a node.
+
 ```ad-note
 This type of value storing is useful iff there is a parent-child relationship (to figure out whether relationship can be used between siblings as well).
 ```
+
 ### In linear fashion
 #### Cumulative function
-An array with certain values: 
+An array with certain values:
+
 $$
 A = \begin{array}{ c l }\{65, & 55, & 34, & 41, & 52, & 26, & 33, & 30, & 40\}\end{array}
 $$
+
 can have a cumulative function (function for first $i$ values in array)
+
 For e.g., for sum of first $n$ number:
 $$
 \textrm{prefix}(A) = \begin{array}{cl}\{65, & 120, & 154, & 195, & 247, & 273, & 306, & 336, & 376\}\end{array}
 $$
 i.e., 
+
 $$
 \textrm{prefix\_sum}(A, i) = \sum\limits_{k=0}^{i}A_k.
 $$
 These are called a **prefix sum**.
 A reverse cumulative sum are used as well certain times:
+
 $$
 \text{suffix\_sum}(A,i) = \sum\limits_{k=i}^{\text{|A|}}A_k
 $$
+
 These are called **suffix sums**.
+
 Generalizing this: prefix operations for subsegment $A[0\ldots i]$
+
 $$
 \text{pf}(A_i) = f(A_0,\ A_1,\ \ldots,\ A_i)
 $$
+
 and suffix operations for subsegment $A[i\ldots n]$
+
 $$
 \text{sf}(A_i) = f(A_i,\ A_{i+1},\ \ldots,\ A_n)
 $$
+
 where 
+
 $$
 pf=sf=\left\{\begin{array} {cl}
 \sum, & \text{summation}\\
@@ -106,14 +127,17 @@ $$
 
 To find sub-array values $a[i\ldots j]$, a function should have an inverse operator.
 For e.g., For sum of subarray: subtraction is an inverse $-$ operator.
+
 $$
 \sum\limits_{k=i}^{j}a_k=\sum\limits_{k=0}^{j}a_k-\sum\limits_{k=0}^{i}a_k
 $$
+
 Similarly, for $\prod$, division is the inverse, for $\oplus$ (xor), the inverse is xor operator.
 Otherwise, user need to make a work-around/evaluate $f$ for other function everytime.
 
 #### Using two-pointers
 - Segregate values: an array:
+
 $$
 a = \begin{array}{ c l }\{65, & 55, & 34, & 41, & 52, & 26, & 33, & 30, & 40\}\end{array}
 $$
@@ -141,6 +165,7 @@ def segregate(arr: list, condition):
 ```ad-note
 The path of $i$ is taken from array starting element, moving forward and $j$ from array last element and moving backwards (for spliting array into half based on condition). This path traversal can be defined as per user. i.e., $i$ and $j$ can be also traversed in even and odd indices respectively of an array, or a certain path that should follow a condition as per users intention.
 ```
+
 - Sliding window:
 	- [ ] To do.
 
@@ -149,6 +174,7 @@ The path of $i$ is taken from array starting element, moving forward and $j$ fro
 
 ### For solving range queries faster.
 The queries for an array are as defined as display $dq$ and update queries $uq$ (modification of a value).
+
 $$
 \begin{array}{ccl}
 \textrm{dq} &=& \{(L,R):L,R \in \mathbb{W},\ 0\leq L<R\leq |a|\} \\
@@ -156,11 +182,13 @@ $$
 \textrm{q}&=&(\textrm{dq}\ \cup\ \textrm{uq})
 \end{array}
 $$
+
 #### $sqrt$ Decomposition
 A basic idea of sqrt decomposition for array of size $n$ is to combine the results of $\sqrt{n}$ blocks in an array of size $\sqrt n$.
 
 1. Pre-processing.
 The below e.g. are for sum and min function, although the reduce function `q_function` can be different, with parameter as sub-array:
+
 $$
 \textrm{q\_functions} = \left\{
 \begin{array}{ c l }
@@ -174,6 +202,7 @@ $$
 \end{array}
 \right.
 $$
+
 Here, $a\oplus b\equiv a\textrm{ xor }b$.
 
 ```python

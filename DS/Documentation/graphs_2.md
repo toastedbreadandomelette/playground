@@ -63,8 +63,11 @@ OR
 A bridge is defined as edge $(u,v)\in E$ such that there is no edge from $v$ or it's other descendants to $u$ or it's ancestors.
 
 To evaluate the bridges, we traverse the graph using unit time $t$ (as a jump from $u$ to $v$). 
+
 Let us denote $Tin_u$ as in time for vertex $u$. So by visiting each vertex, we increase the timer $t:=t+1$.
+
 With this, we'll introduce $L_u$ as:
+
 $$
 L_u=\min\left\{
 \begin{array}{cl}
@@ -74,6 +77,7 @@ L_p,&\forall\ p\in V,\ (u,p)\in E,\ \wedge\ (u\rightarrow p\text{ is a tree edge
 \end{array}
 \right.
 $$
+
 Considering that there is back edge: i.e., an edge from descendants of $p$ to ancestors of $u$ (or $u$ itself). In that case, $L_p\leq Tin_u$. Otherwise the edge $u\rightarrow p$ is a bridge.
 
 ```cpp
@@ -163,9 +167,11 @@ vector<pair<int, int>> find_all_bridges(vector<vector<int>>&adj, int start_verte
 Floyd Warshall's shortest path algorithm is a simple algorithm that finds shortest paths between every vertices all at once in $O(n^3)$ complexity.
 
 Let us consider [[graphs_1#Matrix|2D matrix]] as input (say $M$) of size $n\times n$. Then, the shortest path from $i\rightarrow j$ (we'll denote by $S_{ij}$) is done by:
+
 $$
 \forall\ (i,j)\in[1,n], S_{ij}=\min\limits_{\begin{matrix}k=1\\(i,k)\in E,\ (k,j)\in E\end{matrix}}^{n}(S_{ik}+S_{kj})
 $$
+
 We can see why the complexity is $O(n^3)$. We work on every pair $i,j$ and we check closest distance for every existing path from $i\rightarrow j$ via every possible intermediate vertex $k$ (so the route would be $i\rightarrow \cdots \rightarrow k\rightarrow\cdots\rightarrow j$).
 
 ## Dijkstra's Shortest Path Algorithm

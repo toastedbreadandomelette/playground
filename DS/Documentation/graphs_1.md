@@ -7,11 +7,13 @@ G=(E, V)\\
 E=\{(x,y,w): x,y\in V,\ w\in \mathbb{R}\}
 \end{matrix}
 $$
+
 when $x=y$, it's a self-loop. (We'll keep it aside for now).
 
 # Representing the Graph
 ## Matrix
 A matrix can be denoted as 2D grid as mentioned below.
+
 $$
 \begin{matrix}
 \frac{v\rightarrow}{v\downarrow}&|& 1 & 2 & 3 & 4 & 5 & 6 & 7\\
@@ -25,6 +27,7 @@ $$
 7&|& 0 & 7 & 3 & 0 & 6 & 11 & 0\\
 \end{matrix}
 $$
+
 This graph would look something like:
 
 ```mermaid
@@ -38,6 +41,7 @@ graph LR
 
 A bi-directional graph $\implies$ symmetry in a matrix
 ## Adjacency Matrix.
+
 List is maintained of the connections. The adjacent matrix for above graph:
 
 $$
@@ -54,6 +58,7 @@ $$
 
 ## Sparse Matrix
 Keeps only edge information. for e.g., $n=7$
+
 $$
 \begin{bmatrix}
 u & v & w\\
@@ -65,6 +70,9 @@ u & v & w\\
 1 & 6 & 7
 \end{bmatrix}
 $$
+
+Graph for the same is below:
+
 ```mermaid
 graph LR
 	1 ---|4|2 ---|6|5
@@ -76,7 +84,7 @@ graph LR
 This is an example of a [[trees|tree]].
 
 ### Degree of a vertex.
-1. Degree $D(u)$: for an undirected graph $G$, degree of vertex $u$ is defined as $|\{x: (x,y)\in E,\  (x=u)\ \vee\ (y=u)\}|$, i.e., number of different vertices connected to $u$ in set of $E$.
+1. Degree $D(u)$: for an undirected graph $G$, degree of vertex $u$ is defined as $\left|\{x: (x,y)\in E,\  (x=u)\ \vee\ (y=u)\}\right|$, i.e., number (or cardinality) of different vertices connected to $u$ in set of $E$.
 
 # Types of graphs
 
@@ -161,16 +169,20 @@ Undirected graphs makes a symmetrical matrix representation.
 
 ## Regular Graphs
 Regular graphs are defined as graph constructed such that 
+
 $$
 \forall\ u\in V, D(u)=x,\ x \in N,\ x\leq|V|-1
 $$
+
 (i.e., graphs in which each vertex has same degree of connectivity.)
 
 ## Connected Graphs
 If the graphs has at least one path from each pair $u$ and $v$ in graph $G$, then the graph $G$ is complete.
+
 $$
 \therefore\ \forall\ (u,v),\ u\in V,v\in V,\ u\neq v,\ |P(u,v)|\geq1
 $$
+
 where $P(u,v)$ is a set of paths from vertex $u$ to $v$ and $|P(u,v)|$ is number of paths for the same.
 
 ## Weighted Graph
@@ -243,7 +255,13 @@ And the second visit is when we pop visited vertex $v$ from stack. This makes $O
 ## Kruskal's Algorithm
 This algorithm constructs the tree with minimum weight sum, from a given graph. It greedily chooses the edges from set of edges $E$, and then check for potential cycle generation in a graph $G$. This can be checked with Disjoint Set Union.
 
-i.e., considering $E=\{(u_i,v_i,w_i):u,v\in V,\ \forall\ i\in [1,|E|-1],\ w_i<w_{i+1}\}$, (i.e., weights $E$ are in sorted order) Kruskal'a algorithm is implemented below.
+i.e., considering expression below:
+
+$$
+E=\{(u_i,v_i,w_i):u,v\in V,\ \forall\ i\in [1,|E|-1],\ w_i<w_{i+1}\}
+$$
+
+(i.e., weights $E$ are in sorted order) Kruskal'a algorithm is implemented below.
 
 ```python
 def kruskal_minimum_spanning_tree(edges_info: list, total_vertices: int):

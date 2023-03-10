@@ -15,14 +15,17 @@ graph BT
 
 Given example is a binary heap which follows a certain rules with parent-child.
 These values are stored in [[arrays_1d#In non-linear fashion|arrays]]. 
+
 $$
 A=\begin{array}{cl}
 [65&55&34&41&52&26&33&30&40]
 \end{array}
 $$
+
 # Binary Heap
 
 The parent of this binary heap at $i^{th}$ index is defined as:
+
 $$
 p(i) = \left\{
 \begin{array}{cl}
@@ -31,6 +34,7 @@ p(i) = \left\{
 \end{array}
 \right.
 $$
+
 It's children are $\{2\cdot i, 2\cdot i+1\}$ for 1-indexed array, $\{2\cdot i+1, 2\cdot i+2\}$ for 0-indexed. It's a complete binary [[trees|trees]].
 
 An element at an index $i$ has to have a certain rule to follow to stay at that place, otherwise necessary steps are taken to adjust the heap.

@@ -4,7 +4,8 @@
 # Types of Queue Implementation:
 ## [[arrays_1d|Arrays]]
 - Arrays can be used by keeping track of two pointers: start $s$ and end $e$, in a circular way.
- $$
+ 
+$$
 \begin{array}{ c l }
 Q&=&
 [\ &&&2&4&1&7&8&9\ ]\\
@@ -12,7 +13,9 @@ Q&=&
 &&&&&\text{s}&&&&&\text{e}
 \end{array}
 $$
+
 - While adding, the last pointer $e$ will add and increment pointer (will return to $0$ if it exceeds the size of array allocation)
+
 $$
 \begin{array}{ c l }
 Q&=&
@@ -21,7 +24,9 @@ Q&=&
 &&\ \text{ e}&&&\text{s}
 \end{array}
 $$
+
 - The first pointer $s$ handle popping off value and incrementing. (will return to $0$ if it goes out of array allocation).
+
 $$
 \begin{array}{ c l }
 Q&=&
@@ -30,6 +35,7 @@ Q&=&
 &&\ \text{ e}&&&&\text{s}
 \end{array}
 $$
+
 
 
 ## [[linked_list|Linked List]]

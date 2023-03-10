@@ -16,6 +16,7 @@ f(n) =
 	\end{array}
 \right.
 $$
+
 where $a_0,\ a_1,\ a_2,\ ...\ a_k, c_0,\ c_1,\ c_2,\ ...\ c_k \in \mathbb{R}$ (although these can be complex numbers $\mathbb{C}$ as well, but for simplicity we keep real numbers $\mathbb{R}$). 
 
 As the length of the recurrence relation is $k$, the complexity of evaluating $f(n)$ would take an huge amount of time (of the order $O(k^n)$), since each of these calls would generate a k-ary tree.
@@ -46,6 +47,7 @@ The worst-case complexity for recursive tribonacci is $O(3^n)$.
 To evaluate $n^{th}$ term where $n$ is of the order $\geq 10^{12}$, [[matrix]] exponentiation can be used.
 We use a matrix and multiply with the base case solution vector $n$ times.
 E.g., For fibonacci (starting from $n = 0$):
+
 $$
 M = 
 \begin{bmatrix}
@@ -56,7 +58,9 @@ B = \begin{bmatrix}
 0 & 1
 \end{bmatrix}
 $$
+
 $M$: matrix form, $B$: base case vector/matrix.
+
 $$
 \begin{matrix}
 B.M & = &
@@ -114,7 +118,9 @@ B.M^4 & = &
 \vdots
 \end{matrix}
 $$
+
 With this:
+
 $$
 B.M^{n} = 
 \begin{bmatrix}
@@ -128,9 +134,13 @@ B.M^{n} =
 f(n) & f(n+1)\\
 \end{bmatrix},
 $$
+
 ### Some examples for matrix construction:
+
 #### Tribonacci Series
+
 For tribonacci, the base matrix would be:
+
 $$
 f(n) = \left\{
 \begin{array}{ c l }
@@ -140,7 +150,9 @@ f(n-1)+f(n-2)+f(n-3),&\quad n>2,\ n\in\mathbb{N}
 \end{array}
 \right.
 $$
+
 The matrices will be:
+
 $$
 B = \begin{bmatrix}
 0 & 0 & 1
@@ -152,6 +164,7 @@ B = \begin{bmatrix}
 0 & 1 & 1
 \end{bmatrix}
 $$
+
 $$
 \begin{matrix}
 B.M^n =
@@ -169,10 +182,12 @@ B.M^n =
 	\end{bmatrix}
 \end{matrix}
 $$
+
 The matrix is constructed such that the last column would make the recurrence relation, and in the left-lower $(n-1)\times(n-1)$ matrix, the diagonal is set to 1 to shift to next term when multiplying matrices.
 
 #### Pell's Series/Recurrence relation
 For pell recurrence relation:
+
 $$
 f(n) = 
 \left\{
@@ -182,7 +197,9 @@ n, & \quad n \in \{0,\ 1\}\\
 \end{array}
 \right.
 $$
+
 the matrix for recurrence relation would be:
+
 $$
 B = \begin{bmatrix}
 0 & 1
@@ -192,8 +209,10 @@ M = \begin{bmatrix}
 1 & 2
 \end{bmatrix}
 $$
+
 #### Pell's recurrence, with a constant value.
 If there are constants involved in the equation:
+
 $$
 f(n) = 
 \left\{
@@ -203,7 +222,9 @@ n, & \quad n \in \{0,\ 1\}\\
 \end{array}
 \right.
 $$
+
 The equivalent matrix form would be:
+
 $$
 B = \begin{bmatrix}
 0 & 1 & 7
@@ -214,6 +235,7 @@ M = \begin{bmatrix}
 0 & 1 & 1
 \end{bmatrix}
 $$
+
 With this, we can obtain next terms $f(n)\text{ for }n=1\rightarrow3$ as:
 
 $$
@@ -267,10 +289,13 @@ $$
 $f(0) = 0, f(1) = 1,\ f(2) = 9,\ f(3) = 26,\ f(4) = 68,\ ...$ are the first five terms of the modified series.
 
 #### Sum of first $n$ fibonacci series.
+
 - For sum of first $n$ terms in recurrence series: (e.g., fibonacci series), let's suppose
+
 $$
 s(n) = \sum\limits_{i=0}^{n} f(i)
 $$
+
 $$
 B = \begin{bmatrix}
 s(1) & 0 & 1
@@ -283,6 +308,7 @@ M = \begin{bmatrix}
 1 & 1 & 1
 \end{bmatrix}
 $$
+
 The first three values of series sum:
 
 $$
@@ -324,11 +350,13 @@ $$
 The sum is stored in the first position as $s(k)$, where $k$ is the sum of first base cases of recurrence relation.
 
 In general, the matrix construction for finding $n^{th}$ terms (e.g., the first equation at the start of this section) is:
+
 $$
 B = \begin{bmatrix}
 c_0&c_1&c_2&\cdots&c_k
 \end{bmatrix}
 $$
+
 $$
 M = 
 \begin{bmatrix}
@@ -340,6 +368,7 @@ M =
 0 & 0 & 0 & \cdots & 1 & a_k
 \end{bmatrix}
 $$
+
 Finding exponent for $k\times k$ matrix $M^n$ can be done in $O(\log_2(n))$ time ($n$: exponent) using [[basic_maths#Modular power function by Binary Exponentiation|binary exponent method]], where each matrix multiplication takes $O(k^3)$ time.
 
 The overall complexity would be $O(k^3\cdot\log_2(n))$.

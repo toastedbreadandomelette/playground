@@ -45,8 +45,9 @@ The size of this array $I$ would be exactly $2\cdot n-1$.
 ### Proof for $|I|=2\cdot n-1$.
 For each edge $e$, we traverse from $u\rightarrow v$ and record $v$: and at some point for the same edge, we return back to $v\rightarrow u$ and record $u$. $\implies$ We use this edge $2$ times to record $2$ vertices. 
 
-In tree of $n$ nodes, since number of edges in $n-1$, total node records would be 
-$2\cdot (n-1)=2\cdot n-2$. Plus we also store the root node at the beginning before starting the traversal. This makes the array size $2\cdot n-1$ size. (Relevance: evaluate space and time complexity)
+In tree of $n$ nodes, since number of edges in $n-1$, total node records would be  $2\cdot (n-1)=2\cdot n-2$. 
+
+In addition, we also store the root node at the beginning before starting the traversal. This makes the array size $2\cdot n-1$ size. (Relevance: evaluate space and time complexity)
 
 ### Solving $lca(u,v)$ where $u$ and $v$ are vertices and $u,v\in V$. 
 For a given two vertex $u$ and $v$ for the query, we find the first occuring value in array $I_1$ (say $I_{1x}$ and $I_{1y}$).  we find the lowest value between index $x$ and $y$ such that:

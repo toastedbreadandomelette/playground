@@ -41,6 +41,7 @@ $$
 $\implies u=a\cdot c - b\cdot d$ and $v=b\cdot c-a\cdot d$.
 
 ## Division
+
 $$
 \begin{matrix}
 \dfrac{z_1}{z_2}&=&\dfrac{a+i\cdot b}{c+i\cdot d}\\
@@ -48,16 +49,20 @@ $$
 &=&\dfrac{(a\cdot c+b\cdot d)+i\cdot (b\cdot c-a\cdot d)}{c^2+d^2}
 \end{matrix}
 $$
+
 $\implies u=\dfrac{a\cdot c+b\cdot d}{c^2+d^2}$ and $v=\dfrac{b\cdot c-a\cdot d}{c^2+d^2}$.
 
 ## Polar form
+
 The polar form $r\cdot e^{i\theta}$ can be expanded to:
+
 $$
 \begin{matrix}
 r\cdot e^{i\theta}&=&r\cdot\left(1+\dfrac{i\cdot\theta}{1!}-\dfrac{\theta^2}{2!}-\dfrac{i\cdot\theta^3}{3!}+\dfrac{\theta^4}{4!}+\cdots\right)\\
 &=&r\cdot (\cos{\theta}+i\cdot\sin{\theta})
 \end{matrix}
 $$
+
 If $z=r\cdot e^{i\theta}$, then $z^{n}=r^n\cdot e^{i\cdot n\theta}=r^n\cdot(\cos{(n\cdot\theta)}+i\cdot\sin{(n\cdot\theta)}),n\in\mathbb{R}$.
 
 We express $e^{i\theta}$ as $\text{cis}(\theta)$ or in angle notation: $\angle\theta$  as well.
@@ -65,9 +70,9 @@ We express $e^{i\theta}$ as $\text{cis}(\theta)$ or in angle notation: $\angle\t
 # Roots of Unity
 
 The $n$ roots of unity $z^n-1=0$ are:
-$$
-z^{1/n}=\text{cis}\left(\dfrac{2\pi p}{n}\right),\quad 0\leq p<n,\ r=1
-$$
+
+$$z^{1/n}=\text{cis}\left(\dfrac{2\pi p}{n}\right),\quad 0\leq p<n,\ r=1$$
+
 These are also denoted by $\omega_n^p=\text{cis}\left(\dfrac{2\pi p}{n}\right)$. 
 
 ### Some results:
@@ -79,12 +84,14 @@ These are also denoted by $\omega_n^p=\text{cis}\left(\dfrac{2\pi p}{n}\right)$.
 4. $\omega_n^{p+n/2}=\cos\left(\dfrac{2\pi\cdot\dfrac{n}{2}}{n}+\dfrac{2\pi p}{n}\right)+i\cdot \sin\left(\dfrac{2\pi\cdot\dfrac{n}{2}}{n}+\dfrac{2\pi p}{n}\right)=\cos\left(\pi+\dfrac{2\pi p}{n}\right)+i\cdot \sin\left(\pi+\dfrac{2\pi p}{n}\right)$
 $=-\cos\left(\dfrac{2\pi p}{n}\right)-i\cdot \sin\left(\dfrac{2\pi p}{n}\right)=-\omega_{n}^{p}$ 
 5. If $p\not\equiv 0\pmod n$, then:
+
 $$
 \begin{array}{cl}
 \sum\limits_{i=0}^{n-1}(\omega_n^{p})^i&=&\dfrac{1-\omega_{n}^{np}}{1-\omega_{n}^p}\\
 &=&0,\quad (\omega_n^{np}=1)
 \end{array}
 $$
+
 ```ad-note
 The above results are apparent from some observations noted here:
 - $\omega_n^{n+p}=\omega_n^p$

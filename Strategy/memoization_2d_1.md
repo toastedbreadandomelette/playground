@@ -30,6 +30,7 @@ C(S,W,T,i+1)+C(S+W_i,W,T,i),&\text{otherwise}
 \end{array}
 \right.
 $$
+
 We can see that the variable $S$ and $i$ are two variables that are varying with the states, we can use these variables for storing the memo.
 
 
@@ -39,14 +40,17 @@ We can see that the variable $S$ and $i$ are two variables that are varying with
 
 Given a matrix, return the length of longest path which are in *strictly* increasing order.
 for e.g., $n=m=3$, and matrix $A$:
+
 $$
 \begin{bmatrix}
 9&9&4\\6&6&8\\2&1&1
 \end{bmatrix}
 $$
+
 The longest path is 4: i.e., $A_{32}\rightarrow A_{31}\rightarrow A_{21}\rightarrow A_{11}\implies 1\rightarrow2\rightarrow6\rightarrow9$.
 
 The allowed directions are from $A_{xy}$ to $(A_{(x-1)y},A_{(x+1)y},A_{x(y-1)},A_{x(y+1)})$ given $x\pm1,y\pm1\in[1,n]$. Let $dr=[(x+1,y),(x-1,y),(x,y+1),(x,y-1)]$ be the list of possible directions. Then $\forall\ (x,y): \ x\in[1,n]\ ,y\in[1,m]$, the longest path $l(A,x,y)$ is calculated as maximum value from any one of these indices:
+
 $$
 l(A,x,y)=\left\{
 \begin{array}{cl}
@@ -55,6 +59,7 @@ l(A,x,y)=\left\{
 \end{array}
 \right.
 $$
+
 Since there are two variables $x,y$ the function depends on, we'll need to store in a $2$-Dimensional memo as $memo_{xy}$.
 
 Below code shows an iterative approach though. Stores in $2$ dimensional array.

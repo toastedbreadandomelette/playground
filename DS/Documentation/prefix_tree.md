@@ -1,7 +1,8 @@
 # Trie / Prefix tree
 For a list of dictionary
+
 ```json
-['apple', 'browse', 'apply', 'broth', 'brace', 'brew', 'band', 'app', 'cap', 'capital']
+["apple", "browse", "apply", "broth", "brace", "brew", "band", "app", "cap", "capital"]
 ```
 
 A trie is generated as follows:
@@ -23,19 +24,6 @@ graph TD
 Here, rounded nodes are terminal nodes denoting that path from root to the rounded node is a word in a dictionary.
 
 ### Searching in a trie:
-[[searching|Searching]] in a trie node is an easy task:
-
-Algorithm $\text{search\_trie}(root,\ word)$:
-$\text{begin}$
-$\quad\text{for i = 0}\ldots\text{len(s), do}$
-$\quad\quad\text{if root.next\_alphabet[s[i]] exists, then}$ 
-$\quad\quad\quad\text{move root to node root.next\_alphabet[s[i]]}$
-$\quad\quad\text{else false (no such word exists in trie)}$
-$\quad\text{if i = len(s) and node is marked as a word, then}$
-$\quad\quad\text{return true}$
-$\quad\text{return false (otherwise)}$
-$\text{end search\_trie}$
-
 Refer to `__contains__` in python code.
 
 ```python

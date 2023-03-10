@@ -19,6 +19,7 @@ Linear searching takes $O(n)$ time and $O(1)$ space.
 
 # Searching Type
 ## Linear Search
+
 Scanning through elements one after the other (in general moving to adjacent ones after unsuccessful find).
 
 ```python
@@ -52,6 +53,7 @@ def isqrt_linear_search(target: int) -> int:
 The constraints with the binary search is that the search space should be in a sorted order.
 
 Binary search on space $S$ in a given frame $L$ and $R$ to find value $T$ is given as:
+
 $$
 \text{b\_search}(S,L,R,T,f)=\left\{
 \begin{array}{cl}

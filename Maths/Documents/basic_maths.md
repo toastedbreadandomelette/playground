@@ -1,13 +1,12 @@
 # Basic Math Coding problems for CS
 
 ## Sum of first $n$ numbers.
-$$
-S = 1 + 2 + 3 + .... + n   - (1)
-$$
+
+$$\begin{array}{lll}S=1+2+3+\ldots+n  && -\ (1)\end{array}$$
+
 Also, by commutative law $a + b = b + a$
-$$
-S = n + (n - 1) + (n - 2) + ... + 3 + 2 + 1 - (2)
-$$
+
+$$\begin{array}{cl}S=n+(n-1)+(n-2)+\ldots+3+2+1 && -\ (2)\end{array}$$
 Adding $1$ and $2$ we get
 
 $$
@@ -18,9 +17,11 @@ $$
 &2\cdot S&=&\underbrace{(1 + n) + (2 + n - 1) + ... + (n + 1)}_{n \text{ terms}}
 \end{matrix}
 $$
+
 $$
 \therefore_ \ \ \ S = \frac{n\cdot (n+1)}{2}
 $$
+
 ```python
 def first_n_sum(n: int) -> int:
     """
@@ -38,27 +39,18 @@ def first_n_sum(n: int) -> int:
 
 ## Sum of first $n$ squared numbers.
 
-$$
-S = 1^2 + 2^2 + 3^2 + .... + n^2
-$$
+$$S=1^2+2^2+3^2+\ldots+n^2$$
 
 Firstly, we have a identity
-$$
-x^3 - (x-1)^3 = 3x^2 - 3x + 1
-$$
+
+$$x^3-(x-1)^3=3x^2-3x+1$$
 
 Adding the above identity from $x = 0$ to $x = n$, we get
-$$
-n^3 = 3 \cdot (n^2 + (n-1)^2 + ... + 1) - 3\cdot\frac{n(n+1)}{2} + n 
-$$
-$$
-n^3 + \frac{3n(n+1)}{2} - n = 3S
-$$
 
-Solving this
-$$
-S = \frac{n(2n^2 + 2n + n + 1)}{6} = \frac{n(n+1)(2n+1)}{6}
-$$
+$$n^3 = 3 \cdot (n^2 + (n-1)^2 + ... + 1) - 3\cdot\frac{n(n+1)}{2} + n $$
+$$n^3 + \frac{3n(n+1)}{2} - n = 3S$$
+
+Solving this, we get: $S = \dfrac{n(2n^2 + 2n + n + 1)}{6} = \dfrac{n(n+1)(2n+1)}{6}$.
 
 ```python
 def first_n_squared_sum(n: int) -> int:
@@ -79,79 +71,65 @@ def first_n_squared_sum(n: int) -> int:
 
 The sum can be represented as
 
-$$
-S = 1^3 + 2^3 + 3^3 + ... + n^3
-$$
+$$S=1^3+2^3+3^3+\ldots+n^3$$
 
 Using identity:
 
-$$
-n^4 - (n - 1)^4 = n^4 - (n^4 - 4n^3 + 6n^2 - 4n + 1)\\
-\ \ = 4n^3 - 6n^2 + 4n - 1 
-$$
+$$n^4 - (n - 1)^4 = n^4 - (n^4 - 4n^3 + 6n^2 - 4n + 1) = 4n^3 - 6n^2 + 4n - 1 $$
 
 Add first $n$ terms of this identity
 
+$$\begin{array}{cl}n^4&=&4\cdot(1^3 + 2^3 + ... + n^3) - n\cdot(n+1)\cdot(2n+1) + 2n\cdot(n+1) - n\\
+4\cdot S &=& n^4+n\cdot(n+1)\cdot(2n+1)-2n\cdot(n+1)+n\\
+4\cdot S &=& n^4+2n^3+n^2+2n^2+n-2n^2-2n+n\end{array}
 $$
-n^4 = 4. (1^3 + 2^3 + ... + n^3) - n(n+1)(2n+1) + 2n(n+1) - n
-$$
-$$
-4\cdot S = n^4+n(n+1)(2n+1)-2n(n+1)+n
-$$
-$$
-4\cdot S = n^4 + 2n^3 + n^2 + 2n^2 + n - 2n^2 - 2n + n
-$$
+
 The final solution
+
 $$
 \therefore\quad S=\frac{n^2(n+1)^2}{4}
 $$
+
 The solution is square of first $n$ sum $\dfrac{n(n+1)}{2}$.
 
 ---
 ## Sum of first $n$ triangular number
 Let's consider $S_n$ as sum of first triangular numbers
+
+$$\begin{array}{rl}S_n &=& \sum\limits_{i=1}^{n}\left(\dfrac{i\cdot(i+1)}{2}\right)\\
+\implies S_n&=&1+3+6+10+\ldots +\dfrac{n(n+1)}2\\
+2\cdot S_n&=&\sum\limits_{i=1}^{n}i^2+\sum\limits_{i=1}^{n}i\\
+S_n&=&\dfrac{1}2\left(\dfrac{n\cdot(n+1)\cdot(2n+1)}{6}+\dfrac{n\cdot(n+1)}2\right)\\
+S_n&=&\dfrac{n(n+1)(n+2)}{6}\end{array}
 $$
-S_n = \sum\limits_{i=1}^{n}\left(\frac{i\cdot(i+1)}{2}\right)
-$$
-$$
-\implies S_n=1+3+6+10+\ldots +\frac{n(n+1)}{2}
-$$
-$$
-2\cdot S_n=\sum\limits_{i=1}^{n}i^2+\sum\limits_{i=1}^{n}i
-$$
-$$
-S_n=\frac{1}{2}\left(\frac{n(n+1)(2n+1)}{6}+\frac{n(n+1)}{2}\right)
-$$
-$$
-S_n=\frac{n(n+1)(n+2)}{6}
-$$
+
 The difference between sum of first $n$ squared and first $n$ triangular numbers:
-$$
-S^2_n-S_n=(1-1)+(4-3)+(9-6)+(16-10)+(25-15)+\ldots +\left(n^2-\frac{(n^2+n)}{2}\right)
-$$
-$$
-\implies S_n^2-S_n=S_{n-1}
-$$
+
+$$\begin{array}{rll}S^2_n-S_n&=&(1-1)+(4-3)+(9-6)+(16-10)+(25-15)+\ldots +\left(n^2-\frac{(n^2+n)}{2}\right)\\
+\implies S_n^2-S_n&=&S_{n-1}\end{array}$$
 Another way to put it as, we fill the spaces of the lower triangle of the next term with the remaining triangle to make it a perfect square:
-$$
-S_{n-1}+S_n=1 +\sum\limits_{i=2}^{n}\left(\frac{i\cdot(i+1)}{2}+\frac{i\cdot(i-1)}{2}\right)=1+\sum\limits_{i=2}^{n}i^2
-$$
+
+$$S_{n-1}+S_n=1 +\sum\limits_{i=2}^{n}\left(\frac{i\cdot(i+1)}{2}+\frac{i\cdot(i-1)}{2}\right)=1+\sum\limits_{i=2}^{n}i^2$$
 ## Modular power function by Binary Exponentiation
 
 The recursive definition for this function can be defined $(\textrm{for }k \in \mathbb{N})$ as:
+
 $$
-modexp(n, k, m) = 
+\text{expm}(n, k, m) = 
 \left\{ 
 \begin{array}{cl}
-modexp\left(n,\left\lfloor\dfrac{k}{2}\right\rfloor,m\right)^2\pmod m,&k \geq 2,\ k\equiv0\pmod{2}\\
-n\cdot modexp\left(n,\left\lfloor\dfrac{k}{2}\right\rfloor, m\right)^{2}\pmod{m}, &k\geq2,\ k\equiv1\pmod 2\\
+\text{expm}\left(n,\left\lfloor\dfrac{k}{2}\right\rfloor,m\right)^2\pmod m,&k \geq 2,\ k\equiv0\pmod{2}\\
+n\cdot \text{expm}\left(n,\left\lfloor\dfrac{k}{2}\right\rfloor, m\right)^{2}\pmod{m}, &k\geq2,\ k\equiv1\pmod 2\\
 n,&k=1\\
 1,&k=0
     \end{array}
 \right.
 $$
+
 An iterative example for example $2^{27}$ based on below example (without modulus):
+
 The result is stored in $res$ and iteration is done till $k=0$
+
 $$
 \begin{matrix}
 \textrm{Initialize: } & & n = 2, & res = 1, & k = 27\\
@@ -162,6 +140,7 @@ $$
 5^{th}\textrm{ Iteration: }&k\pmod2=1: & n = 4294967296, & res = 134217728, & k = 0
 \end{matrix}
 $$
+
 The above step only required $\lceil\log_2{27}\rceil = 5$ steps for coming up with the answer. This is effective when we require power of the order $10^7$ or more.
 
 ```python
@@ -200,11 +179,12 @@ def mod_power(number, exponent: int, mod: int) -> int:
 ## Greatest Common Divisor (Also known as Highest Common Factor) of two numbers
 
 GCD of two integers $a$ and $b$ is defined as the largest number $x$ such that 
+
 $$
 \begin{matrix}
 a\equiv0\pmod x, & b\equiv0 \pmod x
-\end{matrix}
-$$
+\end{matrix}$$
+
 $$
 \therefore\gcd(a,b) = 
 \left\{
@@ -234,9 +214,7 @@ def gcd(a: int, b: int) -> int:
 
 LCM of two numbers $a$ and $b$ can be defined as:
 
-$$
-\textrm{lcm}(a,\ b) = \frac{a\cdot b}{\gcd(a,b)}
-$$
+$$\textrm{lcm}(a,\ b) = \frac{a\cdot b}{\gcd(a,b)}$$
 
 ```python
 def lcm(a: int, b: int) -> int:
@@ -262,10 +240,10 @@ Let factors of a number $n$ be:
 $$
 F(n) = \{x:x\in\mathbb{N},\ x\leq n,\ n\equiv0\ (\bmod{x})\}
 $$
+
 Then **prime numbers** can be defined as:
-$$
-\mathbb{P} = \{x:\ x\in \mathbb{N},\ x \neq1,\ F(x) = \{1,\ x\}\ \}
-$$
+
+$$\mathbb{P} = \{x:\ x\in \mathbb{N},\ x \neq1,\ F(x) = \{1,\ x\}\ \}$$
 The numbers that doesn't satisfy these conditions (except $n=1$) are called composite numbers.
 
 ```python
@@ -293,9 +271,8 @@ def prime(n: int) -> bool:
 
 #### Composite numbers 
 These are the number which have a divisor(s) other than $1$ and $n$.
-$$
-C = \{x:\ x\in \mathbb{N}\ \textrm{and }x\notin P - \{1\}\ \}
-$$
+
+$$C = \{x:\ x\in \mathbb{N}\ \textrm{and }x\notin P - \{1\}\ \}$$
 Number $1$ is neither a prime or composite.
 
 Below program finds all the factors of any values (except $1$ and $n$ itself) in $O(\sqrt{n})$ time.
@@ -348,6 +325,7 @@ P(n-1,r)+P(n-1,r-1),&1\leq r<n\\
 \right.
 \\
 $$
+
 ```python
 def pascal_triangle(n: int) -> list:
     """
@@ -367,6 +345,7 @@ def pascal_triangle(n: int) -> list:
 
 ### Interesting:
 This pattern create a fibonacci series????
+
 $P_{00}=1$
 $P_{11}+P_{20}=2$
 $P_{21}+P_{30}=3$
@@ -375,10 +354,12 @@ $P_{32}+P_{41}+P_{50}=8$
 $P_{33}+P_{42}+P_{51}+P_{60}=13$
 $P_{43}+P_{52}+P_{61}+P_{70}=21$
 $P_{44}+P_{53}+P_{62}+P_{71}+P_{80}=1+10+15+7+1=34$.
+
 ___
 
 ## Factorial of a number
 Factorial of a number is defined as: 
+
 $$
 f(n) = 
 \left\{
@@ -388,6 +369,7 @@ n\cdot f(n - 1),& \quad n\in\mathbb{N}-\{0,1\}\
 \end{array}
 \right.
 $$
+
 ```python
 def factorial(n: int) -> int:
     """
@@ -408,10 +390,11 @@ ___
 
 ## Fibonacci series.
 The infamous series:
-$$
-0,\ 1,\ 1,\ 2,\ 3,\ 5,\ 8,\ 13,\ 21,\ 34,\ 55,\ 89,\ 144,\ ...
-$$
+
+$$0,\ 1,\ 1,\ 2,\ 3,\ 5,\ 8,\ 13,\ 21,\ 34,\ 55,\ 89,\ 144,\ ...$$
+
 is generated by adding two previous terms, the series starting from $0$ and $1$. It's recursive definition $fib(n)$ can be defined as:
+
 $$
 fib(n) = 
 \left\{
@@ -471,20 +454,14 @@ Euler totient function is defined as the count of natural numbers $< n$ which ar
 
 We represent a number as a product of primes:
 
-$$
-	n = p_1^{k_1}\times p_2^{k_2}\times p_3^{k_3}... \times p_n^{k_n}
-$$
+$$n = p_1^{k_1}\times p_2^{k_2}\times p_3^{k_3}... \times p_n^{k_n}$$
 
-$$
-\textrm{e.g., } 2520 = 2^3 \times 3^2 \times 5^1 \times 7^1
-$$
+$$\textrm{e.g., } 2520 = 2^3 \times 3^2 \times 5^1 \times 7^1$$
+
 The euler totient function is defined as:
-$$
-\phi(n) = n\ \cdot \left(1 - \frac{1}{p_1}\right)\ \cdot \left(1 - \frac{1}{p_2}\right)\ \cdots \left(1 - \frac{1}{p_n}\right)
-$$
-For prime numbers, $\phi(n) = n-1$
+$$\phi(n) = n\cdot\left(1-\frac{1}{p_1}\right)\cdot \left(1-\frac{1}{p_2}\right)\cdots\left(1-\frac{1}{p_n}\right)$$
+For prime numbers, $\phi(n) = n-1$; Some observations:
 
-Some observations:
 $$
 \phi(p_1\times p_2) = 
 \left\{
@@ -494,6 +471,7 @@ $$
 \end{array}
 \right.
 $$
+
 ```python
 def phi(n: int) -> int:
     """
