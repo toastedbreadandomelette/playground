@@ -1,18 +1,16 @@
 # Intermediate Maths for CS: Part 2 
 [[intermediate_maths|See here for Part 1]]
 ## Linear Recurrence.
-A relation where a term is evaluated depending on values of previous terms: 
+A relation where a term is evaluated depending on values of previous terms:
 
 $$
-f(n) =
-
-\begin{cases}
-c_0, & \quad n = 0\\
-c_1, & \quad n = 1\\
-c_2, & \quad n = 2\\
+f(n)=\begin{cases}
+c_0, & n = 0\\
+c_1, & n = 1\\
+c_2, & n = 2\\
 \vdots\\
-c_k, & \quad n = k\\
-a_0.\ f(n - 1) + a_1.\ f(n - 2) + a_2.\ f(n - 3) + ... + a_{k}.\ f(n - k), & \quad n > k
+c_k, &n = k\\
+a_0.\ f(n - 1) + a_1.\ f(n - 2) + a_2.\ f(n - 3) + ... + a_{k}.\ f(n - k), & n > k
 \end{cases}
 $$
 

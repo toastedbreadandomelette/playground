@@ -76,14 +76,12 @@ can have a cumulative function (function for first $i$ values in array)
 
 For e.g., for sum of first $n$ number:
 
-$$
-P(A) = \lbrace65,120,154,195,247, 273, 306, 336, 376\rbrace
-$$
+$$P(A) = \lbrace65,120,154,195,247, 273, 306, 336, 376\rbrace$$
+
 i.e., 
 
-$$
-P(A, i) = \sum\limits_{k=0}^{i}A_k.
-$$
+$$P(A, i) = \sum\limits_{k=0}^{i}A_k.$$
+
 These are called a **prefix sum** (say $P$).
 A reverse cumulative sum are used as well certain times:
 
@@ -91,13 +89,9 @@ $$
 S(A,i) = \sum\limits_{k=i}^{\text{|A|}}A_k
 $$
 
-These are called **suffix sums**.
+These are called **suffix sums**. Generalizing this: prefix operations for subsegment $A[0\ldots i]$
 
-Generalizing this: prefix operations for subsegment $A[0\ldots i]$
-
-$$
-\text{pf}(A_i) = f(A_0,\ A_1,\ \ldots,\ A_i)
-$$
+	$$ \text{pf}(A_i) = f(A_0,\ A_1,\ \ldots,\ A_i)$$
 
 and suffix operations for subsegment $A[i\ldots n]$
 
@@ -175,11 +169,11 @@ The path of $i$ is taken from array starting element, moving forward and $j$ fro
 The queries for an array are as defined as display $dq$ and update queries $uq$ (modification of a value).
 
 $$
-\begin{array}{}
+\begin{matrix}
 \textrm{dq} &=& \{(L,R):L,R \in \mathbb{W},\ 0\leq L<R\leq |a|\} \\
 \textrm{uq} &=& \{(L,R,\textrm{value}):L,R \in \mathbb{W},\ 0\leq L\leq R\leq |a|\} \\
 \textrm{q}&=&(\textrm{dq}\ \cup\ \textrm{uq})
-\end{array}
+\end{matrix}
 $$
 
 #### $sqrt$ Decomposition

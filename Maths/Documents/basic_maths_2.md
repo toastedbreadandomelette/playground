@@ -93,6 +93,7 @@ a\equiv a_2\pmod{p_2}\\
 a\equiv a_k\pmod{p_k}\\
 \end{matrix}
 $$
+
 where $\forall\ i,j\in[1,k], i < j, \gcd(p_i,p_j)=1$. (Every pair are co-prime).
 
 It states that given set of congruence always has *one and exactly one* solution.

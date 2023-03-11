@@ -212,7 +212,7 @@ $$
 {}^{n+1}C_r\cdot{}^{n+1-r}C_m&=&{}^nC_{r-1}\cdot{}^{n+1-r}C_m
 +{}^nC_{r}\cdot {}^{n-r}C_{m-1}
 +{}^nC_{r}\cdot{}^rC_m\\
-\dfrac{(n+1)!}{r!\cdot  m!\cdot(n-r-m+1)!}&=&\dfrac{n!}{(r-1)!\cdot m!\cdot(n-r-m+1)!}+\dfrac{n!}{r!\cdot(m-1)!\cdot (n-r-m+1)!}+\\&&\dfrac{n!}{r!\cdot m!\cdot(n-r-m)!}\\
+\dfrac{(n+1)!}{r!\cdot  m!\cdot(n-r-m+1)!}&=&\dfrac{n!}{(r-1)!\cdot m!\cdot(n-r-m+1)!}+\dfrac{n!}{r!\cdot(m-1)!\cdot (n-r-m+1)!}+\dfrac{n!}{r!\cdot m!\cdot(n-r-m)!}\\
 \dbinom{n+1}{r,m,n-r-m+1}&=&\dbinom{n}{r-1,m,n-r-m+1}+\dbinom{n}{r,m-1,n-r-m+1}+\dbinom{n}{r,m,n-r-m}
 \end{matrix}
 $$

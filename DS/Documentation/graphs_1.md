@@ -257,9 +257,7 @@ This algorithm constructs the tree with minimum weight sum, from a given graph. 
 
 i.e., considering expression below:
 
-$$
-E=\{(u_i,v_i,w_i):u,v\in V,\ \forall\ i\in [1,|E|-1],\ w_i<w_{i+1}\}
-$$
+$$E=\lbrace(u_i,v_i,w_i):u,v\in V,\ \forall\ i\in [1,|E|-1],\ w_i < w_{i+1}\rbrace$$
 
 (i.e., weights $E$ are in sorted order) Kruskal'a algorithm is implemented below.
 

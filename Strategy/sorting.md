@@ -189,3 +189,101 @@ Complexity: Worst-case scenario for this is $O(n^2)$, since there is definitely 
 
 ## Merge sort
 Merge sort is a divide and conquer method to merge sorted left half array and sorted right half array.
+
+Total time complexity: $O(n\cdot \log_2{n})$.
+
+```rust
+
+// A non-recursive merge sort
+// At base insertion sort is used (for e.g., subarray of window size 16),
+// and then working way upto larger sizes until we're in final stage of merging two
+// array partitions
+pub fn merge_sort<
+    T: std::cmp::PartialOrd + Copy + std::default::Default + std::convert::From<T>,
+>(
+    arr: &mut Vec<T>,
+    cmp: &dyn Fn(T, T) -> bool,
+) {
+    // Placeholder, this takes care of copying the arrangment of array.
+    let mut placeholder: Vec<T> = vec![std::default::Default::default(); arr.len()];
+
+    // sort 16 length of block by insertion method, then merge
+    // them, for that placeholder is the array used to keep them
+    let mut block_size = 16;
+    for x in (0..arr.len()).step_by(block_size) {
+        let end = if x + block_size > arr.len() {
+            arr.len()
+        } else {
+            x + block_size
+        };
+        for y in x..end {
+            let mut index = y;
+            while index > x && !cmp(arr[index - 1], arr[index]) {
+                (arr[index], arr[index - 1]) = (arr[index - 1], arr[index]);
+                index -= 1;
+            }
+        }
+    }
+
+    while block_size < arr.len() {
+        for x in (0..arr.len()).step_by(2 * block_size) {
+            if x + block_size > arr.len() {
+                break;
+            } else {
+                let (start, mid) = (x, x + block_size);
+                let end = if x + 2 * block_size > arr.len() {
+                    arr.len()
+                } else {
+                    x + 2 * block_size
+                };
+                let (mut fptr, mut sptr, mut pptr) = (start, mid, start);
+                while fptr < mid && sptr < end {
+                    if cmp(arr[fptr], arr[sptr]) {
+                        placeholder[pptr] = arr[fptr];
+                        pptr += 1;
+                        fptr += 1;
+                    } else {
+                        placeholder[pptr] = arr[sptr];
+                        pptr += 1;
+                        sptr += 1;
+                    }
+                }
+                while fptr < mid {
+                    placeholder[pptr] = arr[fptr];
+                    pptr += 1;
+                    fptr += 1;
+                }
+                // This step might not be required, since we know they are in ascending order
+                // stored in array, so it is not necessary to copy.
+                // while sptr < end {
+                //     placeholder[pptr] = arr[sptr];
+                //     pptr += 1;
+                //     sptr += 1;
+                // }
+                for ret_ptr in start..pptr {
+                    arr[ret_ptr] = placeholder[ret_ptr];
+                }
+            }
+        }
+
+        block_size <<= 1;
+    }
+}
+
+#[test]
+pub fn test_merge_sort() {
+    let mut s = (0..=1000000)
+        .into_iter()
+        .rev()
+        .map(|x| x as u32)
+        .collect::<Vec<u32>>();
+    merge_sort(&mut s, &|curr, next| curr < next);
+    assert_eq!(
+        s,
+        (0..=1000000)
+            .into_iter()
+            .map(|x| x as u32)
+            .collect::<Vec<u32>>()
+    );
+}
+```

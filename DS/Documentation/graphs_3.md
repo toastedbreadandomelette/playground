@@ -7,7 +7,7 @@ Euler path/circuit is a sequence of path chosen such that traversal makes use of
 ## Euler Circuit.
 For each in-edge for a vertex $v$, there should be an outgoing edge as well: i.e., the degree $D(v)$ of each vertex should be even (i.e, $D(u)\equiv\ 0\pmod{2}$).
 
-The above results is for a undirected graph. If the graph is directed, then in-degree (say $D_i(u)$) should be the same as out-degree (say $D_o(u)$).
+The above results is for a undirected graph. If the graph is directed, then in-degree (say $D_i(u)$) should be the same as out-degree $D_o(u)$.
 
 This is a circuit since after using each edge, we end up back to same starting vertex.
 
@@ -40,6 +40,7 @@ I=\left\lbrace\begin{matrix}
 1&2&3&2&3&2&3&2&3&2&1&2&3&2&1&2&3&2&3&2&3&4&3&4&3&2&1
 \end{matrix}\right\rbrace
 $$
+
 The size of this array $I$ would be exactly $2\cdot n-1$.
 
 ### Proof for $|I|=2\cdot n-1$.

@@ -233,12 +233,13 @@ We define prime number $x$ as numbers whose factors are $1$ and the number $x$ i
 Let factors of a number $n$ be:
 
 $$
-F(n) = \{x:x\in\mathbb{N},\ x\leq n,\ n\equiv0\ (\bmod{x})\}
+F(n) = \lbracex:x\in\mathbb{N},\ x\leq n,\ n\equiv0\ (\bmod{x})\rbrace
 $$
 
 Then **prime numbers** can be defined as:
 
-$$\mathbb{P} = \{x:\ x\in \mathbb{N},\ x \neq1,\ F(x) = \{1,\ x\}\ \}$$
+$$\mathbb{P} = \lbrace x:\ x\in \mathbb{N},\ x \neq1,\ F(x) = \lbrace1,x\rbrace \rbrace$$
+
 The numbers that doesn't satisfy these conditions (except $n=1$) are called composite numbers.
 
 ```python
@@ -267,7 +268,8 @@ def prime(n: int) -> bool:
 #### Composite numbers 
 These are the number which have a divisor(s) other than $1$ and $n$.
 
-$$C = \{x:\ x\in \mathbb{N}\ \textrm{and }x\notin P - \{1\}\ \}$$
+$$C = \lbrace x:\ x\in \mathbb{N}\ \textrm{and }x\notin P - \lbrace 1\rbrace\rbrace$$
+
 Number $1$ is neither a prime or composite.
 
 Below program finds all the factors of any values (except $1$ and $n$ itself) in $O(\sqrt{n})$ time.

@@ -79,7 +79,7 @@ $$
 It's alternate definition is a matrix when transpose is the same as original matrix: i.e., $A^T=A$.
 
 ### Upper/lower/diagonal triangular matrix:
-An upper triangular matrix is defined as matrix where $A_{ij}=0$ when $i>j$.
+An upper triangular matrix is defined as matrix where $A_{ij}=0$ when $i > j$.
 
 $$
 A=\begin{bmatrix}
@@ -90,7 +90,7 @@ A=\begin{bmatrix}
 \end{bmatrix}
 $$
 
-An lower triangular matrix is defined as matrix where $A_{ij}=0$ when $i<j$.
+An lower triangular matrix is defined as matrix where $A_{ij}=0$ when $i < j$.
 
 $$
 A=\begin{bmatrix}
@@ -277,10 +277,24 @@ $$
 
 These are then computed recursively.
 
-For e.g., for $3\times 3$ matrix $A=\begin{bmatrix}1&2&3\\4&5&6\\7&8&9\end{bmatrix}$, 
+For e.g., for $3\times 3$ matrix suppose:
 
 $$
-\det(A)=1\cdot \begin{vmatrix}5&6\\8&9\end{vmatrix}-2\cdot\begin{vmatrix}4&6\\7&9\end{vmatrix}+3\cdot\begin{vmatrix}4&5\\7&8\end{vmatrix}=1\cdot(45-48)-2\cdot(36-42)+3\cdot(32-35)=0
+A=\begin{bmatrix}1&2&3\\
+4&5&6\\ 
+7&8&9\end{bmatrix}
+$$
+
+$$
+\det(A)=1\cdot \begin{vmatrix}5&6\\
+8&9\end{vmatrix}-
+2\cdot
+\begin{vmatrix}4&6\\
+7&9\end{vmatrix}+
+3\cdot\begin{vmatrix}4&5\\
+7&8\end{vmatrix}
+=1\cdot(45-48)-2\cdot(36-42)+3\cdot(32-35)
+=0
 $$
 
 ## Minor
@@ -316,22 +330,50 @@ $$
 A row can be multiplied by a single scalar number:
 
 $$
-\begin{matrix}R_1\\R_2\\R_3\end{matrix}\begin{bmatrix}
-1&7&6\\2&3&10\\7&6&12
-\end{bmatrix}\xrightarrow{R_2\rightarrow R_2\cdot 2}
-\begin{matrix}R_1\\R_2\\R_3\end{matrix}\begin{bmatrix}
-1&7&6\\4&6&20\\7&6&12
+\begin{matrix}
+R_1\\
+R_2\\
+R_3
+\end{matrix}\begin{bmatrix}
+1&7&6\\
+2&3&10\\
+7&6&12
+\end{bmatrix}
+\xrightarrow{R_2\rightarrow R_2\cdot 2}
+\begin{matrix}
+R_1\\
+R_2\\
+R_3
+\end{matrix}
+\begin{bmatrix}
+1&7&6\\
+4&6&20\\
+7&6&12
 \end{bmatrix}
 $$
 ### Adding rows
 Two rows can be added (with a scalar) and merged with the result
 
 $$
-\begin{matrix}R_1\\R_2\\R_3\end{matrix}\begin{bmatrix}
-1&7&6\\2&3&10\\7&6&12
-\end{bmatrix}\xrightarrow{R_2\rightarrow R_2+1\cdot R_1}
-\begin{matrix}R_1\\R_2\\R_3\end{matrix}\begin{bmatrix}
-1&7&6\\3&10&16\\7&6&12
+\begin{matrix}
+R_1\\
+R_2\\
+R_3\end{matrix}
+\begin{bmatrix}
+1&7&6\\
+2&3&10\\
+7&6&12
+\end{bmatrix}
+\xrightarrow{R_2\rightarrow R_2+1\cdot R_1}
+\begin{matrix}
+R_1\\
+R_2\\
+R_3
+\end{matrix}
+\begin{bmatrix}
+1&7&6\\
+3&10&16\\
+7&6&12
 \end{bmatrix}
 $$
 

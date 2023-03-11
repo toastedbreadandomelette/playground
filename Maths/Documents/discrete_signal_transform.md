@@ -21,7 +21,7 @@ $$
 Discrete Fourier Transform (DFT) is an operation on finite and equally separated values (or say function $f$) to complex - valued function.
 
 This term is frequently used with Fast Fourier Transform (FFT).
-Discrete Fourier Transform of set of points $X = \{x_0,x_1,\ldots,x_{n-1}\}$, i.e., $X'=\{x'_0,x'_1,\ldots,x'_{n-1}\}$.
+Discrete Fourier Transform of set of points $X = \lbrace x_0,x_1,\ldots,x_{n-1}\rbrace \rightarrow X'=\lbrace x'_0,x'_1,\ldots,x'_{n-1}\rbrace$.
 
 $$
 x'_k=\sum_{p=0}^{N-1}x_p\cdot \exp\left(-i\cdot2\pi\cdot k\cdot \dfrac{p}{N}\right)
@@ -121,7 +121,7 @@ where
 Fast - Fourier Transform (FFT) is a technique used to solve DFT operation (or IDFT).
 
 **1**. **Divide**.
-This is done by dividing values (considering it as polynomial of degree $N-1$), into odd and even coefficient for array of values $A=\{a_0,a_1,\ldots,a_{n-1}\}$.
+This is done by dividing values (considering it as polynomial of degree $N-1$), into odd and even coefficient for array of values $A=\lbrace a_0,a_1,\ldots,a_{n-1}\rbrace$.
 
 i.e., For polynomial
 

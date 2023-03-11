@@ -300,9 +300,8 @@ $$
 
 would be a better approximate value than $x_{n-1}$. The above equation is derived by solving for $x_n$:
 
-$$
-f'(x_{n-1}) = \frac{f(x_{n-1}) - 0}{x_{n-1} - x_{n}}
-$$
+$$f'(x_{n-1}) = \frac{f(x_{n-1}) - 0}{x_{n-1} - x_{n}}$$
+
 Starting from $x_0$ (which can be an arbitrary value, but the closer to zero, the better), we evaluate the method till certain condition is satisfied (the below solution keeps the precision check upto $10^{-18}$).
 
 For solving $x^2 - n = 0$,
