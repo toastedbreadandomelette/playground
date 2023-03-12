@@ -556,15 +556,21 @@ pub fn ifft(arr: &Vec<Complex>) -> Vec<f64> {
         .collect::<Vec<f64>>()
 }
 
+#[test]
+pub fn test_fft_and_ifft() {
+    let sz = 1048576;
+    let inp = (0..sz).into_iter().map(|x| x as f64).collect::<Vec<f64>>();
+    let val = fft::<f64>(&inp);
+    let orig: Vec<f64> = ifft(&val);
+
+    assert!(orig
+        .iter()
+        .enumerate()
+        .all(|(index, elem)| *elem - inp[index] < 1E-5_f64));
+}
+
 pub fn main() {
     let sz = 1048576;
     let val = fft::<f64>(&(0..sz).into_iter().map(|x| x as f64).collect::<Vec<f64>>());
-    // for x in &val {
-    //     print!("({:.4}), ", x);
-    // }
-    println!("");
     let orig: Vec<f64> = ifft(&val);
-    // for x in orig {
-    //     print!("({:.1}), ", x);
-    // }
 }
