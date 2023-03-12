@@ -4,7 +4,7 @@ from scipy import linalg, fft
 # import pandas as pd
 # import polars as pl
 
-sz = 32
+sz = 24
 # c = np.full((sz, sz, sz), 1.02)
 # print(c)
 # p = np.array([[[[np.arange(i + j, i + j + sz * (i + j), (i + j))
