@@ -58,7 +58,7 @@ pub mod complex {
         pub real: f64,
         pub img: f64,
     }
-    // More impls
+    // More impls covered in Maths/SignalTransform/complex.rs
 }
 
 use std::ops::{AddAssign, Mul};
@@ -142,14 +142,13 @@ $$
 Then we perform DFT (or FFT if it can be divided evenly again) on these separately. This is done till size of the array is 2.
 
 **2**. **Combine**
+- [ ] Todo: Proper explaination
+
 To combine these values; consider an evaluated DFT of $p$ size (say). Combining these values in $A'$ array:
 
 Combining two vectors: $A_{\text{odd}}$ and $A_{\text{even}}$.
 
-$$
-A'_x=A_{\text{odd}}
-$$
-- [ ] Todo: Proper explaination
+$$A'_x=A_{\text{odd}}$$
 
 ```rust
 pub fn idft_complex(arr: &Vec<Complex>) -> Vec<Complex> {
@@ -180,6 +179,7 @@ where
     if arr.len() < 16 || arr.len() & 1 == 1 {
         dft(arr)
     } else {
+	    // Split into even and odd indices
         let even = (0..arr.len())
             .step_by(2)
             .map(|x| arr[x])
@@ -189,9 +189,11 @@ where
             .map(|x| arr[x])
             .collect::<Vec<T>>();
 
+		// Split into odd and even Transform
         let odd_fft = fft(&odd);
         let even_fft = fft(&even);
 
+		// Combine the results
         let angle = 2.0 * PI / (arr.len() as f64);
         let wlen = Complex::new(angle.cos(), -angle.sin());
         let mut w = wlen;
@@ -209,6 +211,7 @@ pub fn ifft_internal(arr: &Vec<Complex>) -> Vec<Complex> {
     if arr.len() < 16 || arr.len() & 1 == 1 {
         idft_complex(arr)
     } else {
+	    // Split into even and odd indices
         let even = (0..arr.len())
             .step_by(2)
             .map(|x| arr[x])
@@ -218,9 +221,11 @@ pub fn ifft_internal(arr: &Vec<Complex>) -> Vec<Complex> {
             .map(|x| arr[x])
             .collect::<Vec<Complex>>();
 
+		// Split into odd and even Transform
         let odd_fft = ifft_internal(&odd);
         let even_fft = ifft_internal(&even);
 
+		// Combine the results
         let angle = 2.0 * PI / (arr.len() as f64);
         let wlen = Complex::new(angle.cos(), -angle.sin());
         let mut w = wlen;
@@ -235,6 +240,7 @@ pub fn ifft_internal(arr: &Vec<Complex>) -> Vec<Complex> {
 }
 
 pub fn ifft(arr: &Vec<Complex>) -> Vec<f64> {
+	// Divide every element of result by size of the array
     ifft_internal(&arr)
         .iter()
         .map(|x| x.real / (arr.len() as f64))

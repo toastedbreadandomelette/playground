@@ -41,7 +41,9 @@ for e.g., $n=m=3$, and matrix $A$:
 
 $$
 \begin{bmatrix}
-9&9&4\\6&6&8\\2&1&1
+9&9&4\\
+6&6&8\\
+2&1&1
 \end{bmatrix}
 $$
 

@@ -360,9 +360,7 @@ def sqrt(n: float) -> int:
 
 An integer square root can be defined as
 
-$$
-\textrm{isqrt}(n) = \lfloor\sqrt{n}\rfloor
-$$
+$$\textrm{isqrt}(n) = \lfloor\sqrt{n}\rfloor$$
 
 In this case, the algorithm can be terminated when value of $x_n = 0.$
 
