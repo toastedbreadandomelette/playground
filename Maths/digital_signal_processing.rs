@@ -484,12 +484,11 @@ pub fn idft_complex(arr: &Vec<Complex>) -> Vec<Complex> {
     }
 
     result
-        .iter()
-        .map(|x| *x / (result.len() as f64))
-        .collect::<Vec<Complex>>()
 }
 
-pub fn fft<T: From<T> + AddAssign + Mul + Copy + complex::Number>(arr: &Vec<T>) -> Vec<Complex>
+pub fn fft<T: From<T> + AddAssign + Mul + Copy + complex::Number + std::default::Default>(
+    arr: &Vec<T>,
+) -> Vec<Complex>
 where
     f64: From<T>,
 {
@@ -510,8 +509,8 @@ where
 
         let angle = 2.0 * PI / (arr.len() as f64);
         let wlen = Complex::new(angle.cos(), -angle.sin());
-        let mut w = wlen;
-        let mut result: Vec<Complex> = Vec::with_capacity(arr.len());
+        let mut w = Complex::new(1.0, 0.0);
+        let mut result: Vec<Complex> = vec![Complex::new(0.0, 0.0); arr.len()];
         for x in 0..(arr.len() / 2) {
             result[x] = even_fft[x] + odd_fft[x] * w;
             result[x + arr.len() / 2] = even_fft[x] - odd_fft[x] * w;
@@ -534,19 +533,16 @@ pub fn ifft_internal(arr: &Vec<Complex>) -> Vec<Complex> {
             .map(|x| arr[x])
             .collect::<Vec<Complex>>();
 
-        let odd_fft = ifft(&odd);
-        let even_fft = ifft(&even);
+        let odd_fft = ifft_internal(&odd);
+        let even_fft = ifft_internal(&even);
 
         let angle = 2.0 * PI / (arr.len() as f64);
-        let wlen = Complex::new(angle.cos(), -angle.sin());
-        let mut w = wlen;
-        let mut result: Vec<Complex> = Vec::with_capacity(arr.len());
+        let wlen = Complex::new(angle.cos(), angle.sin());
+        let mut w = Complex::new(1.0, 0.0);
+        let mut result: Vec<Complex> = vec![Complex::new(0.0, 0.0); arr.len()];
         for x in 0..(arr.len() / 2) {
             result[x] = even_fft[x] + odd_fft[x] * w;
             result[x + arr.len() / 2] = even_fft[x] - odd_fft[x] * w;
-            result[x] /= 2;
-            result[x + arr.len() / 2] /= 2;
-
             w *= wlen;
         }
         result
@@ -556,18 +552,19 @@ pub fn ifft_internal(arr: &Vec<Complex>) -> Vec<Complex> {
 pub fn ifft(arr: &Vec<Complex>) -> Vec<f64> {
     ifft_internal(&arr)
         .iter()
-        .map(|x| x.real.into())
+        .map(|x| x.real / (arr.len() as f64))
         .collect::<Vec<f64>>()
 }
 
 pub fn main() {
-    let val = fft::<f64>(&(0..31).into_iter().map(|x| x as f64).collect::<Vec<f64>>());
-    for x in &val {
-        print!("({:.4}), ", x);
-    }
+    let sz = 1048576;
+    let val = fft::<f64>(&(0..sz).into_iter().map(|x| x as f64).collect::<Vec<f64>>());
+    // for x in &val {
+    //     print!("({:.4}), ", x);
+    // }
     println!("");
     let orig: Vec<f64> = ifft(&val);
-    for x in orig {
-        print!("({:.1}), ", x);
-    }
+    // for x in orig {
+    //     print!("({:.1}), ", x);
+    // }
 }
