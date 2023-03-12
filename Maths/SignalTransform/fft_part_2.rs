@@ -210,6 +210,20 @@ pub fn test_fft_ifft() {
 }
 
 #[test]
+pub fn test_fft_ifft_small() {
+    for sz in vec![8, 16, 24, 32, 40, 48, 56, 64, 72, 80] {
+        let inp = (0..sz).into_iter().map(|x| x as f64).collect::<Vec<f64>>();
+        let val = fast_fft::<f64>(&inp);
+        let orig: Vec<f64> = fast_ifft(&val);
+
+        assert!(orig
+            .iter()
+            .enumerate()
+            .all(|(index, elem)| *elem - inp[index] < 1E-5_f64));
+    }
+}
+
+#[test]
 pub fn test_fft_ifft_without_2_power() {
     let sz = 524288 + 262144;
     let inp = (0..sz).into_iter().map(|x| x as f64).collect::<Vec<f64>>();
