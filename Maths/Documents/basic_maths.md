@@ -94,13 +94,14 @@ The solution is square of first $n$ sum $\dfrac{n(n+1)}{2}$.
 
 ---
 ## Sum of first $n$ triangular number
+
 Let's consider $S_n$ as sum of first triangular numbers
 
-$$\begin{matrix}{S_n &=& \sum\limits_{i=1}^{n}\left(\dfrac{i\cdot(i+1)}{2}\right)\\
+$$\begin{array}{cl}S_n &=& \sum\limits_{i=1}^{n}\left(\dfrac{i\cdot(i+1)}{2}\right)\\
 \implies S_n&=&1+3+6+10+\ldots +\dfrac{n(n+1)}2\\
 2\cdot S_n&=&\sum\limits_{i=1}^{n}i^2+\sum\limits_{i=1}^{n}i\\
 S_n&=&\dfrac{1}2\left(\dfrac{n\cdot(n+1)\cdot(2n+1)}{6}+\dfrac{n\cdot(n+1)}2\right)\\
-S_n&=&\dfrac{n(n+1)(n+2)}{6}\end{matrix}
+S_n&=&\dfrac{n(n+1)(n+2)}{6}\end{array}
 $$
 
 The difference between sum of first $n$ squared and first $n$ triangular numbers:
