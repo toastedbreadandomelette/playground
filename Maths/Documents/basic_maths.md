@@ -235,7 +235,7 @@ We define prime number $x$ as numbers whose factors are $1$ and the number $x$ i
 Let factors of a number $n$ be:
 
 $$
-F(n) = \lbracex:x\in\mathbb{N},\ x\leq n,\ n\equiv0\ (\bmod{x})\rbrace
+F(n) = \lbrace x:x\in\mathbb{N},\ x\leq n,\ n\equiv0\ (\bmod{x})\rbrace
 $$
 
 Then **prime numbers** can be defined as:
