@@ -79,9 +79,9 @@ $$n^4 - (n - 1)^4 = n^4 - (n^4 - 4n^3 + 6n^2 - 4n + 1) = 4n^3 - 6n^2 + 4n - 1 $$
 
 Add first $n$ terms of this identity
 
-$$\begin{array}{cl}n^4&=&4\cdot(1^3 + 2^3 + ... + n^3) - n\cdot(n+1)\cdot(2n+1) + 2n\cdot(n+1) - n\\
+$$\begin{matrix}n^4&=&4\cdot(1^3 + 2^3 + ... + n^3) - n\cdot(n+1)\cdot(2n+1) + 2n\cdot(n+1) - n\\
 4\cdot S &=& n^4+n\cdot(n+1)\cdot(2n+1)-2n\cdot(n+1)+n\\
-4\cdot S &=& n^4+2n^3+n^2+2n^2+n-2n^2-2n+n\end{array}
+4\cdot S &=& n^4+2n^3+n^2+2n^2+n-2n^2-2n+n\end{matrix}
 $$
 
 The final solution
@@ -96,17 +96,18 @@ The solution is square of first $n$ sum $\dfrac{n(n+1)}{2}$.
 ## Sum of first $n$ triangular number
 Let's consider $S_n$ as sum of first triangular numbers
 
-$$\begin{array}{rl}S_n &=& \sum\limits_{i=1}^{n}\left(\dfrac{i\cdot(i+1)}{2}\right)\\
+$$\begin{matrix}{S_n &=& \sum\limits_{i=1}^{n}\left(\dfrac{i\cdot(i+1)}{2}\right)\\
 \implies S_n&=&1+3+6+10+\ldots +\dfrac{n(n+1)}2\\
 2\cdot S_n&=&\sum\limits_{i=1}^{n}i^2+\sum\limits_{i=1}^{n}i\\
 S_n&=&\dfrac{1}2\left(\dfrac{n\cdot(n+1)\cdot(2n+1)}{6}+\dfrac{n\cdot(n+1)}2\right)\\
-S_n&=&\dfrac{n(n+1)(n+2)}{6}\end{array}
+S_n&=&\dfrac{n(n+1)(n+2)}{6}\end{matrix}
 $$
 
 The difference between sum of first $n$ squared and first $n$ triangular numbers:
 
 $$\begin{array}{rll}S^2_n-S_n&=&(1-1)+(4-3)+(9-6)+(16-10)+(25-15)+\ldots +\left(n^2-\frac{(n^2+n)}{2}\right)\\
 \implies S_n^2-S_n&=&S_{n-1}\end{array}$$
+
 Another way to put it as, we fill the spaces of the lower triangle of the next term with the remaining triangle to make it a perfect square:
 
 $$S_{n-1}+S_n=1 +\sum\limits_{i=2}^{n}\left(\frac{i\cdot(i+1)}{2}+\frac{i\cdot(i-1)}{2}\right)=1+\sum\limits_{i=2}^{n}i^2$$
