@@ -29,7 +29,7 @@ graph LR
 
 	C --> H["<div class='display math'>trib(3)</div>"]
 
-	D --> K(["<div class='display math'>trib(0)</div>"]) & L(["<div class='display math'>trib(1)</div>"]) & M(["<div class='display math'>trib(0)</div>"])
+	D --> K(["<div class='display math'>trib(2)</div>"]) & L(["<div class='display math'>trib(1)</div>"]) & M(["<div class='display math'>trib(0)</div>"])
 
 	E --> O(["<div class='display math'>trib(2)</div>"]) & P(["<div class='display math'>trib(1)</div>"])
 
