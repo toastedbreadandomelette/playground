@@ -70,7 +70,7 @@ This type of value storing is useful iff there is a parent-child relationship (t
 
 #### Cumulative function
 
-An array with certain values:$A = \lbrace65,55,34,41,52,26,33,30,40\rbrace$
+An array with certain values: $A=\lbrace65,55,34,41,52,26,33,30,40\rbrace$
 
 can have a cumulative function (function for first $i$ values in array)
 
@@ -170,9 +170,9 @@ The queries for an array are as defined as display $dq$ and update queries $uq$ 
 
 $$
 \begin{matrix}
-\textrm{dq} &=& \{(L,R):L,R \in \mathbb{W},\ 0\leq L<R\leq |a|\} \\
-\textrm{uq} &=& \{(L,R,\textrm{value}):L,R \in \mathbb{W},\ 0\leq L\leq R\leq |a|\} \\
-\textrm{q}&=&(\textrm{dq}\ \cup\ \textrm{uq})
+Q_d&=&\lbrace(L,R):L,R \in \mathbb{W},\ 0\leq L \lt R\leq |a|\rbrace \\
+Q_u&=&\lbrace(L,R,\textrm{value}):L,R \in \mathbb{W},\ 0\leq L\leq R\leq |a|\rbrace \\
+\textrm{Q}&=&(Q_d\cup U_q)
 \end{matrix}
 $$
 

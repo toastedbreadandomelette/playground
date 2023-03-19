@@ -20,7 +20,8 @@ Note that $\mathbb{N}\subseteq\mathbb{W}\subseteq\mathbb{Z}\subseteq\mathbb{Q}\s
 # Notations:
 
 ## Set builder
-$B=\lbrace n\ |\ n\in\mathbb{N},\ n\equiv 0\pmod{4}\}=\{4,8,12,16,20,\ldots\rbrace$ is a generator/set builder notation.
+
+$B=\lbrace n\ |\ n\in\mathbb{N}, n\equiv 0\pmod{4}\rbrace$ is a generator/set builder notation denoting numbers divisible by 4  (i.e., $B=\lbrace4,8,12,16,20, \ldots\rbrace$ .)
 
 # Functions
 A function or a mapping from a set $A$ to set $B$ is a rule assigning each input from set $A$ to certain element in set $B$.
@@ -35,8 +36,9 @@ Bijective means there is only one pair between one element of set $A$ and one an
 
 ## Surjection
 Surjection of two sets means that for all elements in set $B$, there exists at least one element mapped with set $A$.
-Let $B=\{0,1,4,9,16,\ldots\}$ and $A=\mathbb{Z}$.
-Then $f(x)=x^2$.
+
+Let $B=\lbrace0,1,4,9,16,\ldots\rbrace$ and $A=\mathbb{Z}$. Then $f(x)=x^2$.
+
 Then there are at most two values in set $\mathbb{Z}$ that are mapped to set $B$.
 
 ## Injection

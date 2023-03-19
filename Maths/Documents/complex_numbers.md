@@ -15,8 +15,11 @@ Here $r=\sqrt{a^2+b^2}$ and $\theta=\arctan\left({\dfrac{b}{a}}\right)$.
 This can be easily visualized in a plane, where $r$ is the vector from origin $(0,0)$, to $(a,b)$ and $\theta$ being angle between vector and $X$-Axis.
 
 # Operations
+
 Consider $z_1=a+i\cdot b,\quad z_2=c+i\cdot d$.
+
 ## Conjugate
+
 A conjugate for $z=a+i\cdot b$ is $\bar{z}=a-i\cdot b$. It's a reflection of a vector along $X$-Axis.
 
 ## Addition & Substraction
@@ -71,12 +74,13 @@ We express $e^{i\theta}$ as $\text{cis}(\theta)$ or in angle notation: $\angle\t
 
 The $n$ roots of unity $z^n-1=0$ are:
 
-$$z^{1/n}=\text{cis}\left(\dfrac{2\pi p}{n}\right),\quad 0\leq p<n,\ r=1$$
+$$z^{1/n}=\text{cis}\left(\dfrac{2\pi p}{n}\right),\quad 0\leq p\lt n,\ r=1$$
 
 These are also denoted by $\omega_n^p=\text{cis}\left(\dfrac{2\pi p}{n}\right)$. 
 
 ### Some results:
-1. $\omega_{dn}^{dp}=\text{cis}\left(\dfrac{2\pi \not{d}\cdot p}{\not{d}\cdot n}\right)=\text{cis}\left(\dfrac{2\pi p}{n}\right)=\omega_n^p$.
+
+1. $\omega_{dn}^{dp}=\text{cis}\left(\dfrac{2\pi\cdot dp}{dn}\right)=\text{cis}\left(\dfrac{2\pi p}{n}\right)=\omega_n^p$.
 2. $\forall\ n\in N,\ n\equiv0\pmod{2},\ \omega_n^{n/2}=\cos(\pi)+i\cdot \sin(\pi)=-1+i\cdot 0 =-1$ 
 3. $\forall\ n\in N,\ n\equiv0\pmod{2}$
 	- $(\omega_n^{p})^2=e^{2\pi p\cdot 2/n}=e^{\dfrac{2\pi p}{n/2}}=\omega_{n/2}^{p}$ 

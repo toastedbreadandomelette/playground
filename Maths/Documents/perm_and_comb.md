@@ -10,7 +10,7 @@ Generalizing for $n$ and $r$, ${}^nP_r=\dfrac{n!}{(n-r)!}$, where $n!$ is a [[ba
 ### Note:
 1. Arranging $n$ items where $m_1$ are of same kind, $m_2$ are of same kind (and so on): ${}^nP_r=\dfrac{n!}{(n-r)!\cdot m_1!\cdot m_2!\cdot \cdots}$. (Here, $m_1+m_2+\cdot+m_k\leq r\leq n$). This are called multiset permutation.
 2. Permutation of $n$ objects in circle: $(n-1)!$
-	1. A way to summarise: in a circle, performing $n!$ will count rotations which are pointless when arranged in a circle: (e.g., in a set $A=\{1,2,3,4\}$, looking at permutations $\{1,2,3,4\},\ \{2,3,4,1\},\ \{3,4,1,2\},\ \{4,1,2,3\}$, starting from $1$ the sequence looks same). So, we'll divide total permutation by number of rotations for a particular sequence to remove counting this sequences.
+	1. A way to summarise: in a circle, performing $n!$ will count rotations which are pointless when arranged in a circle: (e.g., in a set $A=\lbrace1,2,3,4\rbrace$, looking at permutations $\lbrace1,2,3,4\rbrace,\ \lbrace2,3,4,1\rbrace,\ \lbrace3,4,1,2\rbrace,\ \lbrace4,1,2,3\rbrace$, starting from $1$ the sequence looks same). So, we'll divide total permutation by number of rotations for a particular sequence to remove counting this sequences.
 		i.e., $P=\dfrac{\text{Total Permutations}}{\text{Arrangement Set Size (to remove rotations)}}=\dfrac{n!}{n}=(n-1)!$.
 3. Extending this: permutation of $r$ items out of $n$ in a circle: $\dfrac{{}^nP_r}r$. 
 	Another way to look at this is selecting $r$ out of $n$ objects and permutation of such $r$ objects in a circle: 
@@ -229,7 +229,7 @@ $$
 \dbinom{n+1}{i,j,k}=\dbinom{n}{i-1,j,k}+\dbinom{n}{i,j-1,k}+\dbinom{n}{i,j,k-1}
 $$
 
-Here, $0 < (i, j, k) < n$. One look at the recursive definition and the problem can be rephrased as: Find ways in a $3$-D Maze to move from top left ($(x,y,z)=(0,0,0)$) to opposite right bottom ($(x,y,z)=(m,n,p),\ m,n,p\in\mathbb{N}$), where only three moves are allowed: right ($X$ Axis), down ($Y$-Axis) or away ($Z$-Axis).
+Here, $0\lt (i, j, k)\lt n$. One look at the recursive definition and the problem can be rephrased as: Find ways in a $3$-D Maze to move from top left i.e., $(x,y,z)=(0,0,0)$ to opposite right bottom ($(x,y,z)=(m,n,p),\ m,n,p\in\mathbb{N}$), where only three moves are allowed: right ($X$ Axis), down ($Y$-Axis) or away ($Z$-Axis).
 
 A recurrence relation for pascal pyramid is:
 

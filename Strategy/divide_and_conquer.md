@@ -12,13 +12,16 @@ Considering matrices $A$ and $B$:
 $$
 \begin{array}{cc}
 A=\begin{bmatrix}
-A_{11}&A_{12}\\A_{21}&A_{22}
+A_{11}&A_{12}\\
+A_{21}&A_{22}
 \end{bmatrix}&
 B=\begin{bmatrix}
-B_{11}&B_{12}\\B_{21}&B_{22}
+B_{11}&B_{12}\\
+B_{21}&B_{22}
 \end{bmatrix}&
 C=\begin{bmatrix}
-C_{11}&C_{12}\\C_{21}&C_{22}
+C_{11}&C_{12}\\
+C_{21}&C_{22}
 \end{bmatrix}&
 \end{array}
 $$
@@ -27,7 +30,8 @@ The resultant $C$ is evaluated by multiplying submatices 8 times:
 
 $$
 C=\begin{bmatrix}
-C_{11}&C_{12}\\C_{21}&C_{22}
+C_{11}&C_{12}\\
+C_{21}&C_{22}
 \end{bmatrix}=\begin{bmatrix}
 A_{11} B_{11}+A_{12}B_{21}&A_{11}B_{12}+A_{12}B_{22}\\
 A_{21} B_{11}+A_{22}B_{21}&A_{21}B_{12}+A_{22}B_{22}\\

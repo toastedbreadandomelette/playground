@@ -317,11 +317,18 @@ There are three operations we can perform:
 Any rows can be swapped with a different rows to serve the purpose:
 
 $$
-\begin{matrix}R_1\\R_2\\R_3\end{matrix}\begin{bmatrix}
-1&7&6\\2&3&10\\7&6&12
+\begin{matrix}R_1\\
+R_2\\
+R_3\end{matrix}
+\begin{bmatrix}
+1&7&6\\
+2&3&10\\
+7&6&12
 \end{bmatrix}\xrightarrow{R_1\leftrightarrow R_3}
 \begin{bmatrix}
-7&6&12\\2&3&10\\1&7&6
+7&6&12\\
+2&3&10\\
+1&7&6
 \end{bmatrix}
 $$
 

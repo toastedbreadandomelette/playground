@@ -8,12 +8,12 @@ The pre-requisite is the graph $G$ should be DAG (Directed Acyclic Graph). $\imp
 
 ### Explaination: 
 
-$\forall\ v\in V$, we perform the following operations (say $\text{dfs}(v,V_s,C=\lbrace\rbrace)$):
+$\forall\ v\in V$, we perform the following operations, say $\text{dfs}(v,V_s,C=\lbrace\rbrace)$ 
 	- If $v\in C$ then we exit. 
 	- otherwise, we put $v$ into visited set $V_s$ and cycle set $C$
 	- For each neighbor of vertex $v$ (say $nv$)
 		- we perform $\text{dfs}(nv,V_s,C)$ if $nv\notin V_s$.
-		- if the $\text{dfs}$ is exited, we do not explore since there would be no way to sort these vertices.
+		- if we return from method $\text{dfs}$, we do not explore since there would be no way to sort these vertices.
 
 ```python
 def topological_sorting(adj_matrix: list) -> list:

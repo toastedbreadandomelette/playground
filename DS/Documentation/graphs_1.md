@@ -4,7 +4,7 @@ Graphs are a form of info that are denoted by connection between data (edge set 
 $$
 \begin{matrix}
 G=(E, V)\\
-E=\{(x,y,w): x,y\in V,\ w\in \mathbb{R}\}
+E=\lbrace(x,y,w): x,y\in V,\ w\in \mathbb{R}\rbrace
 \end{matrix}
 $$
 
@@ -84,7 +84,7 @@ graph LR
 This is an example of a [[trees|tree]].
 
 ### Degree of a vertex.
-1. Degree $D(u)$: for an undirected graph $G$, degree of vertex $u$ is defined as $\left|\{x: (x,y)\in E,\  (x=u)\ \vee\ (y=u)\}\right|$, i.e., number (or cardinality) of different vertices connected to $u$ in set of $E$.
+1. Degree $D(u)$: for an undirected graph $G$, degree of vertex $u$ is defined as $\left|\lbrace x: (x,y)\in E,\  (x=u)\ \vee\ (y=u)\rbrace\right|$, i.e., number (or cardinality) of different vertices connected to $u$ in set of $E$.
 
 # Types of graphs
 
@@ -168,13 +168,7 @@ Definition, $\forall (u,v)$, if $u$ and $v$ are connected and $(u,v)\in E$, then
 Undirected graphs makes a symmetrical matrix representation.
 
 ## Regular Graphs
-Regular graphs are defined as graph constructed such that 
-
-$$
-\forall\ u\in V, D(u)=x,\ x \in N,\ x\leq|V|-1
-$$
-
-(i.e., graphs in which each vertex has same degree of connectivity.)
+Regular graphs are defined as graph constructed such that  $\forall\ u\in V, D(u)=x,\ x \in N,\ x\leq|V|-1.$ (i.e., graphs in which each vertex has same degree of connectivity.)
 
 ## Connected Graphs
 If the graphs has at least one path from each pair $u$ and $v$ in graph $G$, then the graph $G$ is complete.
@@ -186,7 +180,7 @@ $$
 where $P(u,v)$ is a set of paths from vertex $u$ to $v$ and $|P(u,v)|$ is number of paths for the same.
 
 ## Weighted Graph
-A weighted graph is defined as set of edges with a certain value assigned $E=\{(u,v,w): u\in V, v\in V, w \in \mathbb{R}\}$. 
+A weighted graph is defined as set of edges with a certain value assigned $E=\lbrace(u,v,w): u\in V, v\in V, w \in \mathbb{R}\rbrace$. 
 
 Mostly we denote it as weight or cost of that edge (in Prim/Kruskal and Djikstra, we use them to minimize tree cost/distance between two vertices respectively). 
 
