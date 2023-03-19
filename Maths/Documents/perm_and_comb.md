@@ -369,7 +369,7 @@ RHS&=&\dfrac{n!}{\prod\limits_{i=1}^m(k_i-1)!}\cdot\left(\dfrac{1}{k_2\cdot k_3\
 \end{array}
 $$
 
-Similarly, a recurrence relation of $K=\{k_1,k_2,\ldots,k_m\}$will be:
+Similarly, a recurrence relation of $K=\{k_1,k_2,\ldots,k_m\}$ will be:
 
 $$
 P(n,k_1,k_2,\ldots,k_m)=\begin{cases}

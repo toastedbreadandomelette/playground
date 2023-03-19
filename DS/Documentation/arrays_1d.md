@@ -91,7 +91,7 @@ $$
 
 These are called **suffix sums**. Generalizing this: prefix operations for subsegment $A[0\ldots i]$
 
-	$$ \text{pf}(A_i) = f(A_0,\ A_1,\ \ldots,\ A_i)$$
+$$\text{pf}(A_i) = f(A_0,\ A_1,\ \ldots,\ A_i)$$
 
 and suffix operations for subsegment $A[i\ldots n]$
 
