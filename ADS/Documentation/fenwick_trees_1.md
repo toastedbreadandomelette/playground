@@ -7,7 +7,9 @@ We generally use [[arrays_1d|arrays]] to construct fenwick trees.
 Fenwick trees are also called binary-indexed trees: i.e., the fenwick trees uses bits of index to calculate/store the values. We'll be working on $0$-based indexing
 
 The way this work is: for indices of the form $i=\ldots\underbrace{1111111}_{p \text{ digits}}$ (that are trailing with ones), the tree $F$ will compute and store cumulative function of all the previous $2^p$ values (from index $i-2^p+1$ to $i$ both inclusive) in index $i$ of tree $F$.
-Starting with $i=4_{10}=100_2$ till $i<|A|$, the value of $A_i$ will be stored in these mentioned indices:
+
+Starting with $i=4_{10}=100_2$ till $i\lt |A|$, the value of $A_i$ will be stored in these mentioned indices:
+
 $$
 \begin{array}{cl}
 i=i\ |\ (i+1)=5_{10}=101_2\\
@@ -17,6 +19,7 @@ i=i\ |\ (i+1)=15_{10}=1111_2\\
 \end{array}
 $$
 Similarly for index $i=16=10000_2$, the next indices that'll contain the combined values including $A_{16}$ will be:
+
 $$
 \begin{array}{cl}
 i=i\ |\ (i+1)=17_{10}=10001_2\\
@@ -27,22 +30,29 @@ i=i\ |\ (i+1)=63_{10}=111111_2\\
 \vdots
 \end{array}
 $$
+
 The main build algorithm will be:
-$$
-\forall\ i\in[0,|A|),\ F_i=f(A_{i-2^p+1},\ A_{i-2^p+2},\ \ldots, A_{i})
-$$
+
+$$\forall\ i\in[0,|A|),\ F_i=f(A_{i-2^p+1},\ A_{i-2^p+2},\ \ldots, A_{i})$$
+
 where $p$ is a total trailing $1$'s in binary representation of index $i$.
+
 Time complexity of building this fenwick tree $F$ will take $O(n\cdot \log_2n)$ time. 
+
 Below code takes a bit different step though, for every $i$, the subsequent indices tracked by $j$ (starting from $j=i$) are combined as $F_j:=f(F_j, A_i),\ j:=j\ |\ (j+1)$: But the above interpretation remains the same.
 
 ### Proof for complexity: 
+
 Notice that for every index $i$, there are combined results of previous $2^p$ values (value of $p$ is shown above as count of trailing ones).
 The pattern follows from $i=0\rightarrow15$ with count/size of each $F_i$ as: 
 
-$\begin{array}{cl}i_2\rightarrow&0&1&10&11&100&101&110&111&1000&1001&1010&1011&1100&1101&1110&1111\\i_{10}\rightarrow&0&1&2&3&4&5&6&7&8&9&10&11&12&13&14&15&\ldots\\|F_i|\rightarrow&1&2&1&4&1&2&1&8&1&2&1&4&1&2&1&16&\ldots\end{array}$
+$$\begin{array}{cl}i_2\rightarrow&0&1&10&11&100&101&110&111&1000&1001&1010&1011&1100&1101&1110&1111\\
+i_{10}\rightarrow&0&1&2&3&4&5&6&7&8&9&10&11&12&13&14&15&\ldots\\
+|F_i|\rightarrow&1&2&1&4&1&2&1&8&1&2&1&4&1&2&1&16&\ldots\end{array}$$
 
 For e.g., for $i=15$, $F_{16}$ holds results of previous $16$ values. 
 For an array $A$, the total operations (say $P(|A|)$ performed will be:
+
 $$
 P(|A|)=|A|+
 \underbrace{1\cdot\left\lfloor\dfrac{|A|}{2}\right\rfloor}_{\text{1 on i } \equiv 1\pmod{2}}+
@@ -51,21 +61,23 @@ P(|A|)=|A|+
 \cdots+
 \underbrace{2^{k-1}\cdot\left\lfloor\dfrac{|A|}{2^{k}}\right\rfloor}_{2^{k-1}\text{ on i } \equiv 2^k-1\pmod{2^k}}
 $$
-Notice that $\lceil\log_2|A|\rceil-1\leq k\leq\lceil\log_2|A|\rceil$. 
-Removing all the floor operations, we can simplify them as:
-$$
-\begin{array}{cl}
+
+Notice that $\lceil\log_2|A|\rceil-1\leq k\leq\lceil\log_2|A|\rceil$. Removing all the floor operations, we can simplify them as:
+
+$$\begin{array}{cl}
 P(A)&\approx&|A|+\underbrace{\dfrac{|A|}2+\dfrac{|A|}2+\dfrac{|A|}2+\cdots+\dfrac{|A|}2}_{k=\log_2|A| \text{ times}}\\
 &\approx&|A|+|A|\cdot\log_2|A|
-\end{array}
-$$
+\end{array}$$
+
 If each operation of $f$ takes $O(c)$ time, then the overall complexity is $O(c\cdot |A|\cdot \log_2|A|)$. (we consider operations of $f$ constant $O(1), c=1$ since we normally use add/xor operations).
 
 ## Querying ranges $[l,r]$.
+
 To compute the values in the given range $[l,r]$, we'll see how to combine first $n$ results.
 
 We know that the index $i$ in tree $F_i$ contains results of $2^p$ previous values (from $(i-2^p+1)\rightarrow i$). If that's the case all we need is to jump from $i$ to $i-2^p$. We'll denote the result with $Q(i)$.
 E.g., for $i=45_{10}=101101_2\implies Q(i)=f(A_0,A_1,\ldots,A_{45})$. The operations are performed and stored as result (say $R$, initialized with appropriate value) as:
+
 $$
 \begin{array}{ccc}
 \text{op}&\text{index changes}&\text{remarks}\\
@@ -75,11 +87,13 @@ R:=f(R,\ F_{39}),&i:=(i\ \&\ (i+1))-1\ (=31=11111_2)&f(A_{32},\ldots ,A_{45})\te
 R:=f(R,\ F_{31}),&i:=(i\ \&\ (i+1))-1\ (=-1=\underbrace{1111\ldots1111_2}_{32 \text{ bits}})&f(A_{0},\ldots ,A_{45})\text{ performed}
 \end{array}
 $$
+
 This takes $O(\log_2n)$ time for evaluating first $i$ values.
 
 To evaluate the range $l\rightarrow r$, we just have to evaluate $f^{-1}(Q(r), Q(l-1))$.
 
 ### Proof for complexity
+
 Looking at the pattern: the way we jump across indices, we can see that the worst case happens when $i$ has one and only one trailing zero (of the form $\underbrace{11111\ldots111}_{\text{all }1's}0$), and no zeroes in the binary representation elsewhere. This worst case forces to remove $1$'s from the last position one bit at a time. The size of such a binary number is $\log_2i$.
 
 ## Updating value at position $i$.

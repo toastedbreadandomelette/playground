@@ -1,9 +1,8 @@
 # Segment Tree
-Segment trees are a hierarchical data structure (generally stored in [[arrays_1d|arrays]]), to perform range operations ($dq$ and $uq$).
+Segment trees are a hierarchical data structure (generally stored in [[arrays_1d|arrays]]), to perform range operations ($Q_d$ and $Q_u$). This functions can be:
 
-This can be:
 $$
-f = \left\{\begin{array} { c l }
+f = \begin{cases} { c l }
 \sum, & \text{summation}\\
 \prod, & \text{product}\\
 \bigwedge, & \text{and}\\
@@ -14,7 +13,7 @@ f = \left\{\begin{array} { c l }
 \gcd, & \text{gcd of first numbers}\\
 \text{lcm}, & \text{Lowest common Multiple}\\
 \vdots
-\end{array}\right.
+\end{cases}
 $$
 
 The segment tree is more flexible in range operations considering other data structure, because it does not require any inverse operators.
@@ -31,37 +30,37 @@ graph TD
 	o --> r["array[n-1]"] & s["array[n]"]
 ```
 
-For example: consider an array $A=\begin{array}{cl}\{12&192&6&60&12&84&300&36&72\}\end{array}$.
+For example: consider an array $A=\begin{array}{cl}\lbrace12&192&6&60&12&84&300&36&72\rbrace\end{array}$
 
 To create a segment tree for $\gcd{(a,b)}$, it's equivalent segment tree would look something like:
 
 <table>
 	<tr>
-		<td colspan="9" class="math display">6\ [0:8]</td>
+		<td colspan="9" class="math display">6: A[0:8]</td>
 	</tr>
 	<tr>
 		<td colspan="5" class="math display">6: A[0:2,7:8]</td>
-		<td colspan="4" class="math display">12:\ A[3:6]</td>
+		<td colspan="4" class="math display">12: A[3:6]</td>
 	</tr>
 	<tr>
-		<td colspan="3" class="math display">12:\ A[0,7:8]</td>
-		<td colspan="2" class="math display">6:\ A[1:2]</td>
-		<td colspan="2" class="math display">12:\ A[3:4]</td>
-		<td colspan="2" class="math display">12:\ A[5:6]</td>
+		<td colspan="3" class="math display">12: A[0,7:8]</td>
+		<td colspan="2" class="math display">6: A[1:2]</td>
+		<td colspan="2" class="math display">12: A[3:4]</td>
+		<td colspan="2" class="math display">12: A[5:6]</td>
 	</tr>
 	<tr>
-		<td colspan="2" class="math display">36:\ A[7:8]</td>
-		<td class="math display">12:\ A[0]</td>
-		<td class="math display">192:\ A[1]</td>
-		<td class="math display">6:\ A[2]</td>
-		<td class="math display">60:\ A[3]</td>
-		<td class="math display">12:\ A[4]</td>
-		<td class="math display">84:\ A[5]</td>
-		<td class="math display">300:\ A[6]</td>
+		<td colspan="2" class="math display">36: A[7:8]</td>
+		<td class="math display">12: A[0]</td>
+		<td class="math display">192: A[1]</td>
+		<td class="math display">6: A[2]</td>
+		<td class="math display">60: A[3]</td>
+		<td class="math display">12: A[4]</td>
+		<td class="math display">84: A[5]</td>
+		<td class="math display">300: A[6]</td>
 	</tr>
 	<tr>
-		<td class="math display">36:\ A[7]</td>
-		<td class="math display">72:\ A[8]</td>
+		<td class="math display">36: A[7]</td>
+		<td class="math display">72: A[8]</td>
 	</tr>
 </table>
 
@@ -72,9 +71,9 @@ These are $0$-indexed array, and for traversing, operation differs from $1$ inde
 ```
 
 ## Building Segment Tree $S$
-$$
-\forall\ x\in\mathbb{N},\ x\leq n-1:\ S_x=f(S_{2x+1}, S_{2x+2})
-$$
+
+$$\forall\ x\in\mathbb{N},\ x\leq n-1:\ S_x=f(S_{2x+1}, S_{2x+2})$$
+
 where function $f(a,b)$ is the function mentioned above.
 
 ```python
@@ -101,11 +100,9 @@ def build(array: list, combine) -> list:
 ```
 
 ## Querying ranges $[l,r]$
-Query ranges for $A[l\ldots r]$ can be done as follows with $seg$.:
-example: for xor operation: 
-$A=\begin{array}{cl}\{12&192&6&60&12&84&300&36&72\}\end{array}$.
-and $f=\bigoplus\limits_{x=L}^{R}A_x$
-$seg(A,\ f)=[494, 184, 328, 96, 216, 48, 376, 108, 12, 192, 24, 60, 12, 84, 300, 36, 72]$.
+Query ranges for $A[l\ldots r]$ can be done as follows with segment tree $S:$ for xor operations on array: $A=\begin{array}{cl}\lbrace12&192&6&60&12&84&300&36&72\rbrace\end{array}$ , $f=\bigoplus\limits_{x=L}^{R}A_x$
+$S=[494, 184, 328, 96, 216, 48, 376, 108, 12, 192, 24, 60, 12, 84, 300, 36, 72]$.
+
 - Algorithm:
 - while $L\leq R$, do:
 	- If $L$ is on the right branch of segment tree: then
@@ -177,10 +174,7 @@ $uq = \{(L, R, v):\ L=R, 0 \leq L \leq |A|\}$
 We update value $v$ at index $i$ of segment tree $seg$ as:
 - while $i\geq0$, do
 	- if $i=0$, break the loop
-	- update parent of $i$ $\left(p(i)=\left\lfloor\dfrac{i-1}2\right\rfloor\right)$ as:
-$$
-S_{p(i)}=S_{2i+1}+S_{2i+2}
-$$
+	- update parent of $i$ $\left(p(i)=\left\lfloor\dfrac{i-1}2\right\rfloor\right)$ as: $S_{p(i)}=S_{2i+1}+S_{2i+2}$
 ```python
 def update(seg_tree_array: list, n: int, index: int, value: int, combine) -> int:
     """
