@@ -252,7 +252,7 @@ pub fn merge_sort<
 
     // sort 16 length of block by insertion method, then merge
     // them, for that placeholder is the array used to keep them
-    let mut block_size = 16;
+    let mut block_size = 8;
     for x in (0..arr.len()).step_by(block_size) {
         let end = if x + block_size > arr.len() {
             arr.len()
@@ -303,6 +303,9 @@ pub fn merge_sort<
                 //     pptr += 1;
                 //     sptr += 1;
                 // }
+
+                // More optimization, alternating placeholder and arr instead of
+                // doing this.
                 for ret_ptr in start..pptr {
                     arr[ret_ptr] = placeholder[ret_ptr];
                 }
@@ -331,17 +334,15 @@ pub fn test_merge_sort() {
 }
 
 fn main() {
-    let mut s = (0..=10000000)
+    let sz = 10000000;
+    let mut s = (0..=sz)
         .into_iter()
         .rev()
         .map(|x| x as u32)
         .collect::<Vec<u32>>();
     merge_sort(&mut s, &|curr, next| curr < next);
     assert_eq!(
-        s,
-        (0..=10000000)
-            .into_iter()
-            .map(|x| x as u32)
-            .collect::<Vec<u32>>()
+        (0..=sz).into_iter().map(|x| x as u32).collect::<Vec<u32>>(),
+        s
     );
 }

@@ -45,6 +45,9 @@ where
         let ls = ((n ^ (n - 1)) + 1) >> 1;
         let mut indexes: Vec<usize> = vec![0; n];
         let (mut j, mut i) = (1, n);
+        // This shuffling method is done for general FFT method.
+        // If MSB is smaller, this method works faster of the order
+        // n logn, otherwise, runs at O(n2).
         while (i & 1) == 0 {
             for k in (i >> 1)..i {
                 indexes[k] = j;
@@ -141,6 +144,9 @@ where
         let ls = ((n ^ (n - 1)) + 1) >> 1;
         let mut indexes: Vec<usize> = vec![0; n];
         let (mut j, mut i) = (1, n);
+        // This shuffling method is done for general FFT method.
+        // If MSB is smaller, this method works faster of the order
+        // n logn, otherwise, runs at O(n2).
         while (i & 1) == 0 {
             for k in (i >> 1)..i {
                 indexes[k] = j;
@@ -225,7 +231,7 @@ pub fn test_fft_ifft_small() {
 
 #[test]
 pub fn test_fft_ifft_without_2_power() {
-    let sz = 524288 + 262144;
+    let sz = 524288 + 262144 + 131072 + 65536;
     let inp = (0..sz).into_iter().map(|x| x as f64).collect::<Vec<f64>>();
     let val = fast_fft::<f64>(&inp);
     let orig: Vec<f64> = fast_ifft(&val);
