@@ -166,13 +166,13 @@ The path of $i$ is taken from array starting element, moving forward and $j$ fro
 
 ### For solving range queries faster.
 
-The queries for an array are as defined as display $dq$ and update queries $uq$ (modification of a value).
+The queries for an array are as defined as display $Q_d$ and update queries $Q_u$ (modification of a value).
 
 $$
 \begin{matrix}
 Q_d&=&\lbrace(L,R):L,R \in \mathbb{W},\ 0\leq L \lt R\leq |a|\rbrace \\
 Q_u&=&\lbrace(L,R,\textrm{value}):L,R \in \mathbb{W},\ 0\leq L\leq R\leq |a|\rbrace \\
-\textrm{Q}&=&(Q_d\cup U_q)
+Q&=&(Q_d\cup U_q)
 \end{matrix}
 $$
 
