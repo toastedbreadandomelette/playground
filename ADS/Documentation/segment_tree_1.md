@@ -106,7 +106,7 @@ $S=[494, 184, 328, 96, 216, 48, 376, 108, 12, 192, 24, 60, 12, 84, 300, 36, 72]$
 - Algorithm:
 - while $L\leq R$, do:
 	- If $L$ is on the right branch of segment tree: then
-		- we perform $res=f(res,S_L)$ as resultant value, and we move inwards: to the node which is adjacent to the **right** of it's parent: i.e., $p(L)=\left\lfloor\dfrac{L-1}{2}\right\rfloor, \implies L_{new}=p(L)+1$. This is done because we won't be dealing with any values $<L$ related to direct parent $p[L]$.
+		- we perform $res=f(res,S_L)$ as resultant value, and we move inwards: to the node which is adjacent to the **right** of it's parent: i.e., $p(L)=\left\lfloor\dfrac{L-1}{2}\right\rfloor, \implies L_{new}=p(L)+1$. This is done because we won't be dealing with any values $\lt L$ related to direct parent $p[L]$.
 		- otherwise, we move to parent $L_{new}=p(L)$.
 	- If $R$ is on the left branch of segment tree, then:
 		- we perform $res=f(res, S_R)$ as resultant value, and we move inwards to the node which is adjacent to the **left** of it's parent: i.e., $p(R)=\left\lfloor\dfrac{R-1}{2}\right\rfloor, \implies R_{new}=p(R)-1$.
