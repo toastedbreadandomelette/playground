@@ -6,7 +6,7 @@
 The given problem can also be converted into a DFS:
 Let $(i,j)$ tuple be considered as a unique number (for convenience we'll consider transform function $t(i,j,n,m)=i\cdot n+j$), then their adjacent graph $p$ can be computed as:
 
-$$p[t(i,j,n,m)]=\{t(x,y,n,m): (x,y)\in dr, x\in[1,n], y\in[1,m],A_{ij} < A_{xy}\}$$
+$$p[t(i,j,n,m)]=\lbrace t(x,y,n,m): (x,y)\in dr, x\in[1,n], y\in[1,m],A_{ij} < A_{xy}\rbrace$$
 
 This turns out from finding longest path to finding the depth of a directed graph with no cycles. (Cycles in such a graph would not make sense, as it create a paradox; where parent root has value less than a child and the last child linked to root is less than the root; and would be a never ending increasing value). Note that there $\exists\ v: |p[v]|=0$. 
 

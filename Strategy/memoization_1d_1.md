@@ -2,7 +2,7 @@
 Memoization is remembering things to use it in future, with certain values depending on certain condition.
 
 We generally use [[arrays_1d|arrays]] or hash-maps to store the calculated results for next bigger problem.
-To solve such problems we need to identify what are the possible next steps (say from $f(n)$ to $f(n\pm 1)$) to perform: depending on the problem statement, with valid base cases.
+To solve such problems we need to identify what are the possible next steps from $f(n)$ to $f(n\pm k)$ to perform: depending on the problem statement, with valid base cases.
 
 # One Dimensional
 

@@ -3,27 +3,25 @@ Sequence of characters (either ASCII/Unicode UTF-8). These are stored similar to
 
 # Operations
 ## Palindrome
-A recursive definition of palindrome $pldr$ is:
+A recursive definition of palindrome $P$ is:
 
-$$
-pldr(S,L,R) = \begin{cases}
+$$P(S,L,R) = \begin{cases}
 \textrm{true},&\quad L\geq R\\
 \textrm{false},&\quad L<R\wedge S[L]\neq S[R]\\
-pldr(S, L+1, R-1),&\quad L<R\wedge S[L]=S[R]\\
-\end{cases}
-
-$$
+P(S, L+1, R-1),&\quad L<R\wedge S[L]=S[R]\\
+\end{cases}$$
 
 More formal definition of palindrome is a string that reads the same forwards and backwards.
 
 $\therefore$ By this definition
 
 $$
-pldr(S) = \begin{cases}
-	\textrm{true}, & \quad S=\textrm{ reverse}(S)\\
+P(S) = \begin{cases}
+\textrm{true}, & \quad S=\textrm{ reverse}(S)\\
 \textrm{false}, & \quad S \neq\textrm{ reverse}(S)
 \end{cases}
 $$
+
 ```python
 def is_palindrome(string: str) -> bool:
     """
