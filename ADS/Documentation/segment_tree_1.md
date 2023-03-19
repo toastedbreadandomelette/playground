@@ -1,5 +1,5 @@
 # Segment Tree
-Segment trees are a hierarchical data structure (generally stored in [[arrays_1d|arrays]]), to perform range operations ($Q_d$ and $Q_u$). This functions can be:
+Segment trees are a hierarchical data structure (generally stored in [[arrays_1d|arrays]]), to perform range operations on display query $Q_d$ and update query $Q_u$ . This functions can be:
 
 $$
 f = \begin{cases} { c l }
@@ -100,7 +100,11 @@ def build(array: list, combine) -> list:
 ```
 
 ## Querying ranges $[l,r]$
-Query ranges for $A[l\ldots r]$ can be done as follows with segment tree $S:$ for xor operations on array: $A=\begin{array}{cl}\lbrace12&192&6&60&12&84&300&36&72\rbrace\end{array}$ , $f=\bigoplus\limits_{x=L}^{R}A_x$
+Query ranges for $A[l\ldots r]$ can be done as follows with segment tree $S:$ for xor operations on array: 
+
+$$A=\begin{array}{cl}\lbrace12&192&6&60&12&84&300&36&72\rbrace\end{array}$$
+With the function $f=\bigoplus\limits_{x=L}^{R}A_x$, the segment tree becomes:
+
 $S=[494, 184, 328, 96, 216, 48, 376, 108, 12, 192, 24, 60, 12, 84, 300, 36, 72]$.
 
 - Algorithm:
