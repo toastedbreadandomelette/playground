@@ -10,26 +10,23 @@ The way this work is: for indices of the form $i=\ldots\underbrace{1111111}_{p \
 
 Starting with $i=4_{10}=100_2$ till $i\lt |A|$, the value of $A_i$ will be stored in these mentioned indices:
 
-$$
-\begin{array}{cl}
+$$\begin{array}{cl}
 i=i\ |\ (i+1)=5_{10}=101_2\\
 i=i\ |\ (i+1)=7_{10}=111_2\\
 i=i\ |\ (i+1)=15_{10}=1111_2\\
 \vdots& \text{indices of form } \ldots111 (|\log_2|A||\text{ times) will continue}
-\end{array}
-$$
+\end{array}$$
+
 Similarly for index $i=16=10000_2$, the next indices that'll contain the combined values including $A_{16}$ will be:
 
-$$
-\begin{array}{cl}
+$$\begin{array}{cl}
 i=i\ |\ (i+1)=17_{10}=10001_2\\
 i=i\ |\ (i+1)=19_{10}=10011_2\\
 i=i\ |\ (i+1)=23_{10}=10111_2\\
 i=i\ |\ (i+1)=31_{10}=11111_2\\
 i=i\ |\ (i+1)=63_{10}=111111_2\\
 \vdots
-\end{array}
-$$
+\end{array}$$
 
 The main build algorithm will be:
 
@@ -48,7 +45,8 @@ The pattern follows from $i=0\rightarrow15$ with count/size of each $F_i$ as:
 
 $$\begin{array}{cl}i_2\rightarrow&0&1&10&11&100&101&110&111&1000&1001&1010&1011&1100&1101&1110&1111\\
 i_{10}\rightarrow&0&1&2&3&4&5&6&7&8&9&10&11&12&13&14&15&\ldots\\
-|F_i|\rightarrow&1&2&1&4&1&2&1&8&1&2&1&4&1&2&1&16&\ldots\end{array}$$
+|F_i|\rightarrow&1&2&1&4&1&2&1&8&1&2&1&4&1&2&1&16&\ldots
+\end{array}$$
 
 For e.g., for $i=15$, $F_{16}$ holds results of previous $16$ values. 
 For an array $A$, the total operations (say $P(|A|)$ performed will be:
