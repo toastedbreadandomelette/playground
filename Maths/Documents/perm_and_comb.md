@@ -229,17 +229,19 @@ $$
 \dbinom{n+1}{i,j,k}=\dbinom{n}{i-1,j,k}+\dbinom{n}{i,j-1,k}+\dbinom{n}{i,j,k-1}
 $$
 
-Here, $0\lt (i, j, k)\lt n$. One look at the recursive definition and the problem can be rephrased as: Find ways in a $3$-D Maze to move from top left i.e., $(x,y,z)=(0,0,0)$ to opposite right bottom ($(x,y,z)=(m,n,p),\ m,n,p\in\mathbb{N}$), where only three moves are allowed: right ($X$ Axis), down ($Y$-Axis) or away ($Z$-Axis).
+Here, $0\lt (i, j, k)\lt n$. One way to look at this recursive definition and the problem can be rephrased as: Find ways in a $3$-D Maze to move from top left i.e., $(x,y,z)=(0,0,0)$ to opposite right bottom ($(x,y,z)=(m,n,p),\ m,n,p\in\mathbb{N}$), where only three moves are allowed: right ($X$ Axis), down ($Y$-Axis) or away ($Z$-Axis).
 
-A recurrence relation for pascal pyramid is:
+A recurrence relation for generating this pascal pyramid is:
 
 $$
-P(n,i,j,k)=\begin{cases}
-0,&i\notin[0,n],\ j\notin[0,i],\ k\notin[0,j]\\
-1,&(i\leq 1)\ \vee (j\in\{0,i\}\ \wedge\ (k=j\ \vee (j=i,k=0)))\\
-\begin{matrix}P(n,i-1,j,k)+P(n,i-1,j-1,k)+P(n,i-1,j-1,k-1)\end{matrix},&\text{otherwise}.
+P(i,j,k)=\begin{cases}
+0,&j\notin[0,i],\ k\notin[0,j]\\
+1,&(j=k=0)\ \wedge\ (i=j=k)\ \vee\ (j=i,k=0)\text{ (Either one is vertex of tetrahedron)}\\
+\begin{matrix}P(i-1,j,k)+P(i-1,j-1,k)+P(i-1,j-1,k-1)\end{matrix},&\text{otherwise}.
 \end{cases}
 $$
+
+Note that this recurrence is different from the given above due to orientation of generating solution.
 
 ```rust
 fn nc_ijk_memoize(i: usize, j: usize, k: usize, mem: &mut Vec<Vec<Vec<u128>>>) -> u128 {
@@ -271,7 +273,7 @@ pub fn test_nc_ijk_memoize() {
 }
 ```
 
-Another sample code is similar to the final expression: where a user is trapped in a 3D maze:
+Another sample code is for this expression $\dbinom{n+1}{i,j,k}=\dbinom{n}{i-1,j,k}+\dbinom{n}{i,j-1,k}+\dbinom{n}{i,j,k-1}$ where a user is trapped in a 3D maze (or space):
 
 ```cpp
 #include <bits/stdc++.h>
