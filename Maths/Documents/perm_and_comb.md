@@ -235,8 +235,9 @@ A recurrence relation for generating this pascal pyramid is:
 
 $$
 P(i,j,k)=\begin{cases}
-0,&j\notin[0,i],\ k\notin[0,j]\\
-1,&(j=k=0)\ \wedge\ (i=j=k)\ \vee\ (j=i,k=0)\text{ (Either one is vertex of tetrahedron)}\\
+0,&(j\notin[0,i])\ \vee\ (k\notin[0,j])\\\\
+1,&\ (i\leq 1)\ \vee\ (j=k=0)\ \vee\ (i=j=k)\ \vee\ (j=i,k=0)\\
+&\text{ (i.e., Either tip or along vertical edges of tetrahedron)}\\\\
 \begin{matrix}P(i-1,j,k)+P(i-1,j-1,k)+P(i-1,j-1,k-1)\end{matrix},&\text{otherwise}.
 \end{cases}
 $$
