@@ -328,7 +328,9 @@ k_1+k_2+\cdots+k_m=n\end{matrix}}\dbinom{n}{k_1,k_2,\ldots k_m}\cdot\prod\limits
 \end{array}
 $$
 
-There is a generalized relation for $m$-dimensional pyramid (note: $\sum\limits_{i=1}^mk_i=n$):
+Note that $\sum\limits_{i=1}^mk_i=n$
+
+There is a generalized relation for $m$-dimensional pyramid
 
 $$
 \dbinom{n+1}{k_1,k_2,\ldots,k_m}=\dbinom{n}{k_1-1,k_2,\ldots,k_m}+\dbinom{n}{k_1,k_2-1,\ldots,k_m}+\cdots+\dbinom{n}{k_1,k_2,\ldots,k_m-1}
