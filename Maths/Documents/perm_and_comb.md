@@ -334,18 +334,6 @@ $$
 \dbinom{n+1}{k_1,k_2,\ldots,k_m}=\dbinom{n}{k_1-1,k_2,\ldots,k_m}+\dbinom{n}{k_1,k_2-1,\ldots,k_m}+\cdots+\dbinom{n}{k_1,k_2,\ldots,k_m-1}
 $$
 
-**Proof**: performing operation on $RHS$:
-
-$$
-\begin{array}{cll}
-RHS&=&\dfrac{n!}{\prod\limits_{i=1}^m(k_i-1)!}\cdot\left(\dfrac{1}{k_2\cdot k_3\cdots k_m}+\dfrac{1}{k_1\cdot k_3\cdots k_m}+\cdots+\dfrac{1}{k_1\cdot k_2\cdots k_{m-1}}\right)\\
-&=&\dfrac{n!}{\prod\limits_{i=1}^m(k_i-1)!}\cdot\left(\dfrac{k_1}{k_1\cdot k_2\cdots k_m}+\dfrac{k_2}{k_1\cdot k_2\cdots k_m}+\cdots+\dfrac{k_m}{k_1\cdot k_2\cdots k_m}\right)\\
-&=&\dfrac{n!}{\prod\limits_{i=1}^m k_i!}\cdot\left(\sum\limits_{i=1}^m k_i\right)\\
-&=&\dfrac{(n+1)\cdot n!}{\prod\limits_{i=1}^m k_i!}\quad(\text{as per LHS, }\sum\limits_{i=1}^mk_i=(n+1))\\
-&=&\dfrac{(n+1)!}{\prod\limits_{i=1}^m k_i!}=LHS
-\end{array}
-$$
-
 Similarly, a recurrence relation of $K=\{k_1,k_2,\ldots,k_m\}$ will be:
 
 $$
