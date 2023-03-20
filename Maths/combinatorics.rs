@@ -41,6 +41,26 @@ fn ncr_memoize(n: usize, r: usize, mem: &mut Vec<Vec<u128>>) -> u128 {
     }
 }
 
+fn ir(val: usize, n: usize) -> bool {
+    val >= 0 && val <= n
+}
+
+fn nc_ijk_memoize(i: usize, j: usize, k: usize, mem: &mut Vec<Vec<Vec<u128>>>) -> u128 {
+    if !ir(j, i) || !ir(k, j) {
+        0
+    } else if mem[i][j][k] > 0 {
+        mem[i][j][k]
+    } else if (j == 0 && k == 0) || (j == i && k == 0) || (j == i && k == i) {
+        mem[i][j][k] = 1;
+        mem[i][j][k]
+    } else {
+        mem[i][j][k] = nc_ijk_memoize(i.wrapping_sub(1), j, k, mem)
+            + nc_ijk_memoize(i.wrapping_sub(1), j.wrapping_sub(1), k, mem)
+            + nc_ijk_memoize(i.wrapping_sub(1), j.wrapping_sub(1), k.wrapping_sub(1), mem);
+        mem[i][j][k]
+    }
+}
+
 #[test]
 pub fn test_derangement() {
     assert_eq!(derangement(9), 133496);
@@ -67,6 +87,27 @@ pub fn test_ncr_memoize() {
     assert_eq!(ncr_memoize(15, 10, &mut vec![vec![0; 51]; 51]), ncr(15, 10));
 }
 
+#[test]
+pub fn test_nc_ijk_memoize() {
+    assert_eq!(
+        nc_ijk_memoize(4, 2, 1, &mut vec![vec![vec![0; 5]; 5]; 5]),
+        12
+    );
+    assert_eq!(
+        nc_ijk_memoize(5, 3, 2, &mut vec![vec![vec![0; 6]; 6]; 6]),
+        30
+    );
+}
+
 pub fn main() {
-    println!("{}", derangement(9));
+    let mut p = vec![vec![vec![0; 11]; 11]; 11];
+    for x in 0..10 {
+        for y in 0..=x {
+            for z in 0..=y {
+                print!("{} ", nc_ijk_memoize(x, y, z, &mut p));
+            }
+            println!("");
+        }
+        println!("");
+    }
 }
