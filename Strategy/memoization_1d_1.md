@@ -446,5 +446,3 @@ def longest_valid_parantheses(string: str) -> int:
         max_value = max(max_value, value)
     return max_value
 ```
-
-

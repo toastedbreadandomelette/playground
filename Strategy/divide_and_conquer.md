@@ -38,7 +38,6 @@ A_{21} B_{11}+A_{22}B_{21}&A_{21}B_{12}+A_{22}B_{22}\\
 \end{bmatrix}
 $$
 
-
 The strassen's method introduces 7 new matrices:
 
 $$
@@ -82,5 +81,3 @@ where $2^p\leq n<2^{p+1}$. We're considering $2^p=n$.
 $$
 \implies T(n)=O(n^{2.8073...})\text{ (strassen's method)} < O(n^3) \text{ (Naive multiplication)}
 $$
-
-
