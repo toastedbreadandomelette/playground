@@ -7,6 +7,14 @@ Total permutation of $r$ objects out of $n$ objects is denoted by $P^n_r$.
 In above case it's $P^3_3=6$.
 Generalizing for $n$ and $r$, ${}^nP_r=\dfrac{n!}{(n-r)!}$, where $n!$ is a [[basic_maths#Factorial of a number|factorial operation]]. 
 
+```haskell
+-- haskell code --
+fact n = if n < 1 then 1 else n * fact (n - 1)
+
+main = do
+  print (fact 15)
+```
+
 ### Note:
 1. Arranging $n$ items where $m_1$ are of same kind, $m_2$ are of same kind (and so on): ${}^nP_r=\dfrac{n!}{(n-r)!\cdot m_1!\cdot m_2!\cdot \cdots}$. (Here, $m_1+m_2+\cdot+m_k\leq r\leq n$). This are called multiset permutation.
 2. Permutation of $n$ objects in circle: $(n-1)!$
@@ -146,11 +154,11 @@ Now:
 - Generalizing this: we can see there are ${}^nC_r$ ways to select $a$ $r$ times, and for each of these combinations, the ways to select $p$ $b$'s and $q$ $c$'s $(q+p=n-r)$ times in total, making this expansion as 
 
 $$
-\begin{array}
+\begin{matrix}
 \implies T&=&\dfrac{n!}{r!\cdot (n-r)!}\cdot a^r\cdot\left(\sum\limits_{m=0}^{n-r} {}^{n-r}C_m\cdot b^m\cdot c^{n-r-m}\right)\\
 &=&a^{n-r}\cdot\left(\sum\limits_{m=0}^r\dfrac{n!}{r!\cdot(n-r)!}\cdot \dfrac{r!}{m!\cdot(r-m)!}\cdot b^m\cdot c^{r-m}\right)\\
-&=&\sum\limits_{m=0}^{r}\dfrac{n!}{m!\cdot r!\cdot(n-r-m)!}a^{r}\cdot b^m\cdot c^{n-r-m}
-\end{array}
+&=&\sum\limits_{m=0}^{r}\dfrac{n!}{m!\cdot r!\cdot(n-r-m)!}\cdot a^{r}\cdot b^m\cdot c^{n-r-m}
+\end{matrix}
 $$
 
 Substitute $i=r,\ j=m, k=n-r-m$, and summing all the solutions we get:
@@ -347,13 +355,7 @@ P(n,k_1,k_2,\ldots,k_m)=\begin{cases}
 =k_l-1\end{cases}
 $$
 
-The first expression simply states that value is $1$ if it's one of the corner vertices of a $n$-dimensional tetrahedron.
-
-The last expression stands for simply:
-
-$$
-P(n,k_1-1,k_2,\ldots,k_m)+P(n,k_1-1,k_2-1,\ldots,k_m)+P(n,k_1-1,k_2-1,k_3-1,\ldots,k_m)+\cdots+P(n,k_1-1,k_2-1,\ldots,k_m-1)
-$$
+The first expression simply returns $1$ if it's the tip or one of the corner vertices of a $n$-dimensional tetrahedron.
 
 # Derangement of a permutation.
 Given a set $A$, we're finding total arrangement where none of the values are in their original position.

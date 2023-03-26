@@ -1,5 +1,5 @@
 ## [Fourier Transform](https://en.wikipedia.org/wiki/Fourier_transform)
-Fourier Transform is a transform on a function that converts into another function defining frequencies present in fourier. It's output is a complex - valued function.
+Fourier Transform is a transform on a function that converts into another function defining frequencies present in fourier. It's output is a [[complex_numbers|complex - valued]] function.
 
 It's mathematical form:
 
@@ -118,7 +118,7 @@ where
 }
 ```
 ## Fast - Fourier Transform (FFT)
-Fast - Fourier Transform (FFT) is a technique used to solve DFT operation (or IDFT).
+Fast - Fourier Transform (FFT) is a technique used to solve DFT operation (or IDFT). This is performed by using [[divide_and_conquer|divide and conquer strategy]]. 
 
 **1**. **Divide**.
 This is done by dividing values (considering it as polynomial of degree $N-1$), into odd and even coefficient for array of values $A=\lbrace a_0,a_1,\ldots,a_{n-1}\rbrace$.

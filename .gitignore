@@ -23,5 +23,9 @@ Makefile
 
 .obsidian/*
 
+# build files
+*.o
+*.hi
+
 # rust
 *.pdb

@@ -168,7 +168,7 @@ i.e., For $n=8$, $memo[8]=3,\because f(f(f(8)))=f(f(4))=f(2)=1$.
 
 Some corollaries:
 - For $n=2^k$, the value of $f(n)=k$.
-- From the above results, if $n\equiv1\pmod{2}$ and $3n+1=2^k$, then n would look like an alternating values of $1$'s and $0$'s. (why does it matter? Pata nahi!)
+- From the above results, if $n\equiv1\pmod{2}$ and $3n+1=2^k$, then n would look like an alternating values of $1$'s and $0$'s. (why does it matter?)
 
 $$
 \begin{array}{cl}

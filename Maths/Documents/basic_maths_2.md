@@ -16,8 +16,6 @@ $$P_n^4=n+n^2-n=n^2$$
 
 $$S(P_n^k)=\sum\limits_{i=1}^{n}\frac{2i+(k-2)(i^2-i)}{2}$$
 
-Not gonna solve this bro. I'm bored.
-
 ## Arithmetic series:
 ### Finding $n^{th}$ term:
 

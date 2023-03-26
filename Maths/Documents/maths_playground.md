@@ -98,7 +98,7 @@ For $a+b$ operation using only bitwise operator:
 
 $$
 a + b =\begin{cases}
-a\oplus b, &\quad a\ \&\ b=0\\
+a\oplus b, &\quad a \wedge b=0\\
 (a\oplus b) +2\cdot(a \wedge b), & \quad \text{otherwise recursive fn}
 \end{cases}
 $$
