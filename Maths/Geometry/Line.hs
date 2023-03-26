@@ -1,7 +1,7 @@
 module Line where
 
+import GHC.Float (sqrtFloat)
 import Point
-import Text.XHtml (base)
 
 data Line2d = Line2d Point2d Point2d | Coeff2d Float Float Float
 
@@ -75,11 +75,31 @@ angleBetweenLines line1 line2 =
     m1 = slope line1
     m2 = slope line2
 
+substitute :: Line2d -> Point2d -> Float
+substitute line point = a * x + b * y + c
+  where
+    (x, y) = case point of Point2d x y -> (x, y)
+    (a, b, c) = toCoeffValue line
+
 testForPoint :: Line2d -> Point2d -> Bool
-testForPoint line point = a * x + b * y + c < 1e-7
+testForPoint line point = a * x + b * y + c < 1e-9
   where
     (a, b, c) = toCoeffValue line
     (x, y) = case point of Point2d x y -> (x, y)
+
+linePointDist :: Line2d -> Point2d -> Float
+linePointDist line point = substitute line point / sqrtFloat (a * a + b * b)
+  where
+    (a, b, _) = toCoeffValue line
+
+parallelLineDist :: Line2d -> Line2d -> Float
+parallelLineDist line1 line2 =
+  if slope line1 == slope line2
+    then abs (c1 - c2) / sqrt (a * a + b * b)
+    else 1 / 0
+  where
+    (a, b, c1) = toCoeffValue line1
+    (_, _, c2) = toCoeffValue line2
 
 -- Generate all intersection points
 -- Returns list of two lines and point of intersection

@@ -6,7 +6,7 @@ import GHC.Float (sqrtFloat)
 data Point2d = Point2d Float Float
 
 instance Show Point2d where
-  show (Point2d x y) = "(" ++ show (x) ++ ", " ++ show (y) ++ ")"
+  show (Point2d x y) = "(" ++ show x ++ ", " ++ show y ++ ")"
 
 add :: Point2d -> Point2d -> Point2d
 add a b = Point2d (x1 + x2) (y1 + y2)
@@ -25,8 +25,8 @@ mul a b = Point2d (x1 * b) (y1 * b)
   where
     (x1, y1) = case a of Point2d x1 y1 -> (x1, y1)
 
-div :: Point2d -> Float -> Point2d
-div a b = Point2d (x1 / b) (y1 / b)
+div2d :: Point2d -> Float -> Point2d
+div2d a b = Point2d (x1 / b) (y1 / b)
   where
     (x1, y1) = case a of Point2d x1 y1 -> (x1, y1)
 
@@ -38,6 +38,12 @@ dot a b = x1 * x2 + y1 * y2
 
 normal :: Point2d -> Float
 normal p = dot p p
+
+dist :: Point2d -> Point2d -> Float
+dist point1 point2 = sqrtFloat ((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1))
+  where
+    (x1, y1) = case point1 of Point2d x1 y1 -> (x1, y1)
+    (x2, y2) = case point2 of Point2d x2 y2 -> (x2, y2)
 
 angleX :: Point2d -> Float
 angleX p = atan (y / x)
@@ -60,10 +66,8 @@ yVal :: Point2d -> Float
 yVal point = y where y = case point of Point2d _ y -> y
 
 centerOfGravity :: [Point2d] -> Point2d
-centerOfGravity list = Point2d (xsum / listLength) (ysum / listLength)
+centerOfGravity list = div2d (foldr add (Point2d 0 0) list) listLength
   where
-    xsum = sum [xVal p | p <- list]
-    ysum = sum [yVal p | p <- list]
     listLength = fromIntegral (length list)
 
 weightedCenterOfGravity :: [(Float, Point2d)] -> Point2d
@@ -83,10 +87,10 @@ perpendicularity point1 point2 point3 = slope2Points point1 point2 * slope2Point
 data Point3d = Point3d Float Float Float
 
 instance Show Point3d where
-  show (Point3d x y z) = "(" ++ show (x) ++ ", " ++ show (y) ++ ", " ++ show (z) ++ ")"
+  show (Point3d x y z) = "(" ++ show x ++ ", " ++ show y ++ ", " ++ show z ++ ")"
 
 add3d :: Point3d -> Point3d -> Point3d
-add3d (a :: Point3d) (b :: Point3d) = Point3d x1 y1 z1
+add3d a b = Point3d x1 y1 z1
   where
     (x1, y1, z1) = case a of Point3d x1 y1 z1 -> (x1, y1, z1)
     (x2, y2, z2) = case b of Point3d x2 y2 z2 -> (x2, y2, z2)
@@ -129,11 +133,8 @@ zVal3d :: Point3d -> Float
 zVal3d point = z where z = case point of Point3d _ _ z -> z
 
 centerOfGravity3d :: [Point3d] -> Point3d
-centerOfGravity3d list = Point3d (xsum / listLength) (ysum / listLength) (zsum / listLength)
+centerOfGravity3d list = div3d (foldr add3d (Point3d 0 0 0) list) listLength
   where
-    xsum = sum [xVal3d p | p <- list]
-    ysum = sum [yVal3d p | p <- list]
-    zsum = sum [zVal3d p | p <- list]
     listLength = fromIntegral (length list)
 
 weightedCenterOfGravity3d :: [(Float, Point3d)] -> Point3d
