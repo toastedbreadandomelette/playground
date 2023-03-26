@@ -257,7 +257,6 @@ impl Container {
             Container::Object(ref value) => {
                 if indent == false {
                     let (mut object_str, mut index) = ("{".to_string(), 0);
-
                     for (key, val) in value {
                         object_str.push_str(&format!(
                             "\"{}\":{}",
@@ -269,7 +268,6 @@ impl Container {
                             object_str.push(',');
                         }
                     }
-
                     object_str.push('}');
                     object_str
                 } else {

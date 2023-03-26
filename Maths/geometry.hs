@@ -1,12 +1,18 @@
 import GHC.Float (sqrtFloat)
 
-data Point2d = Point2d Float Float deriving (Show)
+data Point2d = Point2d Float Float
 
 data Point3d = Point3d Float Float Float deriving (Show)
 
-data Line2d = Line2d Point2d Point2d | Coeff2d Float Float Float deriving (Show)
+data Line2d = Line2d Point2d Point2d | Coeff2d Float Float Float
 
 data Line3d = Line3d Point3d Point3d deriving (Show)
+
+instance Show Line2d where
+  show (Coeff2d a b c) = show (a) ++ "x" ++ " + " ++ show (b) ++ "y" ++ " + " ++ show (c) ++ " = 0"
+
+instance Show Point2d where
+  show (Point2d x y) = "(" ++ show (x) ++ ", " ++ show (y) ++ ")"
 
 -- Return coefficient of given line if defined by two points
 toCoeffValue :: Line2d -> (Float, Float, Float)
@@ -102,17 +108,34 @@ intersection line1 line2 = do
     (a1, b1, c1) = toCoeffValue line1
     (a2, b2, c2) = toCoeffValue line2
 
+neq :: Line2d -> Line2d -> Bool
+neq line1 line2 = (a2 / a1 /= b2 / b1) || (b2 / b1 /= c2 / c1)
+  where
+    (a1, b1, c1) = toCoeffValue line1
+    (a2, b2, c2) = toCoeffValue line2
+
+-- Generate all intersection points
+allPointIntersection :: [Line2d] -> [(Line2d, Line2d, Point2d)]
+allPointIntersection lineList =
+  [ (toCoeff x, toCoeff y, intersection x y)
+    | (i, x) <- zip [0 ..] lineList,
+      (j, y) <- zip [0 ..] lineList,
+      neq x y, -- x and y should not be included
+      i < j -- no repetition
+  ]
+
 main = do
   -- define line using two points
   let p = Line2d (Point2d 10.0 5) (Point2d 5 2.5)
   let q = Line2d (Point2d 10.0 5) (Point2d 5 (-2.5))
-  print (show (slope p) ++ " " ++ show (slope q))
   -- define lines using coefficients
   let r = Coeff2d 10 5 1
   let s = Coeff2d 23 44 133
   -- example of parallel line
   let t = Coeff2d 2 3 15
   let u = Coeff2d 4 6 10
+
+  print (allPointIntersection [p, q, r, s, t, u])
   print (intersection p q)
   print (intersection r s)
   print (intersection t u)
