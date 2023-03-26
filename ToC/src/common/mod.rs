@@ -1,5 +1,7 @@
-use crate::error::Error;
+pub mod container;
+pub mod error;
 
+use crate::common::error::Error;
 /// A custom result enum to handle Errors.
 ///
 /// This is made with an intention of handling runtime
@@ -13,15 +15,20 @@ pub enum Result<T> {
     /// issues
     Ok(T),
     /// Result returning issues in character
-    Error(Error)
+    Error(Error),
 }
 
 impl<T> Result<T> {
     pub fn unwrap(&mut self) -> &T {
         match self {
-            Result::Ok(value) => { value }
-            Result::Error(ref err_value) => { println!("{}", err_value); panic!() }
-            _ => { panic!() }
+            Result::Ok(value) => value,
+            Result::Error(ref err_value) => {
+                println!("{}", err_value);
+                panic!()
+            }
+            _ => {
+                panic!()
+            }
         }
     }
 }

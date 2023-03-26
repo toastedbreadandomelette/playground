@@ -352,6 +352,41 @@ impl Container {
         }
     }
 
+    pub fn get_string(&self) -> Option<String> {
+        match self {
+            Self::Str(value) => Some(value.clone()),
+            _ => None,
+        }
+    }
+
+    pub fn get_uint(&self) -> Option<u64> {
+        match self {
+            Self::Unsigned(value) => Some(*value),
+            _ => None,
+        }
+    }
+
+    pub fn get_int(&self) -> Option<i64> {
+        match self {
+            Self::Number(value) => Some(*value),
+            _ => None,
+        }
+    }
+
+    pub fn get_real(&self) -> Option<f64> {
+        match self {
+            Self::Decimal(value) => Some(*value),
+            _ => None,
+        }
+    }
+
+    pub fn get_bool(&self) -> Option<bool> {
+        match self {
+            Self::Boolean(value) => Some(*value),
+            _ => None,
+        }
+    }
+
     define_type_checks!(Number, is_number);
 
     define_type_checks!(Unsigned, is_unsigned);

@@ -14,6 +14,7 @@ $$\text{Med}(A)=\begin{cases}
 A_{k},&k=\dfrac{|A|+1}2,\ |A|\equiv1\pmod2\\
 \dfrac{A_{k_1}+A_{k_2}}2,&k_1=\dfrac{|A|}2,\ k_2=\dfrac{|A|+1}2,\ |A|\equiv0\pmod2
 \end{cases}$$
+
 # Mode
 Mode is a observation value in dataset that occurs most of the time in the dataset. 
 
@@ -21,7 +22,6 @@ $$\text{Mode}(A)=\lbrace|C|, \forall c\in C,\ (c\in A)\wedge \left(c_i = c_j\ \f
 
 ## Root Mean Square
 Root mean square is square root of an average of all the values sqaured.
-
 
 $$RMS(A)=\sqrt{\dfrac{1}n\sum_{i=0}^{|A|}a_i^2}$$
 
