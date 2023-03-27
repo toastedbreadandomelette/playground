@@ -1,3 +1,4 @@
+import Circle
 import Line
 import Point
 
@@ -13,13 +14,16 @@ main = do
   let u = Coeff2d 4 6 10
 
   -- print (allPointIntersection [p, q, r, s, t, u])
-  let ans = intersection p q
-  print q
-  print (slope q)
-  print p
-  print (slope p)
   let perp = perpendicularLine q (Point2d 10.0 5)
 
-  print (angleBetweenLines p q)
+  let cir = CenterRadius (Point2d 3 4) 5
+  let line = Coeff2d 3 (-2) 10
+  let cl = circleLineIntersection cir line
+  let midPoint = chordMidPointIntersection cir line
+  print cir
+  print line
+  print midPoint
+  print (chordLength cir line)
+  print cl
 
   return 0

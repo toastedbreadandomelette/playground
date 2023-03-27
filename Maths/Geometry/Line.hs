@@ -88,9 +88,15 @@ testForPoint line point = a * x + b * y + c < 1e-9
     (x, y) = case point of Point2d x y -> (x, y)
 
 linePointDist :: Line2d -> Point2d -> Double
-linePointDist line point = substitute line point / sqrtDouble (a * a + b * b)
+linePointDist line point = abs (substitute line point / sqrtDouble (a * a + b * b))
   where
     (a, b, _) = toCoeffValue line
+
+linePointDistIntersectionPoint :: Line2d -> Point2d -> Point2d
+linePointDistIntersectionPoint line point = intersection line (Coeff2d (-b) a (b * x - a * y))
+  where
+    (a, b, _) = toCoeffValue line
+    (x, y) = case point of Point2d x y -> (x, y)
 
 parallelLineDist :: Line2d -> Line2d -> Double
 parallelLineDist line1 line2 =
