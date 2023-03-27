@@ -42,6 +42,10 @@ a\cdot x+b\cdot y + c&=&0
 $$
 
 ```haskell
+data Point2d = Point2d Double Double
+
+data Line2d = Line2d Point2d Point2d | Coeff2d Double Double Double
+
 -- Return coefficient of given line if defined by two points
 toCoeffValue :: Line2d -> (Float, Float, Float)
 toCoeffValue line = (a, b, c)
