@@ -1,9 +1,9 @@
 module Line where
 
-import GHC.Float (sqrtFloat)
+import GHC.Float (sqrtDouble)
 import Point
 
-data Line2d = Line2d Point2d Point2d | Coeff2d Float Float Float
+data Line2d = Line2d Point2d Point2d | Coeff2d Double Double Double
 
 data Line3d = Line3d Point3d Point3d deriving (Show)
 
@@ -12,7 +12,7 @@ instance Show Line2d where
   show (Line2d p q) = show (Coeff2d a b c) where (a, b, c) = toCoeffValue (Line2d p q)
 
 -- Return coefficient of given line if defined by two points
-toCoeffValue :: Line2d -> (Float, Float, Float)
+toCoeffValue :: Line2d -> (Double, Double, Double)
 toCoeffValue line = (a, b, c)
   where
     (a, b, c) = do
@@ -23,7 +23,7 @@ toCoeffValue line = (a, b, c)
             (x1, y1) = case p1 of Point2d x1 y1 -> (x1, y1)
             (x2, y2) = case p2 of Point2d x2 y2 -> (x2, y2)
 
-slope :: Line2d -> Float
+slope :: Line2d -> Double
 slope line = -a / b
   where
     (a, b, c) = toCoeffValue line
@@ -66,7 +66,7 @@ perpendicularLine line throughPoint = Coeff2d b (-a) (a * y - b * x)
     (a, b, _) = toCoeffValue line
     (x, y) = case throughPoint of Point2d x y -> (x, y)
 
-angleBetweenLines :: Line2d -> Line2d -> Float
+angleBetweenLines :: Line2d -> Line2d -> Double
 angleBetweenLines line1 line2 =
   if (m1 * m2 + 1) < 1e-9
     then pi / 2
@@ -75,7 +75,7 @@ angleBetweenLines line1 line2 =
     m1 = slope line1
     m2 = slope line2
 
-substitute :: Line2d -> Point2d -> Float
+substitute :: Line2d -> Point2d -> Double
 substitute line point = a * x + b * y + c
   where
     (x, y) = case point of Point2d x y -> (x, y)
@@ -87,12 +87,12 @@ testForPoint line point = a * x + b * y + c < 1e-9
     (a, b, c) = toCoeffValue line
     (x, y) = case point of Point2d x y -> (x, y)
 
-linePointDist :: Line2d -> Point2d -> Float
-linePointDist line point = substitute line point / sqrtFloat (a * a + b * b)
+linePointDist :: Line2d -> Point2d -> Double
+linePointDist line point = substitute line point / sqrtDouble (a * a + b * b)
   where
     (a, b, _) = toCoeffValue line
 
-parallelLineDist :: Line2d -> Line2d -> Float
+parallelLineDist :: Line2d -> Line2d -> Double
 parallelLineDist line1 line2 =
   if slope line1 == slope line2
     then abs (c1 - c2) / sqrt (a * a + b * b)
