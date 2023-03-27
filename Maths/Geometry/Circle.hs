@@ -63,9 +63,11 @@ calcChordIntersection circle line = (a, b)
 
 circleLineIntersection :: Circle -> Line2d -> (Point2d, Point2d)
 circleLineIntersection circle line
-  | isTangent circle line = (chordMidPointIntersection circle line, chordMidPointIntersection circle line)
+  | isTangent circle line = (p, p)
   | lineThroughCircleTest circle line = calcChordIntersection circle line
   | otherwise = (Point2d (1 / 0) (1 / 0), Point2d (1 / 0) (1 / 0))
+  where
+    p = chordMidPointIntersection circle line
 
 isTangent :: Circle -> Line2d -> Bool
 isTangent circle line = linePointDist line center == r
