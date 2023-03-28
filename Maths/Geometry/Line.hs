@@ -34,10 +34,9 @@ toCoeff line = Coeff2d a1 b1 c1
     (a1, b1, c1) = toCoeffValue line
 
 intersection :: Line2d -> Line2d -> Point2d
-intersection line1 line2 = do
-  if a1 * b2 - a2 * b1 == 0 -- If slope is same, then they are parallel, send value as inf inf
-    then Point2d (1 / 0) (1 / 0)
-    else Point2d ((c2 * b1 - c1 * b2) / (a1 * b2 - a2 * b1)) ((c1 * a2 - a1 * c2) / (a1 * b2 - a2 * b1))
+intersection line1 line2
+  | a1 * b2 - a2 * b1 == 0 = Point2d (1 / 0) (1 / 0) -- If slope is same, then they are parallel, send value as inf inf
+  | otherwise = Point2d ((c2 * b1 - c1 * b2) / (a1 * b2 - a2 * b1)) ((c1 * a2 - a1 * c2) / (a1 * b2 - a2 * b1))
   where
     (a1, b1, c1) = toCoeffValue line1
     (a2, b2, c2) = toCoeffValue line2
@@ -67,10 +66,9 @@ perpendicularLine line throughPoint = Coeff2d b (-a) (a * y - b * x)
     (x, y) = case throughPoint of Point2d x y -> (x, y)
 
 angleBetweenLines :: Line2d -> Line2d -> Double
-angleBetweenLines line1 line2 =
-  if (m1 * m2 + 1) < 1e-9
-    then pi / 2
-    else atan ((m1 - m2) / (1 + m1 * m2))
+angleBetweenLines line1 line2
+  | (m1 * m2 + 1) < 1e-9 = pi / 2
+  | otherwise = atan ((m1 - m2) / (1 + m1 * m2))
   where
     m1 = slope line1
     m2 = slope line2
@@ -99,10 +97,9 @@ linePointDistIntersectionPoint line point = intersection line (Coeff2d (-b) a (b
     (x, y) = case point of Point2d x y -> (x, y)
 
 parallelLineDist :: Line2d -> Line2d -> Double
-parallelLineDist line1 line2 =
-  if slope line1 == slope line2
-    then abs (c1 - c2) / sqrt (a * a + b * b)
-    else 1 / 0
+parallelLineDist line1 line2
+  | slope line1 == slope line2 = abs (c1 - c2) / sqrt (a * a + b * b)
+  | otherwise = 1 / 0
   where
     (a, b, c1) = toCoeffValue line1
     (_, _, c2) = toCoeffValue line2

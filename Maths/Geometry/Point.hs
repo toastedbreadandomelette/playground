@@ -8,6 +8,11 @@ data Point2d = Point2d Double Double
 instance Show Point2d where
   show (Point2d x y) = "(" ++ show x ++ ", " ++ show y ++ ")"
 
+unpackCoord :: Point2d -> (Double, Double)
+unpackCoord point = (x, y)
+  where
+    (x, y) = case point of Point2d x y -> (x, y)
+
 add :: Point2d -> Point2d -> Point2d
 add a b = Point2d (x1 + x2) (y1 + y2)
   where

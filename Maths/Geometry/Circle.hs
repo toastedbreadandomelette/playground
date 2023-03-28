@@ -81,10 +81,9 @@ chordMidPointIntersection circle line = chordMiddlePoint
     chordMiddlePoint = linePointDistIntersectionPoint line center
 
 chordLength :: Circle -> Line2d -> Double
-chordLength circle line =
-  if d < r
-    then 2 * sqrtDouble (r * r - d * d)
-    else 0
+chordLength circle line
+  | d < r = 2 * sqrtDouble (r * r - d * d)
+  | otherwise = 0
   where
     (d, r) = do
       let (center, r) = toCenterRadius circle
