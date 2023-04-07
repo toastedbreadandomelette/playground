@@ -19,6 +19,7 @@ toCenterRadius circle = (point, distance)
       case circle of
         Line p1 p2 -> (centerOfGravity [p1, p2], dist p1 p2 / 2)
         CenterRadius point radius -> (point, radius)
+{-# INLINEABLE toCenterRadius #-}
 
 substituteCircle :: Circle -> Point2d -> Double
 substituteCircle circle point = (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2) - r * r
@@ -29,9 +30,11 @@ substituteCircle circle point = (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2) - 
       where
         (p, r) = toCenterRadius circle
         (x2, y2) = case p of Point2d x2 y2 -> (x2, y2)
+{-# INLINEABLE substituteCircle #-}
 
 pointWithinCircleTest :: Circle -> Point2d -> Bool
 pointWithinCircleTest circle point = substituteCircle circle point <= 0
+{-# INLINEABLE pointWithinCircleTest #-}
 
 -- Interaction of line with circle
 
@@ -39,6 +42,7 @@ lineThroughCircleTest :: Circle -> Line2d -> Bool
 lineThroughCircleTest circle line = linePointDist line center <= r
   where
     (center, r) = toCenterRadius circle
+{-# INLINEABLE lineThroughCircleTest #-}
 
 calcChordIntersection :: Circle -> Line2d -> (Point2d, Point2d)
 calcChordIntersection circle line = (a, b)
@@ -68,17 +72,20 @@ circleLineIntersection circle line
   | otherwise = (Point2d (1 / 0) (1 / 0), Point2d (1 / 0) (1 / 0))
   where
     p = chordMidPointIntersection circle line
+{-# INLINEABLE circleLineIntersection #-}
 
 isTangent :: Circle -> Line2d -> Bool
 isTangent circle line = linePointDist line center == r
   where
     (center, r) = toCenterRadius circle
+{-# INLINEABLE isTangent #-}
 
 chordMidPointIntersection :: Circle -> Line2d -> Point2d
 chordMidPointIntersection circle line = chordMiddlePoint
   where
     (center, r) = toCenterRadius circle
     chordMiddlePoint = linePointDistIntersectionPoint line center
+{-# INLINEABLE chordMidPointIntersection #-}
 
 chordLength :: Circle -> Line2d -> Double
 chordLength circle line
@@ -88,3 +95,4 @@ chordLength circle line
     (d, r) = do
       let (center, r) = toCenterRadius circle
       (linePointDist line center, r)
+{-# INLINEABLE chordLength #-}

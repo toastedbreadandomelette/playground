@@ -154,7 +154,7 @@ $$
 
 To skip the odd part, since $\forall\ n\in\mathbb{N},\ 3n+1\equiv0\pmod{2}$.
 
-We evaluate the steps taken to reduce from $n$ to $1$ using this function, and storing the count against $n$ (let's call it $f(n)$).
+We evaluate the steps taken to reduce from $n$ to $1$ using this function, and storing the count against $n$, say $f(n)$ :
 
 $$
 f(n)=\begin{cases}

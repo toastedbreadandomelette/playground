@@ -12,18 +12,19 @@ This turns out from finding longest path to finding the depth of a directed grap
 
 With this, we can also count incoming edges $in[v]\ \forall\ v\in p$, and we select those vertex $v$ such that $in[v]=0$.
 
-The max-depth for a vertex $v$ (say $d(p,in,v)$) is defined as:
+The max-depth for a vertex $v$ : say $d(p,in,v)$ is defined as:
 
 $$
 d(p,in,v)=\begin{cases}
 1,&|p[v]|=0\\
-1+\max\limits_{(\omega\ \in\ p[v])}(d(p,in,\omega)),&|p[v]| >0
+1+\max\limits_{(\omega\ \in\ p[v])}(d(p,in,\omega)),&|p[v]| > 0
 \end{cases}
 $$
 
 The overall sub-graphs having max depth is the answer:
 
-$$res=\max\limits_{v\ \in\ p,\ in[v]=0}(d(p, in,v))$$
+$$res=\max\limits_{v\ \in\ p,\ in[v]=0}(d(p,in,v))$$
+
 ```python
 def longest_increasing_path(self, matrix: List[List[int]]) -> int:
 	"""

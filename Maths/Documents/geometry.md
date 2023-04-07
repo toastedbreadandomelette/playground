@@ -169,11 +169,44 @@ parallelLineDist line1 line2
 
 ### Angle between two lines
 
-Angle between two lines $L_1\equiv a_1x+b_1y+c_1=0$ (makes angle $\theta_1$ with $X$ axis) and $L_2\equiv a_2x+b_2y+c_2=0$ (say it makes $\theta_2$ with $X$ axis) can be determined using reference: i.e., considering $L_2$ as axis of reference (say $X$ is reference), then equation of line $L_1$ would be $\hat{L}$.
+Angle between two lines $L_1\equiv a_1x+b_1y+c_1=0$ (makes angle $\theta_1$ with $X$ axis) and $L_2\equiv a_2x+b_2y+c_2=0$ (say it makes $\theta_2$ with $X$ axis) is:
 
-We are bound with three cases:
+$$
+\theta_1-\theta_2=\arctan\left(\dfrac{m_1-m_2}{1+m_1m_2}\right)
+$$
 
-1. If two lines are parallel, then relative equation is $\hat{L}\equiv y=\dfrac{c_2-c_1}{\sqrt{a^2+b^2}}$ .
-2. If two lines are perpendicular, then relative equation will be $\hat{L}\equiv x=x'$ , where $x_0$ is the distance between origin $(x_0,y_0)$ that passes through line $L_2$ and point of intersection $(x',y')$ .
-3. In other case:
-- [ ] To do: proper explaination.
+where $m_1=-\dfrac{a_1}{b_1}$ and $m_2=-\dfrac{a_2}{b_2}$ .
+
+Equation of line $L_1$ with respect to line $L_2$ : i.e, $X$ axis tilted at angle $\theta_2$ is:
+
+$$
+\begin{matrix}
+y&=&mx+c\\
+&=&\dfrac{a_2b_1-a_1b_2}{a_1a_2+b_1b_2}\cdot x+c\\
+(a_1b_2-a_2b_1)x+(a_1a_2+b_1b_2)y+c&=&0\\
+a'x+b'y+c&=&0
+\end{matrix}
+$$
+
+
+where $c=\sqrt{a'^2+b'^2}\cdot \dfrac{c_1}{\sqrt{a_1^2+b_1^2}}$ : considering the distance between the origin point and line $L_1$ is same as point of origin and new line $\hat L$.
+
+Note: Below set of equations will make sense in desmos graph.
+
+```desmos-graph
+3x-2y=10
+2x-4y=5
+\arctan\left(\frac{2}{4}\right)\cdot\frac{180}{\pi}
+\arctan\left(\frac{3}{2}\right)\cdot\frac{180}{\pi}
+\arctan\left(\frac{3}{2}\right)\cdot\frac{180}{\pi}-\arctan\left(\frac{2}{4}\right)\cdot\frac{180}{\pi}
+-8x+14y+\left(\sqrt{5}\cdot20\right)=0
+\arctan\left(\frac{8}{14}\right)\cdot\frac{180}{\pi}
+14x+8y=0
+2x+3y=0
+\left(2.308\right)^{2}+\left(1.538\right)^{2}
+\left(1.376\right)^{2}+\left(2.408\right)^{2}
+\left(\arctan\left(\frac{14}{8}\right)-\arctan\left(\frac{2}{3}\right)\right)\cdot\frac{180}{\pi}
+\arctan\left(\frac{3}{2}\right)\cdot\frac{180}{\pi}-\arctan\left(\frac{8}{14}\right)\cdot\frac{180}{\pi}
+```
+
+

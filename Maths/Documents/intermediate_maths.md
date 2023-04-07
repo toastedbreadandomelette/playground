@@ -452,7 +452,7 @@ ___
 ## Segmented Sieve.
 [[#Sieve of Eratosthenes]] is good when the values are in range of around $10^7$. 
 
-For finding prime values between range $a$ and $b$ (given that the difference is the same mentioned above), and $b$ is in the range $\leq 10^{12}$, segmented sieve does the job. (note that $b-a<10^7$)
+For finding prime values between range $a$ and $b$ (given that the difference is the same mentioned above), and $b$ is in the range $\leq 10^{12}$, segmented sieve does the job. (note that $b-a \lt 10^7$)
 
 **Algorithm**:
 - For a given value $b$, Evaluate all prime values from $2$ to $\sqrt{b}$: let this be stored in set $P$
