@@ -10,5 +10,3 @@ Solution: Check all the routes, which takes $O(n!)$
 Validation: 
 - Using matrix table lookup $O(n)$
 - Using adjacent lookup $O(n^2)$ or $O(n\log{n})$ if all vertex in adjacent matrix is in sorted order.
-
-
