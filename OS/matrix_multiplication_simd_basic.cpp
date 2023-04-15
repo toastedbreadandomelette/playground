@@ -351,8 +351,8 @@ void test_normal_malloc() {
 
     free(ans4);
 
-    // free(a);
-    // free(b);
+    free(a);
+    free(b);
     free(ans);
 }
 
