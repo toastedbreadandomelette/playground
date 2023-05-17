@@ -70,7 +70,6 @@ where
         }
 
         let mut input: Vec<Complex> = (0..n)
-            .into_iter()
             .map(|x| Complex::new(f64::from(array[indexes[x]]), 0.0))
             .collect::<Vec<Complex>>();
 
@@ -168,10 +167,7 @@ where
             index <<= 1;
         }
 
-        let mut input: Vec<Complex> = (0..n)
-            .into_iter()
-            .map(|x| array[indexes[x]])
-            .collect::<Vec<Complex>>();
+        let mut input: Vec<Complex> = (0..n).map(|x| array[indexes[x]]).collect::<Vec<Complex>>();
 
         if i > 1 {
             for index in (0..n).step_by(i) {
