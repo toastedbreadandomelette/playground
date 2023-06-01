@@ -149,13 +149,13 @@ fn main() {
         orig == c
     );
 
-    t = std::time::Instant::now();
-    c = unsafe { matmul::ikj_matmul_simd_alternate(&a, &b, (sz, sz), (sz, sz)) };
-    println!(
-        "Efficient loop ordering simd alternate {}ms, {}",
-        t.elapsed().as_millis(),
-        orig == c
-    );
+    // t = std::time::Instant::now();
+    // c = unsafe { matmul::ikj_matmul_simd_alternate(&a, &b, (sz, sz), (sz, sz)) };
+    // println!(
+    //     "Efficient loop ordering simd alternate {}ms, {}",
+    //     t.elapsed().as_millis(),
+    //     orig == c
+    // );
 
     t = std::time::Instant::now();
     c = matmul::cf_block_matmul(&a, &b, (sz, sz), (sz, sz));
@@ -235,7 +235,7 @@ fn main() {
     );
 
     let mut val = vec![0.0_f64; sz * sz];
-    let mut acc = unsafe {
+    let acc = unsafe {
         faer_core::MatMut::<f64>::from_raw_parts(val.as_mut_ptr(), sz, sz, sz as isize, 1)
     };
     t = std::time::Instant::now();

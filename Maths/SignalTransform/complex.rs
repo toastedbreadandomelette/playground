@@ -377,16 +377,19 @@ impl_op_for_type!(u64);
 impl_op_for_type!(u128);
 
 impl Complex {
+    #[inline(always)]
     pub fn new(r: f64, i: f64) -> Self {
         Self { real: r, img: i }
     }
 
+    #[inline(always)]
     pub fn abs_sq(self) -> f64 {
         self.real * self.real + self.img * self.img
     }
-
+    
+    #[inline(always)]
     pub fn abs(self) -> f64 {
-        (self.real * self.real + self.img * self.img).sqrt()
+        self.abs_sq().sqrt()
     }
 
     pub fn pow(self, mut power: u32) -> Self {

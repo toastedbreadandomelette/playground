@@ -3,15 +3,6 @@
 version = 3
 
 [[package]]
-name = "OS"
-version = "0.1.0"
-dependencies = [
- "faer",
- "faer-core 0.8.0",
- "rand",
-]
-
-[[package]]
 name = "aligned-vec"
 version = "0.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -453,6 +444,15 @@ name = "libc"
 version = "0.2.144"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2b00cc1c228a6782d0f076e7b232802e0c5689d41bb5df366f2a6b6621cfdfe1"
+
+[[package]]
+name = "linalg"
+version = "0.1.0"
+dependencies = [
+ "faer",
+ "faer-core 0.8.0",
+ "rand",
+]
 
 [[package]]
 name = "linux-raw-sys"

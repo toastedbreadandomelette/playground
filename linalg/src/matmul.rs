@@ -435,7 +435,6 @@ pub fn matmul_transposed_multi_accumulated_simd_unrolled_4(
                 ans[3] += acc0 * f64x4::from_slice(&b[(j + 3) * p + k..]);
 
                 acc0 = f64x4::from_slice(&a[i * n + k + 4..]);
-
                 ans[0] += acc0 * f64x4::from_slice(&b[j * p + k + 4..]);
                 ans[1] += acc0 * f64x4::from_slice(&b[(j + 1) * p + k + 4..]);
                 ans[2] += acc0 * f64x4::from_slice(&b[(j + 2) * p + k + 4..]);
@@ -472,38 +471,6 @@ pub fn matmul_transposed_multi_accumulated_simd_unrolled_4(
     for i in 0..n {
         for j in (i + 1)..p {
             (b[i * p + j], b[j * n + i]) = (b[j * p + i], b[i * n + j]);
-        }
-    }
-    (c, m, p)
-}
-
-#[cfg(target_arch = "x86_64")]
-#[target_feature(enable = "avx,avx2")]
-pub unsafe fn ikj_matmul_simd_alternate(
-    a: &Vec<f64>,
-    b: &Vec<f64>,
-    ashape: (usize, usize),
-    bshape: (usize, usize),
-) -> (Vec<f64>, usize, usize) {
-    let (m, n, p) = (ashape.0, ashape.1, bshape.1);
-    let mut c: Vec<f64> = vec![0.0; m * p];
-    let rem = p & 3;
-    for i in 0..m {
-        for k in 0..n {
-            let x = a[i * n + k];
-            let vec = x86_64::_mm256_set1_pd(x);
-            for j in (0..p - rem).step_by(4) {
-                let cv = x86_64::_mm256_load_pd(c[i * p + j..].as_ptr());
-                let bv = x86_64::_mm256_load_pd(b[k * p + j..].as_ptr());
-                x86_64::_mm256_store_pd(
-                    c[i * p + j..].as_mut_ptr(),
-                    x86_64::_mm256_fmadd_pd(vec, bv, cv),
-                );
-                // c[i * p + j..i * p + j + 4].copy_from_slice(&f.as_array());
-            }
-            for j in p - rem..p {
-                c[i * p + j] += x * b[k * p + j];
-            }
         }
     }
     (c, m, p)

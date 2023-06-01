@@ -6,7 +6,7 @@
 #include <vector>
 #include <algorithm>
 #include <chrono>
-#define ll unsigned long long int
+#define u64 unsigned long long int
 
 using namespace std;
 using namespace std::chrono;
@@ -20,16 +20,16 @@ string HuffmanValue[256] = {""};
 /// @brief structure for storing nodes.
 struct Node {
     char character;
-    ll count;
+    u64 count;
     Node *left, *right;
 
-    Node(ll count) {
+    Node(u64 count) {
         this->character = 0;
         this->count = count;
         this->left = this->right = nullptr;
     }
 
-    Node(char character, ll count) {
+    Node(char character, u64 count) {
         this->character = character;
         this->count = count;
         this->left = this->right = nullptr;
@@ -44,10 +44,10 @@ namespace Utility {
      * @param filename name of the file.
      * @returns the filesize
      */
-    ll get_file_size(const char *filename) {
+    u64 get_file_size(const char *filename) {
         FILE *p_file = fopen(filename, "rb");
         fseek(p_file, 0, SEEK_END);
-        ll size = ftello64(p_file);
+        u64 size = ftello64(p_file);
         fclose(p_file);
         return size;
     }
@@ -61,7 +61,7 @@ namespace Utility {
             value.pop_back();
 
             if (root->left == nullptr && root->right == nullptr) {
-                printf("Character: %c, Count: %lld, ", root->character, root->count);
+                printf("Character: %c, Count: %u64d, ", root->character, root->count);
                 cout << "Huffman Value: " << value << endl;
             }
             
@@ -104,24 +104,24 @@ bool sortbysec(const Node *a, const Node *b) {
  * @details Parses the file for character count
  * @param filename name of the file.
  * @param Filesize size of the file.
- * @returns count of all present characters in file as a map
+ * @returns count of au64 present characters in file as a map
 */
-map<char, ll>parse_file(const char* filename, const ll Filesize) {
+map<char, u64>parse_file(const char* filename, const u64 Filesize) {
     FILE *ptr = fopen(filename, "rb");
-    if (ptr == NULL) {
+    if (ptr == nullptr) {
         perror("Error: File not found:");
         exit(-1);
     }
     unsigned char ch;
-    ll size = 0, filesize = Filesize;
-    vector<ll>Store(256, 0);
+    u64 size = 0, filesize = Filesize;
+    u64 Store [256] = {0};
 
     while (size != filesize) {
         ch = fgetc(ptr);
         ++Store[ch];
         ++size;
     }
-    map<char, ll>store;
+    map<char, u64>store;
     for (int i = 0; i < 256; ++i) {
         if (Store[i]) {
             store[i] = Store[i];
@@ -133,7 +133,7 @@ map<char, ll>parse_file(const char* filename, const ll Filesize) {
 /**
  * @details Utility function to sort array by character count
  */
-vector<Node*>sort_by_character_count(const map<char, ll>&value) {
+vector<Node*>sort_by_character_count(const map<char, u64>&value) {
     vector<Node*> store;
     for (auto &x: value) {
         store.push_back(new Node(x.first, x.second));
@@ -176,8 +176,8 @@ string generate_header(const char padding) {
  * @param value binary string
  * @returns the size of the resulting file (without the header)
  */
-ll store_huffman_value(const Node *root, string &value) {
-    ll temp = 0;  
+u64 store_huffman_value(const Node *root, string &value) {
+    u64 temp = 0;  
     if (root) {
         value.push_back('0');
         temp = store_huffman_value(root->left, value);
@@ -198,7 +198,7 @@ ll store_huffman_value(const Node *root, string &value) {
  * @param value mapping of character counts.
  * @returns root of the huffman tree.
  */
-Node *generate_huffman_tree(const map <char, ll>&value) {
+Node *generate_huffman_tree(const map <char, u64>&value) {
     vector<Node*> store = sort_by_character_count(value);
     Node *one, *two, *parent;
     sort(begin(store), end(store), sortbysec);
@@ -227,7 +227,7 @@ Node *generate_huffman_tree(const map <char, ll>&value) {
  * @param PredictedFileSize the size of the compressed file.
  * @returns void, but compresses the file as ${filename}.abiz
  */
-void compress (const char *filename, const ll Filesize, const ll PredictedFileSize) {
+void compress (const char *filename, const u64 Filesize, const u64 PredictedFileSize) {
     const char padding = (8 - ((PredictedFileSize)&(7)))&(7);
     const string header = generate_header(padding);
     int header_i = 0;
@@ -247,7 +247,7 @@ void compress (const char *filename, const ll Filesize, const ll PredictedFileSi
 
     unsigned char ch, fch = 0;
     char counter = 7;
-    ll size = 0, i;
+    u64 size = 0, i;
     while(size != Filesize) {
         ch = fgetc(iptr);
         i = 0;
@@ -265,7 +265,7 @@ void compress (const char *filename, const ll Filesize, const ll PredictedFileSi
         }
         ++size;
         if((size * 100 / Filesize) > ((size - 1) * 100 / Filesize)) {
-            printf("\r%lld%% completed  ", (size * 100 / Filesize));
+            printf("\r%u64d%% completed  ", (size * 100 / Filesize));
         }
     }
     if(fch) {
@@ -344,7 +344,7 @@ pair<Node*, pair<unsigned char, int>>decode_header(FILE *iptr) {
  * @returns void, but decompresses the file and stores it as
  * output${filename} (without the .abiz part)
  */
-void decompress(const char*filename, const ll Filesize, const ll leftover) {
+void decompress(const char*filename, const u64 Filesize, const u64 leftover) {
     const string fl = filename;
     FILE *iptr = fopen(fl.c_str(), "rb");
     FILE *optr = fopen(string("output"+fl.substr(0, fl.length()-5)).c_str(), "wb");
@@ -360,8 +360,8 @@ void decompress(const char*filename, const ll Filesize, const ll leftover) {
     const auto headersize = HeaderMetadata.second.second;
 
     char ch, counter = 7;
-    ll size = 0;
-    const ll filesize = Filesize-headersize;
+    u64 size = 0;
+    const u64 filesize = Filesize-headersize;
     Node *traverse = root;
     ch = fgetc(iptr);
     while (size != filesize) {
@@ -380,7 +380,7 @@ void decompress(const char*filename, const ll Filesize, const ll leftover) {
         ++size;
         counter = 7;
         if ((size * 100 / filesize) > ((size - 1) * 100 / filesize)) {
-            printf("\r%lld%% completed, size: %lld bytes   ", (size * 100 / filesize), size);
+            printf("\r%u64d%% completed, size: %u64d bytes   ", (size * 100 / filesize), size);
         }
         ch = fgetc(iptr);
     }
@@ -404,15 +404,15 @@ int main(int argc, char *argv[]) {
 	
 	time_point <system_clock> start, end; 
 	duration <double> time;
-	ll filesize, predfilesize;
+	u64 filesize, predfilesize;
 	if (string(option) == "-c") {
 		filesize = Utility::get_file_size(filename);
 		auto mapper = CompressUtility::parse_file(filename, filesize);
 		Node *const root = CompressUtility::generate_huffman_tree(mapper);
 		string buf = "";
 		predfilesize = CompressUtility::store_huffman_value(root, buf);
-		printf("Original File: %lld bytes\n", filesize);
-		printf("Compressed File Size (without header): %lld bytes\n", (predfilesize+7)>>3);
+		printf("Original File: %u64d bytes\n", filesize);
+		printf("Compressed File Size (without header): %u64d bytes\n", (predfilesize+7)>>3);
 	
 		start = system_clock::now();
 		CompressUtility::compress(filename, filesize, predfilesize);
