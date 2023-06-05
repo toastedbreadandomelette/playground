@@ -8,6 +8,4 @@ edition = "2021"
 opt-level = 3
 
 [dependencies]
-faer = "0.7.0"
-faer-core = "0.8.0"
 rand = "0.8.5"

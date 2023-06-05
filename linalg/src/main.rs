@@ -234,20 +234,6 @@ fn main() {
         orig == c
     );
 
-    let mut val = vec![0.0_f64; sz * sz];
-    let acc = unsafe {
-        faer_core::MatMut::<f64>::from_raw_parts(val.as_mut_ptr(), sz, sz, sz as isize, 1)
-    };
-    t = std::time::Instant::now();
-    let (lhs, rhs) = unsafe {
-        (
-            faer_core::MatRef::<f64>::from_raw_parts(a.as_ptr(), sz, sz, sz as isize, 1),
-            faer_core::MatRef::<f64>::from_raw_parts(b.as_ptr(), sz, sz, sz as isize, 1),
-        )
-    };
-    faer_core::mul::matmul(acc, lhs, rhs, Some(1.0), 0.0, faer_core::Parallelism::None);
-    println!("faer {}ms, {}", t.elapsed().as_millis(), orig == c);
-
     // t = std::time::Instant::now();
     // c = matmul::cf_block_matmul_alternate(&a, &b, (sz, sz), (sz, sz));
     // println!(

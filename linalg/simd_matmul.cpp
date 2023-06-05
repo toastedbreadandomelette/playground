@@ -802,53 +802,51 @@ void testamalloc() {
     std::chrono::duration<double> time = end - start;
 
     std::cout << "naive: " << time.count() << "s\n";
-    free(ans);
-    ans = nullptr;
 
-    start = std::chrono::system_clock::now();
-    auto ans1 = cf_mul_al(a, b, m, n, p);
-    end = std::chrono::system_clock::now();
-    time = end - start;
+    // start = std::chrono::system_clock::now();
+    // auto ans1 = cf_mul_al(a, b, m, n, p);
+    // end = std::chrono::system_clock::now();
+    // time = end - start;
 
-    std::cout << "cache friendly: " << time.count()
-              << "s, equal: " << comp(ans, ans1, m, p) << "\n";
-    afree(ans1);
+    // std::cout << "cache friendly: " << time.count()
+    //           << "s, equal: " << comp(ans, ans1, m, p) << "\n";
+    // afree(ans1);
 
-    start = std::chrono::system_clock::now();
-    auto ans2 = cf_block_mul_al(a, b, m, n, p);
-    end = std::chrono::system_clock::now();
-    time = end - start;
+    // start = std::chrono::system_clock::now();
+    // auto ans2 = cf_block_mul_al(a, b, m, n, p);
+    // end = std::chrono::system_clock::now();
+    // time = end - start;
 
-    std::cout << "cache friendly blocked mul: " << time.count()
-              << "s, equal: " << comp(ans, ans2, m, p) << "\n";
-    afree(ans2);
+    // std::cout << "cache friendly blocked mul: " << time.count()
+    //           << "s, equal: " << comp(ans, ans2, m, p) << "\n";
+    // afree(ans2);
 
-    start = std::chrono::system_clock::now();
-    auto ans3 = cf_simd_mul_al(a, b, m, n, p);
-    end = std::chrono::system_clock::now();
-    time = end - start;
+    // start = std::chrono::system_clock::now();
+    // auto ans3 = cf_simd_mul_al(a, b, m, n, p);
+    // end = std::chrono::system_clock::now();
+    // time = end - start;
 
-    std::cout << "cache friendly simd: " << time.count()
-              << "s, equal: " << comp(ans, ans3, m, p) << "\n";
-    afree(ans3);
+    // std::cout << "cache friendly simd: " << time.count()
+    //           << "s, equal: " << comp(ans, ans3, m, p) << "\n";
+    // afree(ans3);
 
-    start = std::chrono::system_clock::now();
-    auto ans4 = cf_simd_block_mul_al(a, b, m, n, p);
-    end = std::chrono::system_clock::now();
-    time = end - start;
+    // start = std::chrono::system_clock::now();
+    // auto ans4 = cf_simd_block_mul_al(a, b, m, n, p);
+    // end = std::chrono::system_clock::now();
+    // time = end - start;
 
-    std::cout << "cache friendly blocked simd: " << time.count()
-              << "s, equal: " << comp(ans, ans4, m, p) << "\n";
-    afree(ans4);
+    // std::cout << "cache friendly blocked simd: " << time.count()
+    //           << "s, equal: " << comp(ans, ans4, m, p) << "\n";
+    // afree(ans4);
 
-    start = std::chrono::system_clock::now();
-    auto ans6 = cf_block_mul_al_tr(a, b, m, n, p);
-    end = std::chrono::system_clock::now();
-    time = end - start;
+    // start = std::chrono::system_clock::now();
+    // auto ans6 = cf_block_mul_al_tr(a, b, m, n, p);
+    // end = std::chrono::system_clock::now();
+    // time = end - start;
 
-    std::cout << "cache friendly blocked transposed: " << time.count()
-              << "s, equal: " << comp(ans, ans6, m, p) << "\n";
-    afree(ans6);
+    // std::cout << "cache friendly blocked transposed: " << time.count()
+    //           << "s, equal: " << comp(ans, ans6, m, p) << "\n";
+    // afree(ans6);
 
     start = std::chrono::system_clock::now();
     auto ans5 = cf_block_simd_mul_al_tr(a, b, m, n, p);
