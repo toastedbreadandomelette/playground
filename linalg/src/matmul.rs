@@ -406,7 +406,8 @@ pub fn matmul_transposed_multi_accumulated_simd(
 }
 
 #[cfg(target_arch = "x86_64")]
-pub fn matmul_transposed_multi_accumulated_simd_unrolled_4(
+#[target_feature(enable = "avx,avx2,fma")]
+pub unsafe fn matmul_transposed_multi_accumulated_simd_unrolled_4(
     a: &Vec<f64>,
     b: &mut Vec<f64>,
     ashape: (usize, usize),

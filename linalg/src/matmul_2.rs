@@ -10,9 +10,10 @@ pub fn matmul_transposed_accumulated_4x4(
 ) -> (Vec<f64>, usize, usize) {
     let (m, n, p) = (ashape.0, ashape.1, bshape.1);
     let mut c: Vec<f64> = vec![0.0; m * p];
+    let mut tb: Vec<f64> = vec![0.0; b.len()];
     for i in 0..n {
-        for j in (i + 1)..p {
-            (b[i * p + j], b[j * n + i]) = (b[j * p + i], b[i * n + j]);
+        for j in 0..p {
+            tb[j * n + i] = b[i * p + j]
         }
     }
 
@@ -86,7 +87,9 @@ pub fn matmul_transposed_accumulated_4x4(
     (c, m, p)
 }
 
-pub fn matmul_transposed_simd_accumulated_4x4(
+#[cfg(target_arch = "x86_64")]
+#[target_feature(enable = "avx,avx2,fma")]
+pub unsafe fn matmul_transposed_simd_accumulated_4x4(
     a: &Vec<f64>,
     b: &mut Vec<f64>,
     ashape: (usize, usize),
@@ -105,17 +108,50 @@ pub fn matmul_transposed_simd_accumulated_4x4(
             let mut ans1: f64x4 = f64x4::splat(0.0);
             let mut ans2: f64x4 = f64x4::splat(0.0);
             let mut ans3: f64x4 = f64x4::splat(0.0);
-            for k in 0..n {
-                let g = f64x4::from_array([
+            for k in (0..n).step_by(4) {
+                let g0 = f64x4::from_array([
                     b[j * p + k],
                     b[(j + 1) * p + k],
                     b[(j + 2) * p + k],
                     b[(j + 3) * p + k],
                 ]);
-                ans0 += f64x4::splat(a[i * n + k]) * g;
-                ans1 += f64x4::splat(a[(i + 1) * n + k]) * g;
-                ans2 += f64x4::splat(a[(i + 2) * n + k]) * g;
-                ans3 += f64x4::splat(a[(i + 3) * n + k]) * g;
+                let g1 = f64x4::from_array([
+                    b[j * p + k + 1],
+                    b[(j + 1) * p + k + 1],
+                    b[(j + 2) * p + k + 1],
+                    b[(j + 3) * p + k + 1],
+                ]);
+                let g2 = f64x4::from_array([
+                    b[j * p + k + 2],
+                    b[(j + 1) * p + k + 2],
+                    b[(j + 2) * p + k + 2],
+                    b[(j + 3) * p + k + 2],
+                ]);
+                let g3 = f64x4::from_array([
+                    b[j * p + k + 3],
+                    b[(j + 1) * p + k + 3],
+                    b[(j + 2) * p + k + 3],
+                    b[(j + 3) * p + k + 3],
+                ]);
+                ans0 += f64x4::splat(a[i * n + k]) * g0;
+                ans1 += f64x4::splat(a[(i + 1) * n + k]) * g0;
+                ans2 += f64x4::splat(a[(i + 2) * n + k]) * g0;
+                ans3 += f64x4::splat(a[(i + 3) * n + k]) * g0;
+
+                ans0 += f64x4::splat(a[i * n + k + 1]) * g1;
+                ans1 += f64x4::splat(a[(i + 1) * n + k + 1]) * g1;
+                ans2 += f64x4::splat(a[(i + 2) * n + k + 1]) * g1;
+                ans3 += f64x4::splat(a[(i + 3) * n + k + 1]) * g1;
+
+                ans0 += f64x4::splat(a[i * n + k + 2]) * g2;
+                ans1 += f64x4::splat(a[(i + 1) * n + k + 2]) * g2;
+                ans2 += f64x4::splat(a[(i + 2) * n + k + 2]) * g2;
+                ans3 += f64x4::splat(a[(i + 3) * n + k + 2]) * g2;
+
+                ans0 += f64x4::splat(a[i * n + k + 3]) * g3;
+                ans1 += f64x4::splat(a[(i + 1) * n + k + 3]) * g3;
+                ans2 += f64x4::splat(a[(i + 2) * n + k + 3]) * g3;
+                ans3 += f64x4::splat(a[(i + 3) * n + k + 3]) * g3;
             }
             c[i * p + j..i * p + j + 4].copy_from_slice(ans0.as_array());
             c[(i + 1) * p + j..(i + 1) * p + j + 4].copy_from_slice(ans1.as_array());
@@ -209,8 +245,10 @@ pub fn matmul_transposed_simd_accumulated_4x4_unrolled_4(
     (c, m, p)
 }
 
+
 #[cfg(target_arch = "x86_64")]
-pub fn matmul_transposed_multi_accumulated_simd_4x4(
+#[target_feature(enable = "avx,avx2,fma")]
+pub unsafe fn matmul_transposed_multi_accumulated_simd_4x4(
     a: &Vec<f64>,
     b: &mut Vec<f64>,
     ashape: (usize, usize),
@@ -218,9 +256,11 @@ pub fn matmul_transposed_multi_accumulated_simd_4x4(
 ) -> (Vec<f64>, usize, usize) {
     let (m, n, p) = (ashape.0, ashape.1, bshape.1);
     let mut c: Vec<f64> = vec![0.0; m * p];
+    let mut tb: Vec<f64> = vec![0.0; b.len()];
+    
     for i in 0..n {
-        for j in (i + 1)..p {
-            (b[i * p + j], b[j * n + i]) = (b[j * p + i], b[i * n + j]);
+        for j in 0..p {
+            tb[j * n + i] = b[i * p + j]
         }
     }
 
@@ -279,10 +319,10 @@ pub fn matmul_transposed_multi_accumulated_simd_4x4(
                 let ac2 = f64x4::from_slice(&a[(i + 2) * n + k..]);
                 let ac3 = f64x4::from_slice(&a[(i + 3) * n + k..]);
 
-                let bc0 = f64x4::from_slice(&b[j * n + k..]);
-                let bc1 = f64x4::from_slice(&b[(j + 1) * n + k..]);
-                let bc2 = f64x4::from_slice(&b[(j + 2) * n + k..]);
-                let bc3 = f64x4::from_slice(&b[(j + 3) * n + k..]);
+                let bc0 = f64x4::from_slice(&tb[j * n + k..]);
+                let bc1 = f64x4::from_slice(&tb[(j + 1) * n + k..]);
+                let bc2 = f64x4::from_slice(&tb[(j + 2) * n + k..]);
+                let bc3 = f64x4::from_slice(&tb[(j + 3) * n + k..]);
 
                 ans00 += ac0 * bc0;
                 ans01 += ac0 * bc1;
@@ -333,11 +373,6 @@ pub fn matmul_transposed_multi_accumulated_simd_4x4(
             c[(i + 1) * p + j..(i + 1) * p + j + 4].copy_from_slice(&fans[1]);
             c[(i + 2) * p + j..(i + 2) * p + j + 4].copy_from_slice(&fans[2]);
             c[(i + 3) * p + j..(i + 3) * p + j + 4].copy_from_slice(&fans[3]);
-        }
-    }
-    for i in 0..n {
-        for j in (i + 1)..p {
-            (b[i * p + j], b[j * n + i]) = (b[j * p + i], b[i * n + j]);
         }
     }
     (c, m, p)
@@ -441,7 +476,8 @@ pub fn cf_block_transposed_multi_accumulated_matmul_4x4(
 }
 
 #[cfg(target_arch = "x86_64")]
-pub fn cf_block_transposed_multi_accumulated_simd_matmul_4x4(
+#[target_feature(enable = "avx,avx2,fma")]
+pub unsafe fn cf_block_transposed_multi_accumulated_simd_matmul_4x4(
     a: &Vec<f64>,
     b: &mut Vec<f64>,
     ashape: (usize, usize),
@@ -449,11 +485,12 @@ pub fn cf_block_transposed_multi_accumulated_simd_matmul_4x4(
 ) -> (Vec<f64>, usize, usize) {
     let (m, n, p) = (ashape.0, ashape.1, bshape.1);
     let mut c: Vec<f64> = vec![0.0; m * p];
+    let mut tb: Vec<f64> = vec![0.0; b.len()];
     let block_size = BLOCKSIZE;
 
     for i in 0..n {
-        for j in (i + 1)..p {
-            (b[i * p + j], b[j * p + i]) = (b[j * p + i], b[i * p + j]);
+        for j in 0..p {
+            tb[j * n + i] = b[i * p + j]
         }
     }
     let irem = m % block_size;
@@ -509,126 +546,132 @@ pub fn cf_block_transposed_multi_accumulated_simd_matmul_4x4(
                         f64x4::splat(0.0),
                         f64x4::splat(0.0),
                     );
-                    for k in (0..n).step_by(16) {
-                        let ac0 = f64x4::from_slice(&a[i * n + k..]);
-                        let ac1 = f64x4::from_slice(&a[(i + 1) * n + k..]);
-                        let ac2 = f64x4::from_slice(&a[(i + 2) * n + k..]);
-                        let ac3 = f64x4::from_slice(&a[(i + 3) * n + k..]);
+                    for k in (0..n).step_by(4) {
+                        let bvec00 = f64x4::from_slice(&tb[j * n + k..]);
+                        // let bvec01 = f64x4::from_slice(&tb[j * n + k + 4..]);
+                        // let bvec02 = f64x4::from_slice(&tb[j * n + k + 8..]);
+                        // let bvec03 = f64x4::from_slice(&tb[j * n + k + 12..]);
 
-                        let bc0 = f64x4::from_slice(&b[j * n + k..]);
-                        let bc1 = f64x4::from_slice(&b[(j + 1) * n + k..]);
-                        let bc2 = f64x4::from_slice(&b[(j + 2) * n + k..]);
-                        let bc3 = f64x4::from_slice(&b[(j + 3) * n + k..]);
+                        let bvec10 = f64x4::from_slice(&tb[(j + 1) * n + k..]);
+                        // let bvec11 = f64x4::from_slice(&tb[(j + 1) * n + k + 4..]);
+                        // let bvec12 = f64x4::from_slice(&tb[(j + 1) * n + k + 8..]);
+                        // let bvec13 = f64x4::from_slice(&tb[(j + 1) * n + k + 12..]);
 
-                        ans00 += ac0 * bc0;
-                        ans01 += ac0 * bc1;
-                        ans02 += ac0 * bc2;
-                        ans03 += ac0 * bc3;
+                        let bvec20 = f64x4::from_slice(&tb[(j + 2) * n + k..]);
+                        // let bvec21 = f64x4::from_slice(&tb[(j + 2) * n + k + 4..]);
+                        // let bvec22 = f64x4::from_slice(&tb[(j + 2) * n + k + 8..]);
+                        // let bvec23 = f64x4::from_slice(&tb[(j + 2) * n + k + 12..]);
 
-                        ans10 += ac1 * bc0;
-                        ans11 += ac1 * bc1;
-                        ans12 += ac1 * bc2;
-                        ans13 += ac1 * bc3;
+                        let bvec30 = f64x4::from_slice(&tb[(j + 3) * n + k..]);
+                        // let bvec31 = f64x4::from_slice(&tb[(j + 3) * n + k + 4..]);
+                        // let bvec32 = f64x4::from_slice(&tb[(j + 3) * n + k + 8..]);
+                        // let bvec33 = f64x4::from_slice(&tb[(j + 3) * n + k + 12..]);
 
-                        ans20 += ac2 * bc0;
-                        ans21 += ac2 * bc1;
-                        ans22 += ac2 * bc2;
-                        ans23 += ac2 * bc3;
+                        let mut avec0 = f64x4::from_slice(&a[i * n + k..]);
+                        // let mut avec1 = f64x4::from_slice(&a[i * n + k + 4..]);
+                        // let mut avec2 = f64x4::from_slice(&a[i * n + k + 8..]);
+                        // let mut avec3 = f64x4::from_slice(&a[i * n + k + 12..]);
 
-                        ans30 += ac3 * bc0;
-                        ans31 += ac3 * bc1;
-                        ans32 += ac3 * bc2;
-                        ans33 += ac3 * bc3;
+                        ans00 += avec0 * bvec00;
+                        ans01 += avec0 * bvec10;
+                        ans02 += avec0 * bvec20;
+                        ans03 += avec0 * bvec30;
 
-                        let ac0 = f64x4::from_slice(&a[i * n + k + 4..]);
-                        let ac1 = f64x4::from_slice(&a[(i + 1) * n + k + 4..]);
-                        let ac2 = f64x4::from_slice(&a[(i + 2) * n + k + 4..]);
-                        let ac3 = f64x4::from_slice(&a[(i + 3) * n + k + 4..]);
+                        // ans00 += avec1 * bvec01;
+                        // ans01 += avec1 * bvec11;
+                        // ans02 += avec1 * bvec21;
+                        // ans03 += avec1 * bvec31;
 
-                        let bc0 = f64x4::from_slice(&b[j * n + k + 4..]);
-                        let bc1 = f64x4::from_slice(&b[(j + 1) * n + k + 4..]);
-                        let bc2 = f64x4::from_slice(&b[(j + 2) * n + k + 4..]);
-                        let bc3 = f64x4::from_slice(&b[(j + 3) * n + k + 4..]);
+                        // ans00 += avec2 * bvec02;
+                        // ans01 += avec2 * bvec12;
+                        // ans02 += avec2 * bvec22;
+                        // ans03 += avec2 * bvec32;
 
-                        ans00 += ac0 * bc0;
-                        ans01 += ac0 * bc1;
-                        ans02 += ac0 * bc2;
-                        ans03 += ac0 * bc3;
+                        // ans00 += avec3 * bvec03;
+                        // ans01 += avec3 * bvec13;
+                        // ans02 += avec3 * bvec23;
+                        // ans03 += avec3 * bvec33;
 
-                        ans10 += ac1 * bc0;
-                        ans11 += ac1 * bc1;
-                        ans12 += ac1 * bc2;
-                        ans13 += ac1 * bc3;
+                        /////////////////////////////////////////////////////////////////
 
-                        ans20 += ac2 * bc0;
-                        ans21 += ac2 * bc1;
-                        ans22 += ac2 * bc2;
-                        ans23 += ac2 * bc3;
+                        avec0 = f64x4::from_slice(&a[(i + 1) * n + k..]);
+                        // avec1 = f64x4::from_slice(&a[(i + 1) * n + k + 4..]);
+                        // avec2 = f64x4::from_slice(&a[(i + 1) * n + k + 8..]);
+                        // avec3 = f64x4::from_slice(&a[(i + 1) * n + k + 12..]);
 
-                        ans30 += ac3 * bc0;
-                        ans31 += ac3 * bc1;
-                        ans32 += ac3 * bc2;
-                        ans33 += ac3 * bc3;
+                        ans10 += avec0 * bvec00;
+                        ans11 += avec0 * bvec10;
+                        ans12 += avec0 * bvec20;
+                        ans13 += avec0 * bvec30;
 
-                        let ac0 = f64x4::from_slice(&a[i * n + k + 8..]);
-                        let ac1 = f64x4::from_slice(&a[(i + 1) * n + k + 8..]);
-                        let ac2 = f64x4::from_slice(&a[(i + 2) * n + k + 8..]);
-                        let ac3 = f64x4::from_slice(&a[(i + 3) * n + k + 8..]);
+                        // ans10 += avec1 * bvec01;
+                        // ans11 += avec1 * bvec11;
+                        // ans12 += avec1 * bvec21;
+                        // ans13 += avec1 * bvec31;
 
-                        let bc0 = f64x4::from_slice(&b[j * n + k + 8..]);
-                        let bc1 = f64x4::from_slice(&b[(j + 1) * n + k + 8..]);
-                        let bc2 = f64x4::from_slice(&b[(j + 2) * n + k + 8..]);
-                        let bc3 = f64x4::from_slice(&b[(j + 3) * n + k + 8..]);
+                        // ans10 += avec2 * bvec02;
+                        // ans11 += avec2 * bvec12;
+                        // ans12 += avec2 * bvec22;
+                        // ans13 += avec2 * bvec32;
 
-                        ans00 += ac0 * bc0;
-                        ans01 += ac0 * bc1;
-                        ans02 += ac0 * bc2;
-                        ans03 += ac0 * bc3;
+                        // ans10 += avec3 * bvec03;
+                        // ans11 += avec3 * bvec13;
+                        // ans12 += avec3 * bvec23;
+                        // ans13 += avec3 * bvec33;
 
-                        ans10 += ac1 * bc0;
-                        ans11 += ac1 * bc1;
-                        ans12 += ac1 * bc2;
-                        ans13 += ac1 * bc3;
+                        ///////////////////////////////////////////////////////////////////
 
-                        ans20 += ac2 * bc0;
-                        ans21 += ac2 * bc1;
-                        ans22 += ac2 * bc2;
-                        ans23 += ac2 * bc3;
+                        avec0 = f64x4::from_slice(&a[(i + 2) * n + k..]);
+                        // avec1 = f64x4::from_slice(&a[(i + 2) * n + k + 4..]);
+                        // avec2 = f64x4::from_slice(&a[(i + 2) * n + k + 8..]);
+                        // avec3 = f64x4::from_slice(&a[(i + 2) * n + k + 12..]);
 
-                        ans30 += ac3 * bc0;
-                        ans31 += ac3 * bc1;
-                        ans32 += ac3 * bc2;
-                        ans33 += ac3 * bc3;
+                        ans20 += avec0 * bvec00;
+                        ans21 += avec0 * bvec10;
+                        ans22 += avec0 * bvec20;
+                        ans23 += avec0 * bvec30;
 
-                        let ac0 = f64x4::from_slice(&a[i * n + k + 12..]);
-                        let ac1 = f64x4::from_slice(&a[(i + 1) * n + k + 12..]);
-                        let ac2 = f64x4::from_slice(&a[(i + 2) * n + k + 12..]);
-                        let ac3 = f64x4::from_slice(&a[(i + 3) * n + k + 12..]);
+                        // ans20 += avec1 * bvec01;
+                        // ans21 += avec1 * bvec11;
+                        // ans22 += avec1 * bvec21;
+                        // ans23 += avec1 * bvec31;
 
-                        let bc0 = f64x4::from_slice(&b[j * n + k + 12..]);
-                        let bc1 = f64x4::from_slice(&b[(j + 1) * n + k + 12..]);
-                        let bc2 = f64x4::from_slice(&b[(j + 2) * n + k + 12..]);
-                        let bc3 = f64x4::from_slice(&b[(j + 3) * n + k + 12..]);
+                        // ans20 += avec2 * bvec02;
+                        // ans21 += avec2 * bvec12;
+                        // ans22 += avec2 * bvec22;
+                        // ans23 += avec2 * bvec32;
 
-                        ans00 += ac0 * bc0;
-                        ans01 += ac0 * bc1;
-                        ans02 += ac0 * bc2;
-                        ans03 += ac0 * bc3;
+                        // ans20 += avec3 * bvec03;
+                        // ans21 += avec3 * bvec13;
+                        // ans22 += avec3 * bvec23;
+                        // ans23 += avec3 * bvec33;
 
-                        ans10 += ac1 * bc0;
-                        ans11 += ac1 * bc1;
-                        ans12 += ac1 * bc2;
-                        ans13 += ac1 * bc3;
+                        /////////////////////////////////////////////////////////////
 
-                        ans20 += ac2 * bc0;
-                        ans21 += ac2 * bc1;
-                        ans22 += ac2 * bc2;
-                        ans23 += ac2 * bc3;
+                        avec0 = f64x4::from_slice(&a[(i + 3) * n + k..]);
+                        // avec1 = f64x4::from_slice(&a[(i + 3) * n + k + 4..]);
+                        // avec2 = f64x4::from_slice(&a[(i + 3) * n + k + 8..]);
+                        // avec3 = f64x4::from_slice(&a[(i + 3) * n + k + 12..]);
 
-                        ans30 += ac3 * bc0;
-                        ans31 += ac3 * bc1;
-                        ans32 += ac3 * bc2;
-                        ans33 += ac3 * bc3;
+                        ans30 += avec0 * bvec00;
+                        ans31 += avec0 * bvec10;
+                        ans32 += avec0 * bvec20;
+                        ans33 += avec0 * bvec30;
+
+                        // ans30 += avec1 * bvec01;
+                        // ans31 += avec1 * bvec11;
+                        // ans32 += avec1 * bvec21;
+                        // ans33 += avec1 * bvec31;
+
+                        // ans30 += avec2 * bvec02;
+                        // ans31 += avec2 * bvec12;
+                        // ans32 += avec2 * bvec22;
+                        // ans33 += avec2 * bvec32;
+
+                        // ans30 += avec3 * bvec03;
+                        // ans31 += avec3 * bvec13;
+                        // ans32 += avec3 * bvec23;
+                        // ans33 += avec3 * bvec33;
                     }
                     c[i * p + j] += ans00.reduce_sum();
                     c[i * p + j + 1] += ans01.reduce_sum();
@@ -654,10 +697,5 @@ pub fn cf_block_transposed_multi_accumulated_simd_matmul_4x4(
         }
     }
 
-    for i in 0..n {
-        for j in (i + 1)..p {
-            (b[i * p + j], b[j * p + i]) = (b[j * p + i], b[i * p + j]);
-        }
-    }
     (c, m, p)
 }
