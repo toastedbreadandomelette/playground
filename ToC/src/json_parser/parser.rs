@@ -136,7 +136,6 @@ impl Parser {
         match result_container {
             Result::Ok(val) => Result::Ok(val),
             Result::Error(val) => {
-                println!("{}", val);
                 Result::Error(val)
             }
             Result::None => {
@@ -401,14 +400,14 @@ impl Parser {
                         return Result::Error(Error::ParsingError(
                             ParseError::InvalidNumberParseError(self.curr_byte as char),
                         ));
-                    } else if read_exp && self.curr_byte == b'.' | b'e' | b'E' {
+                    } else if read_exp && self.curr_byte == b'.' || self.curr_byte == b'e' || self.curr_byte == b'E' {
                         return Result::Error(Error::ParsingError(
                             ParseError::InvalidNumberParseError(self.curr_byte as char),
                         ));
                     }
 
-                    read_dot = read_dot || self.curr_byte == b'.' | b'e' | b'E';
-                    read_exp = read_exp || self.curr_byte == b'e' | b'E';
+                    read_exp = read_exp || self.curr_byte == b'e' || self.curr_byte == b'E';
+                    read_dot = read_dot || self.curr_byte == b'.' || read_exp;
 
                     continue 'parsing_number;
                 }
