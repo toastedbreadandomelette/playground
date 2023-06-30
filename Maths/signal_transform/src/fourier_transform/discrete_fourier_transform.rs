@@ -1,7 +1,9 @@
-mod complex;
-use crate::complex::{Complex, Number, PI};
+use crate::utils::complex::{Complex, Number, PI};
 use std::ops::{AddAssign, Mul};
 
+/// Perform Discrete Fourier Transform on n values of Vector, and returns the complex
+/// 
+/// Can be retrieved by performing idft
 pub fn dft<T: From<T> + AddAssign + Mul + Copy + Number>(arr: &Vec<T>) -> Vec<Complex>
 where
     f64: From<T>,
@@ -26,6 +28,7 @@ where
     result
 }
 
+/// Perform Inverse Discrete Fourier Transform on n values of Vector, and returns the floating values
 pub fn idft<T: From<T> + AddAssign + Mul + Copy + Number + std::convert::From<f64>>(
     arr: &Vec<Complex>,
 ) -> Vec<T>
@@ -55,6 +58,8 @@ where
         .collect::<Vec<T>>()
 }
 
+
+/// Perform Discrete Fourier Transform on n values of Vector, and returns the complex values
 pub fn idft_complex(arr: &Vec<Complex>) -> Vec<Complex> {
     let angle = PI * 2.0 / (arr.len() as f64);
     let wlen = Complex::new(angle.cos(), angle.sin());
@@ -76,6 +81,9 @@ pub fn idft_complex(arr: &Vec<Complex>) -> Vec<Complex> {
     result
 }
 
+/// Perform Fast Fourier Transform on n values of Vector, and returns the floating values
+/// 
+/// Uses Divide-and-Conquer method.
 pub fn fft<T: From<T> + AddAssign + Mul + Copy + Number + std::default::Default>(
     arr: &Vec<T>,
 ) -> Vec<Complex>
@@ -102,14 +110,19 @@ where
         let mut w = Complex::new(1.0, 0.0);
         let mut result: Vec<Complex> = vec![Complex::new(0.0, 0.0); arr.len()];
         for x in 0..(arr.len() / 2) {
-            result[x] = even_fft[x] + odd_fft[x] * w;
-            result[x + arr.len() / 2] = even_fft[x] - odd_fft[x] * w;
+            let t = odd_fft[x] * w;
+            result[x] = even_fft[x] + t;
+            result[x + arr.len() / 2] = even_fft[x] - t;
             w *= wlen;
         }
         result
     }
 }
 
+/// Perform Inverse Fast Fourier Transform (only for internal purposes) 
+/// on n values of Vector, and returns the floating values
+/// 
+/// Uses Divide-and-Conquer method.
 pub fn ifft_internal(arr: &Vec<Complex>) -> Vec<Complex> {
     if arr.len() < 16 || arr.len() & 1 == 1 {
         idft_complex(arr)
@@ -131,14 +144,18 @@ pub fn ifft_internal(arr: &Vec<Complex>) -> Vec<Complex> {
         let mut w = Complex::new(1.0, 0.0);
         let mut result: Vec<Complex> = vec![Complex::new(0.0, 0.0); arr.len()];
         for x in 0..(arr.len() / 2) {
-            result[x] = even_fft[x] + odd_fft[x] * w;
-            result[x + arr.len() / 2] = even_fft[x] - odd_fft[x] * w;
+            let t = odd_fft[x] * w;
+            result[x] = even_fft[x] + t;
+            result[x + arr.len() / 2] = even_fft[x] - t;
             w *= wlen;
         }
         result
     }
 }
 
+/// Perform Fast Fourier Transform on n values of Vector, and returns the floating values
+/// 
+/// Uses Divide-and-Conquer method.
 pub fn ifft(arr: &Vec<Complex>) -> Vec<f64> {
     ifft_internal(&arr)
         .iter()

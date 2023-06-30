@@ -69,32 +69,16 @@ pub unsafe fn cf_block_transposed_multi_accumulated_simd_matmul_4x4(
 
     let irem = m % block_size;
     let jrem = p % block_size;
-    let krem = n & 3;
 
-    let mut ans00;
-    let mut ans01;
-    let mut ans02;
-    let mut ans03;
-
-    let mut ans10;
-    let mut ans11;
-    let mut ans12;
-    let mut ans13;
-
-    let mut ans20;
-    let mut ans21;
-    let mut ans22;
-    let mut ans23;
-
-    let mut ans30;
-    let mut ans31;
-    let mut ans32;
-    let mut ans33;
+    let (mut ans00, mut ans01, mut ans02, mut ans03);
+    let (mut ans10, mut ans11, mut ans12, mut ans13);
+    let (mut ans20, mut ans21, mut ans22, mut ans23);
+    let (mut ans30, mut ans31, mut ans32, mut ans33);
 
     for ibl in (0..m - irem).step_by(block_size) {
-        let ilim = ibl + block_size;
+        let ilim = if ibl + block_size > m - irem { m - irem } else { ibl + block_size };
         for jbl in (0..p - jrem).step_by(block_size) {
-            let jlim = jbl + block_size;
+            let jlim = if jbl + block_size > p - jrem { p - jrem } else { jbl + block_size };
             for i in (ibl..ilim).step_by(4) {
                 for j in (jbl..jlim).step_by(4) {
                     (ans00, ans01, ans02, ans03) = (
@@ -130,38 +114,38 @@ pub unsafe fn cf_block_transposed_multi_accumulated_simd_matmul_4x4(
                         .enumerate()
                         .for_each(|(idx, (((p, q), r), s))| {
                             let k = idx * 4;
-                            let bvec00 = f64x4::from_slice(&tb[j * n + k..]);
-                            let bvec10 = f64x4::from_slice(&tb[(j + 1) * n + k..]);
-                            let bvec20 = f64x4::from_slice(&tb[(j + 2) * n + k..]);
-                            let bvec30 = f64x4::from_slice(&tb[(j + 3) * n + k..]);
+                            let bvec0 = f64x4::from_slice(&tb[j * n + k..]);
+                            let bvec1 = f64x4::from_slice(&tb[(j + 1) * n + k..]);
+                            let bvec2 = f64x4::from_slice(&tb[(j + 2) * n + k..]);
+                            let bvec3 = f64x4::from_slice(&tb[(j + 3) * n + k..]);
 
                             let mut avec0 = f64x4::from_slice(p);
 
-                            ans00 += avec0 * bvec00;
-                            ans01 += avec0 * bvec10;
-                            ans02 += avec0 * bvec20;
-                            ans03 += avec0 * bvec30;
+                            ans00 += avec0 * bvec0;
+                            ans01 += avec0 * bvec1;
+                            ans02 += avec0 * bvec2;
+                            ans03 += avec0 * bvec3;
 
                             avec0 = f64x4::from_slice(q);
 
-                            ans10 += avec0 * bvec00;
-                            ans11 += avec0 * bvec10;
-                            ans12 += avec0 * bvec20;
-                            ans13 += avec0 * bvec30;
+                            ans10 += avec0 * bvec0;
+                            ans11 += avec0 * bvec1;
+                            ans12 += avec0 * bvec2;
+                            ans13 += avec0 * bvec3;
 
                             avec0 = f64x4::from_slice(r);
 
-                            ans20 += avec0 * bvec00;
-                            ans21 += avec0 * bvec10;
-                            ans22 += avec0 * bvec20;
-                            ans23 += avec0 * bvec30;
+                            ans20 += avec0 * bvec0;
+                            ans21 += avec0 * bvec1;
+                            ans22 += avec0 * bvec2;
+                            ans23 += avec0 * bvec3;
 
                             avec0 = f64x4::from_slice(s);
 
-                            ans30 += avec0 * bvec00;
-                            ans31 += avec0 * bvec10;
-                            ans32 += avec0 * bvec20;
-                            ans33 += avec0 * bvec30;
+                            ans30 += avec0 * bvec0;
+                            ans31 += avec0 * bvec1;
+                            ans32 += avec0 * bvec2;
+                            ans33 += avec0 * bvec3;
                         });
 
                     c[i * p + j] += ans00.reduce_sum();

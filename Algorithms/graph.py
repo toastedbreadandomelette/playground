@@ -414,11 +414,6 @@ def topological_sorting(adj_matrix: list) -> list:
     sorted_vertex = reversed(sorted_vertex)
     return sorted_vertex
 
-def bellman_ford_algorithm(adj_matrix: list, source, dest) -> int:
-    """
-    """
-    pass
-
 if __name__ == '__main__':
     from doctest import testmod
     testmod()

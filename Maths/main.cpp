@@ -25,7 +25,7 @@ int main () {
     std::vector<f32> d(sz);
     auto start = std::chrono::system_clock::now();
     for (int i = 0; i < sz; ++i) {
-        d[i] = math::exp(i * n);
+        d[i] = math::sinf(i * n);
     }
     auto end = std::chrono::system_clock::now();
     std::chrono::duration<f64> time = end - start;
@@ -33,10 +33,10 @@ int main () {
 
     start = std::chrono::system_clock::now();
     for (int i = 0; i < sz; ++i) {
-        if (i < 100) {
-            std::cout << d[i] << ' ' << ::exp(i * n) << '\n';
-        }
-        d[i] = ::exp(i * n);
+        // if (i < 1000) {
+        //     std::cout << d[i] << ' ' << ::tan(i * n) << '\n';
+        // }
+        d[i] = ::sinf(i * n);
     }
     end = std::chrono::system_clock::now();
     time = end - start;

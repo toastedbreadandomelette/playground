@@ -214,6 +214,11 @@ struct factorial<0> {
     static constexpr f64 value = 1;
 };
 
+template<usize N>
+struct inv_factorial {
+    static constexpr f64 value = (1.0 / factorial<N>::value);
+};
+
 /**
  * @brief Evaluate the factorial of a number during compilation time
  */
@@ -247,6 +252,9 @@ struct ufactorial<0> {
 };
 
 constexpr f64 pi = M_PI;
+constexpr f64 pi_2 = 2 * pi;
+constexpr f64 pi_by_2 = pi * .5;
+constexpr f64 pi_by_2_3 = pi * 1.5;
 constexpr f32 pif = M_PIf;
 
 /**
@@ -261,8 +269,29 @@ constexpr inline f32 normf(f32 a) {
  * @brief compute normalized value for angle [in range (0, 2pi)], for double
  */
 constexpr inline f64 norm(f64 a) {
-    u64 multiple = (a / (2 * M_PI));
-    return a - 2 * M_PI * multiple;
+    u64 multiple = (a / (pi_2));
+    return a - pi_2 * multiple;
+}
+
+constexpr inline f64 compute(f64 a) {
+    f64 ans = a, asq = a * a;
+    f64 ta = asq * a;
+    f64 asqp = asq * asq;
+    if (ta < 1e-6) [[unlikely]] return ans;
+    ans += (ta * (asq - 20.0)) * inv_factorial<5>::value;
+    ta *= asqp;
+    if (ta < 1e-3) return ans;
+    ans += (ta * (asq - 72.0)) * inv_factorial<9>::value;
+    ta *= asqp;
+    if (ta < 1) return ans;
+    ans += (ta * (asq - 156.0)) * inv_factorial<13>::value;
+    ta *= asqp;
+    if (ta < 1e3) return ans;
+    ans += (ta * (asq - 272.0)) * inv_factorial<17>::value;
+    ta *= asqp;
+    if (ta < 1e6) [[likely]] return ans;
+    ans += (ta * (asq - 420.0)) * inv_factorial<21>::value;
+    return ans;
 }
 
 /**
@@ -270,22 +299,27 @@ constexpr inline f64 norm(f64 a) {
  * @param a angle in radian
  */
 constexpr f64 sin(f64 a) {
-    a = norm(a);
-    bool v = a > M_PI;
+    a = norm(std::abs(a));
+    bool v = a > pi;
     i8 sgn = v ? -1 : 1;
-    a = v ? a - M_PI : a;
+    a = v ? a - pi : a;
     f64 ans = a, asq = a * a;
     f64 ta = asq * a;
     f64 asqp = asq * asq;
-    ans += (ta * (asq - 20.0)) / ufactorial<5>::value;
+    if (ta < 1e-6) [[unlikely]] return ans;
+    ans += (ta * (asq - 20.0)) * inv_factorial<5>::value;
     ta *= asqp;
-    ans += (ta * (asq - 72.0)) / ufactorial<9>::value;
+    if (ta < 1e-3) return ans;
+    ans += (ta * (asq - 72.0)) * inv_factorial<9>::value;
     ta *= asqp;
-    ans += (ta * (asq - 156.0)) / ufactorial<13>::value;
+    if (ta < 1) return ans;
+    ans += (ta * (asq - 156.0)) * inv_factorial<13>::value;
     ta *= asqp;
-    ans += (ta * (asq - 272.0)) / ufactorial<17>::value;
+    if (ta < 1e3) [[likely]] return ans;
+    ans += (ta * (asq - 272.0)) * inv_factorial<17>::value;
     ta *= asqp;
-    ans += (ta * (asq - 420.0)) / ufactorial<21>::value;
+    if (ta < 1e6) [[likely]] return ans;
+    ans += (ta * (asq - 420.0)) * inv_factorial<21>::value;
     return ans * sgn;
 }
 
@@ -293,21 +327,10 @@ constexpr f64 sin(f64 a) {
  * @brief compute cosine  (can be computed in compile time)
  * @param a angle in radian
  */
-constexpr f64 cos(f64 a) {
-    a = norm(a);
-    f64 ans = 1, ta = a * a;
-    f64 asq = ta;
-    f64 asqp = asq * asq;
-    ans += (ta * (asq - 12.0)) / factorial<4>::value;
-    ta *= asqp;
-    ans += (ta * (asq - 56.0)) / factorial<8>::value;
-    ta *= asqp;
-    ans += (ta * (asq - 132.0)) / factorial<12>::value;
-    ta *= asqp;
-    ans += (ta * (asq - 240.0)) / factorial<16>::value;
-    ta *= asqp;
-    ans += (ta * (asq - 380.0)) / factorial<20>::value;
-    return ans;
+inline constexpr f64 cos(f64 a) {
+    a = norm(std::abs(a));
+    f64 sgn = a > pi_by_2 && a < pi_by_2_3 ? -1 : 1;
+    return compute(a + pi_by_2) * sgn;
 }
 
 /**

@@ -1,8 +1,11 @@
-// mod discrete_fourier_transform;
-mod complex;
-use crate::complex::{Complex, Number, PI};
+use crate::utils::complex::{Complex, Number, PI};
 use std::ops::{Add, AddAssign, Mul};
 
+
+/// Perform Fast Fourier Transform
+/// on n values of Vector, and returns the floating values
+/// 
+/// Uses Divide-and-Conquer method, and non-recursive method
 pub fn fast_fft<T>(array: &Vec<T>) -> Vec<Complex>
 where
     T: Number + AddAssign + Mul + Add + std::convert::Into<f64> + Copy,
@@ -102,10 +105,15 @@ where
     }
 }
 
+/// Perform Inverse Fast Fourier Transform
+/// on n values of Vector, and returns the floating values
+/// 
+/// Uses Divide-and-Conquer method, and non-recursive method
 pub fn fast_ifft<T>(array: &Vec<Complex>) -> Vec<T>
 where
     T: Number + AddAssign + Mul + Add + std::convert::From<f64> + Copy,
     f64: From<T>,
+    Complex: From<T>
 {
     let idft = |array: &mut Vec<Complex>, start: usize, end: usize| {
         let mut result: Vec<Complex> = vec![Complex::new(0.0, 0.0); end - start];
@@ -236,14 +244,4 @@ pub fn test_fft_ifft_without_2_power() {
         .iter()
         .enumerate()
         .all(|(index, elem)| *elem - inp[index] < 1E-5_f64));
-}
-
-fn main() {
-    let sz = 24;
-    let inp = (0..sz).into_iter().map(|x| x as f64).collect::<Vec<f64>>();
-    let val = fast_fft::<f64>(&inp);
-    println!("{:?}", val);
-    let orig: Vec<f64> = fast_ifft(&val);
-
-    println!("{:?}", orig);
 }
