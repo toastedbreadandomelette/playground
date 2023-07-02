@@ -31,3 +31,6 @@ Makefile
 
 # rust
 *.pdb
+
+# other
+*sample*

@@ -1,4 +1,4 @@
-from math import sqrt, floor, ceil
+from math import sqrt, floor
 
 def segregate(arr: list, condition):
     """

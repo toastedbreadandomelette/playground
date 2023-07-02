@@ -88,6 +88,7 @@ macro_rules! get_closing_container {
 }
 
 impl Parser {
+    #[inline]
     fn new(str_stream: &str) -> Parser {
         Parser {
             container: str_stream.as_ptr(),

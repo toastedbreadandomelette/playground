@@ -124,15 +124,15 @@ impl PartialEq for Container {
                 array.len() == other_array.len()
                     && array.iter().zip(other_array.iter()).all(|(a, b)| a == b)
             }
-            (Container::Set(ref set), Container::Set(ref other_set)) => {
-                (set.len() == other_set.len())
-                    && set.iter().all(|value| other_set.get(value) == Some(value))
+            (Container::Set(ref set), Container::Set(ref oset)) => {
+                (set.len() == oset.len())
+                    && set.iter().all(|value| oset.get(value) == Some(value))
             }
-            (Container::Object(ref map_object), Container::Object(ref other_map_object)) => {
-                (map_object.len() == other_map_object.len())
+            (Container::Object(ref map_object), Container::Object(ref omap)) => {
+                (map_object.len() == omap.len())
                     && map_object
                         .iter()
-                        .all(|(key, value)| other_map_object.get(key) == Some(value))
+                        .all(|(key, value)| omap.get(key) == Some(value))
             }
             (Container::Null, Container::Null) => true,
             _ => false,
