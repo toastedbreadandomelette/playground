@@ -71,17 +71,17 @@ pub enum Container {
 
 impl Clone for Container {
     /// Creates an exact clone of self.
-    fn clone(&self) -> Container {
+    fn clone(&self) -> Self {
         match *self {
-            Container::Number(ref element) => Container::Number(*element),
-            Container::Unsigned(ref element) => Container::Unsigned(*element),
-            Container::Decimal(ref element) => Container::Decimal(*element),
-            Container::Boolean(ref element) => Container::Boolean(*element),
-            Container::Str(ref element) => Container::Str(String::from(element)),
-            Container::Array(ref array) => Container::Array(array.clone()),
-            Container::Object(ref object) => Container::Object(object.clone()),
-            Container::Set(ref set) => Container::Set(set.clone()),
-            Container::Null => Container::Null,
+            Self::Number(ref element) => Self::Number(*element),
+            Self::Unsigned(ref element) => Self::Unsigned(*element),
+            Self::Decimal(ref element) => Self::Decimal(*element),
+            Self::Boolean(ref element) => Self::Boolean(*element),
+            Self::Str(ref element) => Self::Str(String::from(element)),
+            Self::Array(ref array) => Self::Array(array.clone()),
+            Self::Object(ref object) => Self::Object(object.clone()),
+            Self::Set(ref set) => Self::Set(set.clone()),
+            Self::Null => Self::Null,
         }
     }
 }
@@ -89,10 +89,10 @@ impl Clone for Container {
 impl Hash for Container {
     fn hash<H: Hasher>(&self, s: &mut H) {
         match *self {
-            Container::Number(ref v) => v.hash(s),
-            Container::Unsigned(ref v) => v.hash(s),
-            Container::Boolean(ref v) => v.hash(s),
-            Container::Str(ref v) => v.hash(s),
+            Self::Number(ref v) => v.hash(s),
+            Self::Unsigned(ref v) => v.hash(s),
+            Self::Boolean(ref v) => v.hash(s),
+            Self::Str(ref v) => v.hash(s),
             _ => (),
         }
     }
@@ -102,7 +102,7 @@ macro_rules! define_type_checks {
     ($gen_type:ident, $func:ident) => {
         pub fn $func(&self) -> bool {
             match *self {
-                Container::$gen_type(_) => true,
+                Self::$gen_type(_) => true,
                 _ => false,
             }
         }
@@ -115,26 +115,26 @@ impl Eq for Container {}
 impl PartialEq for Container {
     fn eq(&self, other: &Self) -> bool {
         match (self, other) {
-            (Container::Number(this), Container::Number(other)) => this == other,
-            (Container::Unsigned(this), Container::Unsigned(other)) => this == other,
-            (Container::Decimal(this), Container::Decimal(other)) => this == other,
-            (Container::Boolean(this), Container::Boolean(other)) => this == other,
-            (Container::Str(ref this), Container::Str(ref other)) => this == other,
-            (Container::Array(ref array), Container::Array(ref other_array)) => {
+            (Self::Number(this), Self::Number(other)) => this == other,
+            (Self::Unsigned(this), Self::Unsigned(other)) => this == other,
+            (Self::Decimal(this), Self::Decimal(other)) => this == other,
+            (Self::Boolean(this), Self::Boolean(other)) => this == other,
+            (Self::Str(ref this), Self::Str(ref other)) => this == other,
+            (Self::Array(ref array), Self::Array(ref other_array)) => {
                 array.len() == other_array.len()
                     && array.iter().zip(other_array.iter()).all(|(a, b)| a == b)
             }
-            (Container::Set(ref set), Container::Set(ref other_set)) => {
+            (Self::Set(ref set), Self::Set(ref other_set)) => {
                 (set.len() == other_set.len())
                     && set.iter().all(|value| other_set.get(value) == Some(value))
             }
-            (Container::Object(ref map_object), Container::Object(ref other_map_object)) => {
+            (Self::Object(ref map_object), Self::Object(ref other_map_object)) => {
                 (map_object.len() == other_map_object.len())
                     && map_object
                         .iter()
                         .all(|(key, value)| other_map_object.get(key) == Some(value))
             }
-            (Container::Null, Container::Null) => true,
+            (Self::Null, Self::Null) => true,
             _ => false,
         }
     }
@@ -153,19 +153,19 @@ impl Container {
     // Returned New Object
     #[inline(always)]
     pub fn new_object() -> Self {
-        Container::Object(HashMap::new())
+        Self::Object(HashMap::new())
     }
 
     // Returns New Array Object
     #[inline(always)]
     pub fn new_array() -> Self {
-        Container::Array(Vec::new())
+        Self::Array(Vec::new())
     }
 
     // Returns new set
     #[inline(always)]
     pub fn new_set() -> Self {
-        Container::Set(HashSet::new())
+        Self::Set(HashSet::new())
     }
     // Array: Push an item into array or an element into set:
     // Returns false if not inserted
@@ -173,13 +173,13 @@ impl Container {
     pub fn push(&mut self, val: Self) -> bool {
         match *self {
             // Array push
-            Container::Array(ref mut value) => {
+            Self::Array(ref mut value) => {
                 value.push(val);
                 true
             }
             // Set push
             // To do: Define hash for HashSet
-            Container::Set(ref mut value) => value.insert(val),
+            Self::Set(ref mut value) => value.insert(val),
             _ => {
                 println!("Error: The storage type should be of array or a set for pushing values.");
                 false
@@ -191,10 +191,22 @@ impl Container {
     // Returns true if success, else false.
     pub fn insert(&mut self, key: String, val: Self) -> bool {
         match *self {
-            Container::Object(ref mut object) => {
-                let exists = object.contains_key(&key);
-                object.insert(key.to_string(), val);
-                exists
+            Self::Object(ref mut object) => {
+                object.insert(key.to_owned(), val) != None
+            }
+            _ => {
+                println!("Error: The storage should be of type Object");
+                false
+            }
+        }
+    }
+
+    // Insert/Replaces key value pair into Object
+    // Returns true if success, else false.
+    pub fn insert_str(&mut self, key: &str, val: Self) -> bool {
+        match *self {
+            Self::Object(ref mut object) => {
+                object.insert(key.to_owned(), val) != None
             }
             _ => {
                 println!("Error: The storage should be of type Object");
@@ -206,7 +218,7 @@ impl Container {
     // Print the Stored value
     pub fn dump_object(&self, indent: bool, indent_size: u8, white_space: &str) -> String {
         match *self {
-            Container::Array(ref value) => {
+            Self::Array(ref value) => {
                 if !indent {
                     format!(
                         "[{}]",
@@ -217,7 +229,7 @@ impl Container {
                             .join(", ")
                     )
                 } else {
-                    let mut space: String = (0..indent_size).into_iter().map(|_| ' ').collect();
+                    let mut space: String = (0..indent_size).map(|_| ' ').collect();
                     if value.len() == 0 {
                         "[]".to_string()
                     } else {
@@ -238,7 +250,7 @@ impl Container {
                     }
                 }
             }
-            Container::Object(ref value) => {
+            Self::Object(ref value) => {
                 if indent == false {
                     let (mut object_str, mut index) = ("{".to_string(), 0);
                     for (key, val) in value {
@@ -283,7 +295,7 @@ impl Container {
                     }
                 }
             }
-            Container::Set(ref value) => {
+            Self::Set(ref value) => {
                 if indent == false {
                     format!(
                         "({})",
@@ -295,7 +307,6 @@ impl Container {
                     )
                 } else {
                     let mut space: String = (0..indent_size)
-                        .into_iter()
                         .map(|_| ' ')
                         .collect::<Vec<char>>()
                         .into_iter()
@@ -320,20 +331,18 @@ impl Container {
                     }
                 }
             }
-            Container::Number(value) => value.to_string(),
-            Container::Unsigned(value) => value.to_string(),
-            Container::Boolean(value) => value.to_string(),
-            Container::Decimal(value) => value.to_string(),
-            Container::Str(ref value) => {
-                format!("\"{}\"", value.to_string())
-            }
-            Container::Null => "null".to_string(),
+            Self::Number(value) => value.to_string(),
+            Self::Unsigned(value) => value.to_string(),
+            Self::Boolean(value) => value.to_string(),
+            Self::Decimal(value) => value.to_string(),
+            Self::Str(ref value) => format!("\"{}\"", value.to_string()),
+            Self::Null => "null".to_string(),
         }
     }
 
     pub fn as_string(self) -> Option<String> {
         match self {
-            Container::Str(value) => Some(value),
+            Self::Str(value) => Some(value),
             _ => None,
         }
     }
@@ -389,7 +398,7 @@ impl Container {
 
     pub fn is_null(&self) -> bool {
         match *self {
-            Container::Null => true,
+            Self::Null => true,
             _ => false,
         }
     }
@@ -397,64 +406,62 @@ impl Container {
     /// Returns the length of an object
     pub fn len(&self) -> usize {
         match *self {
-            Container::Array(ref value) => value.len(),
-            Container::Object(ref value) => value.len(),
-            Container::Set(ref value) => value.len(),
-            Container::Str(ref value) => value.len(),
+            Self::Array(ref value) => value.len(),
+            Self::Object(ref value) => value.len(),
+            Self::Set(ref value) => value.len(),
+            Self::Str(ref value) => value.len(),
             _ => 1usize,
         }
     }
 }
 
 impl Index<usize> for Container {
-    type Output = Container;
+    type Output = Self;
     // Returns the value given the index (usize).
     fn index(&self, idx: usize) -> &Self::Output {
         match *self {
-            Container::Array(ref value) => {
+            Self::Array(ref value) => {
                 if value.len() > idx {
                     &value.get(idx).unwrap()
                 } else {
-                    &Container::Null
+                    &Self::Null
                 }
             }
-            _ => &Container::Null,
+            _ => &Self::Null,
         }
     }
 }
 
 impl Index<String> for Container {
-    type Output = Container;
+    type Output = Self;
     // Returns the value given the string index
     fn index(&self, idx: String) -> &Self::Output {
         match *self {
-            Container::Object(ref value) => {
-                let ret = value.get(&idx);
-                if ret != None {
-                    ret.unwrap()
+            Self::Object(ref value) => {
+                if let Some(value) = value.get(&idx) {
+                    value
                 } else {
-                    &Container::Null
+                    &Self::Null
                 }
             }
-            _ => &Container::Null,
+            _ => &Self::Null,
         }
     }
 }
 
 impl Index<&str> for Container {
-    type Output = Container;
+    type Output = Self;
     // Returns the value given the string index
     fn index(&self, idx: &str) -> &Self::Output {
         match *self {
-            Container::Object(ref value) => {
-                let ret = value.get(&idx.to_string());
-                if ret != None {
-                    ret.unwrap()
+            Self::Object(ref value) => {
+                if let Some(value) = value.get(&idx.to_owned()) {
+                    value
                 } else {
-                    &Container::Null
+                    &Self::Null
                 }
             }
-            _ => &Container::Null,
+            _ => &Self::Null,
         }
     }
 }
@@ -465,11 +472,10 @@ impl IndexMut<usize> for Container {
         match *self {
             Self::Array(ref mut value) => {
                 if value.len() > index {
-                    return &mut value[index];
+                    &mut value[index]
                 } else {
-                    let len = value.len();
-                    value.push(Container::Null);
-                    &mut value[len - 1]
+                    value.push(Self::Null);
+                    value.last_mut().unwrap()
                 }
             }
             _ => {
@@ -486,7 +492,7 @@ impl IndexMut<String> for Container {
     // Returns the value given the index (usize).
     fn index_mut(&mut self, idx: String) -> &mut Self {
         match *self {
-            Container::Object(ref mut value) => {
+            Self::Object(ref mut value) => {
                 let exists = value.contains_key(&idx);
                 if !exists {
                     value.insert(idx.to_string(), Self::Null);
@@ -508,16 +514,16 @@ impl IndexMut<&str> for Container {
     fn index_mut<'a>(&mut self, idx: &'a str) -> &mut Self {
         match *self {
             Self::Object(ref mut value) => {
-                let exists = value.contains_key(&idx.to_string());
-                if !exists {
-                    value.insert(idx.to_string(), Container::Null);
+                let key = idx.to_owned();
+                if !value.contains_key(&key) {
+                    value.insert(key.to_owned(), Self::Null);
                 }
-                value.get_mut(&idx.to_string()).unwrap()
+                value.get_mut(&key).unwrap()
             }
             _ => {
-                // Log: Change into arrayCRED warning
+                // Log: Change into array
                 *self = Self::new_object();
-                self.insert(idx.to_string(), Self::Null);
+                self.insert(idx.to_owned(), Self::Null);
                 &mut self[idx]
             }
         }

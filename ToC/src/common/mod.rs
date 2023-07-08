@@ -31,4 +31,17 @@ impl<T> Result<T> {
             }
         }
     }
+
+    pub fn unwrap_mut(&mut self) -> &mut T {
+        match self {
+            Result::Ok(value) => value,
+            Result::Error(ref err_value) => {
+                println!("{}", err_value);
+                panic!()
+            }
+            _ => {
+                panic!()
+            }
+        }
+    }
 }
