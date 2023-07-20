@@ -11,7 +11,9 @@ pub struct Node<'a, T> where T: Copy + std::fmt::Debug {
     // Left link
     left: Option<Box<Node<'a, T>>>,
     // Right link
-    right: Option<Box<Node<'a, T>>>
+    right: Option<Box<Node<'a, T>>>,
+    // Parent link
+    parent: Option<Box<Node<'a, T>>>
 }
 
 impl<'a, T> Node<'a, T> where T: Copy + std::fmt::Debug {
@@ -21,7 +23,8 @@ impl<'a, T> Node<'a, T> where T: Copy + std::fmt::Debug {
             diff_height: 0,
             ph: PhantomData,
             left: None,
-            right: None
+            right: None,
+            parent: None,
         }
     }
 
@@ -48,7 +51,6 @@ impl<'a, T> Node<'a, T> where T: Copy + std::fmt::Debug {
         self.diff_height = diff_height;
         diff_height
     }
-
 
     /// Update height difference with respect to the current
     /// node
