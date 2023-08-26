@@ -20,7 +20,7 @@ def minimizing_coins(n: int, x: int, c: list) -> int:
     3
     """
     c.sort()
-    minimal_coins = [0] + [100000000 for i in range(1, x + 1)]
+    minimal_coins = [0] + [100000000] * x
     for st in c:
         for val in range(st, x + 1):
             minimal_coins[val] = min(

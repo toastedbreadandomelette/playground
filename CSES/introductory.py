@@ -340,7 +340,7 @@ def creating_strings(string: str) -> list:
         - Sort the second half
 
         ```
-        -> second_half = 'abb'
+        => second_half = 'abb'
         ```
         """
         shuffle_point, min_char, min_char_position, iter2 = strlen - \

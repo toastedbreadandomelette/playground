@@ -9,6 +9,9 @@ Makefile
 *test.py
 *sam.py
 *sam.cpp
+*sam.*
+*sample.*
+
 
 */__pycache__/*
 *.dll

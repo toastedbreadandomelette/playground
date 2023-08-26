@@ -36,8 +36,9 @@ pointWithinCircleTest :: Circle -> Point2d -> Bool
 pointWithinCircleTest circle point = substituteCircle circle point <= 0
 {-# INLINEABLE pointWithinCircleTest #-}
 
--- Interaction of line with circle
-
+{- |
+Interaction of line with circle 
+-}
 lineThroughCircleTest :: Circle -> Line2d -> Bool
 lineThroughCircleTest circle line = linePointDist line center <= r
   where

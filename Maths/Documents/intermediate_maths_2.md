@@ -21,7 +21,7 @@ As the length of the recurrence relation is $k$, the complexity of evaluating $f
 E.g., For tribonacci series $trib(n) = trib(n-1) + trib(n-2) + trib(n-3)$, the tree for $n = 5$ would be 
 
 ```mermaid
-graph LR
+graph TD
 	A["<div class='display math'>trib(6)</div>"] --> B["<div class='display math'>trib(5)</div>"] --> E["<div class='display math'>trib(4)</div>"] --> N["<div class='display math'>trib(3)</div>"] --> W(["<div class='display math'>trib(2)</div>"]) & X(["<div class='display math'>trib(1)</div>"]) & Y(["<div class='display math'>trib(0)</div>"])
 	A --> C["<div class='display math'>trib(4)</div>"] & D["<div class='display math'>trib(3)</div>"]
 	

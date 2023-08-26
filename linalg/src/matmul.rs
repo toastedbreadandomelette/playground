@@ -31,16 +31,20 @@ pub fn matmul_tp(
     let mut c: Vec<f64> = vec![0.0; m * p];
     let mut tmpb: Vec<f64> = vec![0.0; b.len()];
 
-    for i in 0..n {
-        for j in 0..p {
-            tmpb[j * n + i] = b[i * p + j];
+    for ibl in (0..n).step_by(64) {
+        for jbl in (0..p).step_by(64) {
+            for i in ibl..ibl + 64 {
+                for j in jbl..jbl + 64 {
+                    tmpb[j * n + i] = b[i * p + j];
+                }
+            }
         }
     }
 
     let tb: &[f64] = tmpb.as_ref();
     a.windows(n).step_by(n).enumerate().for_each(|(i, avec)| {
         tb.windows(n).step_by(n).enumerate().for_each(|(j, bvec)| {
-            c[i * p + j] = avec.iter().zip(bvec.iter()).fold(0.0, |prev, (a1, b1)| prev + (a1 * b1));
+            c[i * p + j] = avec.iter().zip(bvec).fold(0.0, |prev, (a1, b1)| prev + (a1 * b1));
         });
     });
     c
@@ -59,9 +63,13 @@ pub unsafe fn cf_block_transposed_multi_accumulated_simd_matmul_4x4(
     let mut tmpb: Vec<f64> = vec![0.0; b.len()];
     let block_size = BLOCKSIZE;
 
-    for i in 0..n {
-        for j in 0..p {
-            tmpb[j * n + i] = b[i * p + j];
+    for ibl in (0..n).step_by(64) {
+        for jbl in (0..p).step_by(64) {
+            for i in ibl..ibl + 64 {
+                for j in jbl..jbl + 64 {
+                    tmpb[j * n + i] = b[i * p + j];
+                }
+            }
         }
     }
 

@@ -1,4 +1,4 @@
-B_# Divide and Conquer
+# Divide and Conquer
 Divide and conquer problem deals with solving smaller parts of problem and combining them when these smaller problems are solved.
 
 ## [[searching#Binary Search|Binary Search Method]]
@@ -26,7 +26,7 @@ C_{21}&C_{22}
 \end{array}
 $$
 
-The resultant $C$ is evaluated by multiplying submatices 8 times:
+The resultant $C$ is evaluated by multiplying sub-matrices 8 times:
 
 $$
 C=\begin{bmatrix}
@@ -38,7 +38,7 @@ A_{21} B_{11}+A_{22}B_{21}&A_{21}B_{12}+A_{22}B_{22}\\
 \end{bmatrix}
 $$
 
-The strassen's method introduces 7 new matrices:
+The strassen's method introduces $7$ new matrices:
 
 $$
 \begin{array}{l}
@@ -63,7 +63,7 @@ C_{22}=P_1-P_2+P_3+P_6
 \end{array}
 $$
 
-This is perfomed recursively till it can be divided no further/matrix becomes small enough to not be able to outperform the naive multiplication.
+This is performed recursively till it can be divided no further/matrix becomes small enough to not be able to outperform the naive multiplication.
 
 Complexity: since the recurrence relation is
 

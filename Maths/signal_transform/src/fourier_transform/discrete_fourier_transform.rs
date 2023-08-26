@@ -16,14 +16,14 @@ where
         result[0] += *x;
     }
 
-    for x in 1..arr.len() {
+    result.iter_mut().skip(1).for_each(|res| {
         let mut w = Complex::new(1.0, 0.0);
-        for y in 0..arr.len() {
-            result[x] += w * arr[y];
+        arr.iter().for_each(|y| {
+            *res += w * *y;
             w *= wstart;
-        }
+        });
         wstart *= wlen;
-    }
+    });
 
     result
 }
@@ -43,19 +43,20 @@ where
         result[0] += *x;
     }
 
-    for x in 1..arr.len() {
-        let mut w = Complex::new(1.0, 0.0);
-        for y in 0..arr.len() {
-            result[x] += w * arr[y];
-            w *= wstart;
-        }
-        wstart *= wlen;
-    }
+    let len = result.len() as f64;
 
-    result
-        .iter()
-        .map(|x| (x.real / result.len() as f64).into())
-        .collect::<Vec<T>>()
+    result.iter_mut().skip(1).for_each(|res| {
+        let mut w = Complex::new(1.0, 0.0);
+        arr.iter().for_each(|y| {
+            *res += w * *y;
+            w *= wstart;
+        });
+        wstart *= wlen;
+
+        *res /= len;
+    });
+
+    result.iter().map(|x| x.real.into()).collect::<Vec<T>>()
 }
 
 
@@ -69,14 +70,14 @@ pub fn idft_complex(arr: &Vec<Complex>) -> Vec<Complex> {
         result[0] += *x;
     }
 
-    for x in 1..arr.len() {
+    result.iter_mut().skip(1).for_each(|res| {
         let mut w = Complex::new(1.0, 0.0);
-        for y in 0..arr.len() {
-            result[x] += w * arr[y];
+        arr.iter().for_each(|y| {
+            *res += w * *y;
             w *= wstart;
-        }
+        });
         wstart *= wlen;
-    }
+    });
 
     result
 }
@@ -102,19 +103,21 @@ where
             .map(|x| arr[x])
             .collect::<Vec<T>>();
 
-        let odd_fft = fft(&odd);
-        let even_fft = fft(&even);
+        let (odd_fft, even_fft) = (fft(&odd), fft(&even));
 
         let angle = 2.0 * PI / (arr.len() as f64);
         let wlen = Complex::new(angle.cos(), -angle.sin());
         let mut w = Complex::new(1.0, 0.0);
         let mut result: Vec<Complex> = vec![Complex::new(0.0, 0.0); arr.len()];
-        for x in 0..(arr.len() / 2) {
-            let t = odd_fft[x] * w;
-            result[x] = even_fft[x] + t;
-            result[x + arr.len() / 2] = even_fft[x] - t;
-            w *= wlen;
-        }
+        odd_fft.iter()
+            .zip(even_fft.iter())
+            .enumerate()
+            .for_each(|(x, (odd, even))| {
+                let t = *odd * w;
+                result[x] = *even + t;
+                result[x + arr.len() / 2] = *even - t;
+                w *= wlen;
+            });
         result
     }
 }
@@ -143,12 +146,21 @@ pub fn ifft_internal(arr: &Vec<Complex>) -> Vec<Complex> {
         let wlen = Complex::new(angle.cos(), angle.sin());
         let mut w = Complex::new(1.0, 0.0);
         let mut result: Vec<Complex> = vec![Complex::new(0.0, 0.0); arr.len()];
-        for x in 0..(arr.len() / 2) {
-            let t = odd_fft[x] * w;
-            result[x] = even_fft[x] + t;
-            result[x + arr.len() / 2] = even_fft[x] - t;
-            w *= wlen;
-        }
+        odd_fft.iter()
+            .zip(even_fft.iter())
+            .enumerate()
+            .for_each(|(x, (odd, even))| {
+                let t = *odd * w;
+                result[x] = *even + t;
+                result[x + arr.len() / 2] = *even - t;
+                w *= wlen;
+            });
+        // for x in 0..(arr.len() / 2) {
+        //     let t = odd_fft[x] * w;
+        //     result[x] = even_fft[x] + t;
+        //     result[x + arr.len() / 2] = even_fft[x] - t;
+        //     w *= wlen;
+        // }
         result
     }
 }
