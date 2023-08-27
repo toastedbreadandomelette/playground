@@ -3,7 +3,7 @@ use std::{
     cell::RefCell,
     fmt::Debug,
     ops::{Deref, DerefMut},
-    rc::Rc
+    rc::Rc,
 };
 
 type Link<T> = Rc<RefCell<Node<T>>>;
@@ -28,6 +28,22 @@ impl<T> Node<T> {
             left: None,
             right: None,
         }
+    }
+
+    /// Returns `true` when node is a leaf
+    ///
+    /// Leaf node implies `left` and `right` branch is `None`
+    #[inline(always)]
+    pub fn is_leaf(&self) -> bool {
+        self.left.is_none() && self.right.is_none()
+    }
+
+    /// Returns whether function has child nodes
+    ///
+    /// Leaf node implies `left` and `right` branch is `Some(Link<T>)`
+    #[inline(always)]
+    pub fn has_both_children(&self) -> bool {
+        self.left.is_some() && self.right.is_some()
     }
 
     /// Return sizeof current node in bytes, plus
@@ -285,22 +301,38 @@ where
         let to_delete_node = to_delete.borrow();
 
         match (&to_delete_node.left, &to_delete_node.right) {
+            // Deleted child does not have children, remove child of par
             (None, None) => Self::attach(None, par, child_type),
+            // Deleted child have left node, attach left node as par's child
             (Some(left), None) => Self::attach(Some(Rc::clone(left)), par, child_type),
+            // Deleted child have right node, attach left node as par's child
             (None, Some(right)) => Self::attach(Some(Rc::clone(right)), par, child_type),
-            (Some(left), Some(_)) => {
-                let (left_most_node, parent) =
-                    Self::get_first_node_with_parent(left, Some(Rc::clone(&par)));
-
+            // Get last node of left subtree and attach to right
+            (Some(left), Some(right)) => {
+                let (right_most_node, parent) =
+                    Self::get_last_node_with_parent(left, Some(Rc::clone(&par)));
+                println!("here phere {:?}\n\n\n{:?}", right_most_node, parent);
                 if let Some(new_par) = parent {
-                    // If the parent of the left_most_node is the one we're
-                    // deleting, then get the grand parent of left_most_node
+                    // If the parent of the right_most_node is the one we're
+                    // deleting, then get the grand parent of right_most_node
                     // otherwise, get the direct parent to attach
                     if Rc::ptr_eq(to_delete, &new_par) {
-                        Self::attach(Some(left_most_node), Rc::clone(&par), child_type);
+                        Self::attach(
+                            Some(Rc::clone(&right_most_node)),
+                            Rc::clone(&par),
+                            child_type,
+                        );
                     } else {
-                        Self::attach(Some(left_most_node), Rc::clone(&new_par), child_type);
+                        new_par.borrow_mut().right = right_most_node.borrow_mut().left.clone();
+                        Self::attach(
+                            Some(Rc::clone(&right_most_node)),
+                            Rc::clone(&par),
+                            child_type,
+                        );
+                        right_most_node.borrow_mut().left = None;
                     }
+                    right_most_node.borrow_mut().left = Some(Rc::clone(left));
+                    right_most_node.borrow_mut().right = Some(Rc::clone(right));
                 }
             }
         }
@@ -427,105 +459,123 @@ pub fn test_insert_replace() {
     _ = p.insert_replace((12, "new data"));
     _ = p.insert_replace((99, "some other thing"));
 }
+#[cfg(test)]
+mod test {
+    use std::borrow::BorrowMut;
 
-#[test]
-pub fn test_delete() {
-    type Pair<'a> = (i32, &'a str);
-    let pair_cmp = |a: &Pair, b: &Pair| {
-        if a.0 > b.0 {
-            TreeInsOrder::Left
-        } else if a.0 < b.0 {
-            TreeInsOrder::Right
-        } else {
-            TreeInsOrder::Eq
-        }
-    };
-    let mut p = BSTree::new(Some(pair_cmp));
-    _ = p.batch_insert(&vec![
-        (129, "some"),
-        (234, "tree"),
-        (34, "that i've"),
-        (2, "constructed"),
-        (3, "by certain"),
-        (556, "custom"),
-        (99, "criteria"),
-        (58, "that"),
-        (226, "is made"),
-        (335, "by"),
-        (446, "pair_cmp"),
-        (1077, "function"),
-    ]);
+    use super::*;
+    #[test]
+    pub fn test_delete() {
+        type Pair<'a> = (i32, &'a str);
+        let pair_cmp = |a: &Pair, b: &Pair| {
+            if a.0 > b.0 {
+                TreeInsOrder::Left
+            } else if a.0 < b.0 {
+                TreeInsOrder::Right
+            } else {
+                TreeInsOrder::Eq
+            }
+        };
+        let mut p = BSTree::new(Some(pair_cmp));
+        _ = p.batch_insert(&vec![
+            (129, "some"),
+            (234, "tree"),
+            (34, "that i've"),
+            (2, "constructed"),
+            (3, "by certain"),
+            (556, "custom"),
+            (99, "criteria"),
+            (58, "that"),
+            (226, "is made"),
+            (335, "by"),
+            (446, "pair_cmp"),
+            (778, "as a"),
+            (1077, "function"),
+        ]);
 
-    // Test insert replace and delete
-    assert!(p.find_node(&(99, "criteria")) != None);
-    assert!(p.find_node(&(12, "new data")) == None);
+        // Test insert replace and delete
+        assert!(p.find_node(&(99, "criteria")) != None);
+        assert!(p.find_node(&(12, "new data")) == None);
 
-    _ = p.insert_replace((12, "new data"));
-    _ = p.delete(&(99, "criteria"));
+        _ = p.insert_replace((12, "new data"));
+        _ = p.delete(&(99, "criteria"));
 
-    println!("{:?}", p.inorder());
+        // Test insert replace and delete
+        assert!(p.find_node(&(99, "criteria")) == None);
+        assert!(p.find_node(&(12, "new data")) != None);
+        assert!(p.is_at_root((129, "some")));
 
-    // Test insert replace and delete
-    assert!(p.find_node(&(99, "criteria")) == None);
-    assert!(p.find_node(&(12, "new data")) != None);
+        let len = p.len;
+        _ = p.delete(&(129, "some"));
 
-    assert!(p.is_at_root((129, "some")));
+        assert!(!p.is_at_root((129, "some")));
+        assert!(p.find_node(&(129, "some")).is_none());
+        assert_eq!(p.inorder().len(), len - 1);
 
-    _ = p.delete(&(129, "some"));
-    assert!(!p.is_at_root((129, "some")));
-    println!("{:?}", p);
-}
+        // Check deleting node that has two children
 
-#[test]
-pub fn test_delete_skewed() {
-    let mut p = BSTree::new(None);
-    let _ = p.batch_insert(&(0..10).collect::<Vec<u32>>().as_slice());
+        let some_node = p.find_node(&(556, "custom"));
+        assert!(some_node.is_some_and(|(node, _, _)| { node.borrow().has_both_children() }));
 
-    assert!(p.find_node(&8) != None);
-    assert!(p.inorder() == (0..10).collect::<Vec<u32>>());
+        let len = p.len;
+        _ = p.delete(&(556, "custom"));
 
-    _ = p.delete(&8);
+        assert!(p.find_node(&(556, "custom")).is_none());
+        assert_eq!(p.inorder().len(), len - 1);
 
-    assert!(p.find_node(&8) == None);
-    assert!(p.inorder() == vec![0, 1, 2, 3, 4, 5, 6, 7, 9]);
-
-    assert!(p.is_at_root(0));
-    _ = p.delete(&0);
-
-    assert!(p.is_at_root(1));
-    assert!(p.find_node(&0) == None);
-    assert!(p.inorder() == vec![1, 2, 3, 4, 5, 6, 7, 9]);
-
-    _ = p.delete(&9);
-
-    assert!(p.find_node(&9) == None);
-    assert!(p.inorder() == vec![1, 2, 3, 4, 5, 6, 7]);
-}
-
-
-#[test]
-pub fn test_delete_shaped() {
-    let mut p = BSTree::new(None);
-    _ = p.batch_insert(&[5, 4, 3, 2, 1, 6, 7, 8, 9, 10]);
-    assert!(p.is_at_root(5));
-
-    _ = p.delete(&5);
-
-    assert!(p.is_at_root(4));
-    assert_eq!(p.inorder(), [1, 2, 3, 4, 6, 7, 8, 9, 10]);
-
-    _ = p.delete(&9);
-
-    assert!(p.find_node(&9) == None);
-    let f = p.find_node(&10);
-    assert!(f.is_some());
-    if let Some((node, par, rel)) = f {
-        assert_eq!(*node.borrow().data, 10);
-        assert!(par.is_some());
-        
-        if let Some(p) = par  {
-            assert_eq!(*p.borrow().data, 8);
-        }
+        println!("{:?}", p.inorder());
     }
-    assert_eq!(p.inorder(), [1, 2, 3, 4, 6, 7, 8, 10]);
+
+    #[test]
+    pub fn test_delete_skewed() {
+        let mut p = BSTree::new(None);
+        let _ = p.batch_insert(&(0..10).collect::<Vec<u32>>().as_slice());
+
+        assert!(p.find_node(&8) != None);
+        assert!(p.inorder() == (0..10).collect::<Vec<u32>>());
+
+        _ = p.delete(&8);
+
+        assert!(p.find_node(&8) == None);
+        assert!(p.inorder() == vec![0, 1, 2, 3, 4, 5, 6, 7, 9]);
+
+        assert!(p.is_at_root(0));
+        _ = p.delete(&0);
+
+        assert!(p.is_at_root(1));
+        assert!(p.find_node(&0) == None);
+        assert!(p.inorder() == vec![1, 2, 3, 4, 5, 6, 7, 9]);
+
+        _ = p.delete(&9);
+
+        assert!(p.find_node(&9) == None);
+        assert!(p.inorder() == vec![1, 2, 3, 4, 5, 6, 7]);
+    }
+
+    #[test]
+    pub fn test_delete_shaped() {
+        let mut p = BSTree::new(None);
+        _ = p.batch_insert(&[5, 4, 3, 2, 1, 6, 7, 8, 9, 10]);
+        assert!(p.is_at_root(5));
+
+        _ = p.delete(&5);
+
+        assert!(p.is_at_root(4));
+        assert_eq!(p.inorder(), [1, 2, 3, 4, 6, 7, 8, 9, 10]);
+
+        _ = p.delete(&9);
+
+        assert!(p.find_node(&9) == None);
+        let f = p.find_node(&10);
+        assert!(f.is_some());
+        if let Some((node, par, _)) = f {
+            assert_eq!(*node.borrow().data, 10);
+            assert!(par.is_some());
+
+            if let Some(p) = par {
+                assert_eq!(*p.borrow().data, 8);
+            }
+        }
+        assert_eq!(p.inorder(), [1, 2, 3, 4, 6, 7, 8, 10]);
+    }
 }
