@@ -311,7 +311,7 @@ where
             (Some(left), Some(right)) => {
                 let (right_most_node, parent) =
                     Self::get_last_node_with_parent(left, Some(Rc::clone(&par)));
-                println!("here phere {:?}\n\n\n{:?}", right_most_node, parent);
+
                 if let Some(new_par) = parent {
                     // If the parent of the right_most_node is the one we're
                     // deleting, then get the grand parent of right_most_node
