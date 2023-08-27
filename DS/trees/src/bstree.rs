@@ -578,4 +578,29 @@ mod test {
         }
         assert_eq!(p.inorder(), [1, 2, 3, 4, 6, 7, 8, 10]);
     }
+
+
+    #[test]
+    pub fn test_delete_z_shaped() {
+        let mut p = BSTree::new(None);
+        // Tree shape expected to be 
+        //        10
+        //       /
+        //     5
+        //      \
+        //       8
+        _ = p.batch_insert(&[10, 5, 8]);
+        _ = p.delete(&5);
+
+        assert_eq!(p.len, 2);
+        assert_eq!(p.inorder(), [8, 10]);
+
+        _ = p.batch_insert(&[15, 12]);
+        assert_eq!(p.len, 4);
+
+        _ = p.delete(&15);
+
+        assert_eq!(p.len, 3);
+        assert_eq!(p.inorder(), [8, 10, 12]);
+    }
 }
