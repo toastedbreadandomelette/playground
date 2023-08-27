@@ -11,8 +11,7 @@ where
     f64: From<T>,
 {
     let dft = |array: &mut [Complex]| {
-        let mut result: Vec<Complex> =
-            vec![Complex::new(0.0, 0.0); array.len()];
+        let mut result = vec![Complex::zero(); array.len()];
         let size = array.len();
         let angle = 2.0 * PI / (size as f64);
         let wlen = Complex::new(angle.cos(), -angle.sin());
