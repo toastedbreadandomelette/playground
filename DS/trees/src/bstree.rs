@@ -196,9 +196,8 @@ where
         }
     }
 
-    /// Returns whether function has child nodes
-    ///
-    /// Leaf node implies `left` and `right` branch is `Some(Link<T>)`
+    /// Returns whether function has child nodes with values as `left_data` in left node
+    /// and `right_data` in right node
     #[inline(always)]
     pub fn has_both_children_with_compare(node: Link<T>, left_data: T, right_data: T) -> bool {
         node.borrow()
@@ -443,43 +442,41 @@ where
     }
 }
 
-#[test]
-pub fn test_insert() {
-    let mut p = BSTree::new(None);
-    _ = p.batch_insert(&(0..200).collect::<Vec<u32>>().as_slice());
-}
-
-#[test]
-pub fn test_insert_replace() {
-    type Pair<'a> = (i32, &'a str);
-    let pair_cmp = |a: &Pair, b: &Pair| {
-        if a.0 < b.0 {
-            TreeInsOrder::Left
-        } else if a.0 > b.0 {
-            TreeInsOrder::Right
-        } else {
-            TreeInsOrder::Eq
-        }
-    };
-    let mut p = BSTree::new(Some(pair_cmp));
-    _ = p.batch_insert(&vec![
-        (129, "some"),
-        (234, "tree"),
-        (34, "that i've"),
-        (2, "constructed"),
-        (3, "by certain"),
-        (556, "custom"),
-        (99, "criteria"),
-    ]);
-
-    _ = p.insert_replace((12, "new data"));
-    _ = p.insert_replace((99, "some other thing"));
-}
 #[cfg(test)]
 mod test {
-    use std::borrow::BorrowMut;
-
     use super::*;
+    #[test]
+    pub fn test_insert() {
+        let mut p = BSTree::new(None);
+        _ = p.batch_insert(&(0..200).collect::<Vec<u32>>().as_slice());
+    }
+
+    #[test]
+    pub fn test_insert_replace() {
+        type Pair<'a> = (i32, &'a str);
+        let pair_cmp = |a: &Pair, b: &Pair| {
+            if a.0 < b.0 {
+                TreeInsOrder::Left
+            } else if a.0 > b.0 {
+                TreeInsOrder::Right
+            } else {
+                TreeInsOrder::Eq
+            }
+        };
+        let mut p = BSTree::new(Some(pair_cmp));
+        _ = p.batch_insert(&vec![
+            (129, "some"),
+            (234, "tree"),
+            (34, "that i've"),
+            (2, "constructed"),
+            (3, "by certain"),
+            (556, "custom"),
+            (99, "criteria"),
+        ]);
+
+        _ = p.insert_replace((12, "new data"));
+        _ = p.insert_replace((99, "some other thing"));
+    }
     #[test]
     pub fn test_delete() {
         type Pair<'a> = (i32, &'a str);
