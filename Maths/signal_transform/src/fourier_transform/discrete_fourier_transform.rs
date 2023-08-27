@@ -2,9 +2,11 @@ use crate::utils::complex::{Complex, Number, PI};
 use std::ops::{AddAssign, Mul};
 
 /// Perform Discrete Fourier Transform on n values of Vector, and returns the complex
-/// 
+///
 /// Can be retrieved by performing idft
-pub fn dft<T: From<T> + AddAssign + Mul + Copy + Number>(arr: &Vec<T>) -> Vec<Complex>
+pub fn dft<T: From<T> + AddAssign + Mul + Copy + Number>(
+    arr: &Vec<T>,
+) -> Vec<Complex>
 where
     f64: From<T>,
 {
@@ -29,7 +31,9 @@ where
 }
 
 /// Perform Inverse Discrete Fourier Transform on n values of Vector, and returns the floating values
-pub fn idft<T: From<T> + AddAssign + Mul + Copy + Number + std::convert::From<f64>>(
+pub fn idft<
+    T: From<T> + AddAssign + Mul + Copy + Number + std::convert::From<f64>,
+>(
     arr: &Vec<Complex>,
 ) -> Vec<T>
 where
@@ -39,9 +43,8 @@ where
     let wlen = Complex::new(angle.cos(), angle.sin());
     let mut wstart = wlen;
     let mut result: Vec<Complex> = vec![Complex::new(0.0, 0.0); arr.len()];
-    for x in arr {
-        result[0] += *x;
-    }
+
+    result[0] = arr.iter().fold(Complex::zero(), |prev, curr| prev + *curr);
 
     let len = result.len() as f64;
 
@@ -59,16 +62,13 @@ where
     result.iter().map(|x| x.real.into()).collect::<Vec<T>>()
 }
 
-
 /// Perform Discrete Fourier Transform on n values of Vector, and returns the complex values
 pub fn idft_complex(arr: &Vec<Complex>) -> Vec<Complex> {
     let angle = PI * 2.0 / (arr.len() as f64);
     let wlen = Complex::new(angle.cos(), angle.sin());
     let mut wstart = wlen;
-    let mut result: Vec<Complex> = vec![Complex::new(0.0, 0.0); arr.len()];
-    for x in arr {
-        result[0] += *x;
-    }
+    let mut result: Vec<Complex> = vec![Complex::zero(); arr.len()];
+    result[0] = arr.iter().fold(Complex::zero(), |prev, curr| prev + *curr);
 
     result.iter_mut().skip(1).for_each(|res| {
         let mut w = Complex::new(1.0, 0.0);
@@ -83,107 +83,93 @@ pub fn idft_complex(arr: &Vec<Complex>) -> Vec<Complex> {
 }
 
 /// Perform Fast Fourier Transform on n values of Vector, and returns the floating values
-/// 
+///
 /// Uses Divide-and-Conquer method.
-pub fn fft<T: From<T> + AddAssign + Mul + Copy + Number + std::default::Default>(
+pub fn fft<
+    T: From<T> + AddAssign + Mul + Copy + Number + std::default::Default,
+>(
     arr: &Vec<T>,
 ) -> Vec<Complex>
 where
     f64: From<T>,
 {
-    if arr.len() < 16 || arr.len() & 1 == 1 {
+    if arr.len() < 8 || arr.len() & 1 == 1 {
         dft(arr)
     } else {
-        let even = (0..arr.len())
-            .step_by(2)
-            .map(|x| arr[x])
-            .collect::<Vec<T>>();
-        let odd = (1..arr.len())
-            .step_by(2)
-            .map(|x| arr[x])
-            .collect::<Vec<T>>();
-
-        let (odd_fft, even_fft) = (fft(&odd), fft(&even));
+        let (odd_fft, even_fft) = {
+            let even = arr.iter().step_by(2).copied().collect();
+            let odd = arr.iter().skip(1).step_by(2).copied().collect();
+            (fft(&odd), fft(&even))
+        };
 
         let angle = 2.0 * PI / (arr.len() as f64);
         let wlen = Complex::new(angle.cos(), -angle.sin());
         let mut w = Complex::new(1.0, 0.0);
         let mut result: Vec<Complex> = vec![Complex::new(0.0, 0.0); arr.len()];
-        odd_fft.iter()
-            .zip(even_fft.iter())
-            .enumerate()
-            .for_each(|(x, (odd, even))| {
+        odd_fft.iter().zip(even_fft.iter()).enumerate().for_each(
+            |(x, (odd, even))| {
                 let t = *odd * w;
                 result[x] = *even + t;
                 result[x + arr.len() / 2] = *even - t;
                 w *= wlen;
-            });
+            },
+        );
         result
     }
 }
 
-/// Perform Inverse Fast Fourier Transform (only for internal purposes) 
+/// Perform Inverse Fast Fourier Transform (only for internal purposes)
 /// on n values of Vector, and returns the floating values
-/// 
+///
 /// Uses Divide-and-Conquer method.
 pub fn ifft_internal(arr: &Vec<Complex>) -> Vec<Complex> {
-    if arr.len() < 16 || arr.len() & 1 == 1 {
+    if arr.len() < 8 || arr.len() & 1 == 1 {
         idft_complex(arr)
     } else {
-        let even = (0..arr.len())
-            .step_by(2)
-            .map(|x| arr[x])
-            .collect::<Vec<Complex>>();
-        let odd = (1..arr.len())
-            .step_by(2)
-            .map(|x| arr[x])
-            .collect::<Vec<Complex>>();
+        let (odd_fft, even_fft) = {
+            let even = arr.iter().step_by(2).copied().collect();
+            let odd = arr.iter().skip(1).step_by(2).copied().collect();
 
-        let odd_fft = ifft_internal(&odd);
-        let even_fft = ifft_internal(&even);
+            (ifft_internal(&odd), ifft_internal(&even))
+        };
 
         let angle = 2.0 * PI / (arr.len() as f64);
         let wlen = Complex::new(angle.cos(), angle.sin());
         let mut w = Complex::new(1.0, 0.0);
         let mut result: Vec<Complex> = vec![Complex::new(0.0, 0.0); arr.len()];
-        odd_fft.iter()
-            .zip(even_fft.iter())
-            .enumerate()
-            .for_each(|(x, (odd, even))| {
+        odd_fft.iter().zip(even_fft.iter()).enumerate().for_each(
+            |(x, (odd, even))| {
                 let t = *odd * w;
                 result[x] = *even + t;
                 result[x + arr.len() / 2] = *even - t;
                 w *= wlen;
-            });
-        // for x in 0..(arr.len() / 2) {
-        //     let t = odd_fft[x] * w;
-        //     result[x] = even_fft[x] + t;
-        //     result[x + arr.len() / 2] = even_fft[x] - t;
-        //     w *= wlen;
-        // }
+            },
+        );
+
         result
     }
 }
 
 /// Perform Fast Fourier Transform on n values of Vector, and returns the floating values
-/// 
+///
 /// Uses Divide-and-Conquer method.
 pub fn ifft(arr: &Vec<Complex>) -> Vec<f64> {
-    ifft_internal(&arr)
+    let len = arr.len() as f64;
+    ifft_internal(arr)
         .iter()
-        .map(|x| x.real / (arr.len() as f64))
+        .map(|x| x.real / len)
         .collect::<Vec<f64>>()
 }
 
 #[test]
 pub fn test_fft_and_ifft() {
     let sz = 1048576;
-    let inp = (0..sz).into_iter().map(|x| x as f64).collect::<Vec<f64>>();
+    let inp = (0..sz).map(|x| x as f64).collect();
     let val = fft::<f64>(&inp);
     let orig: Vec<f64> = ifft(&val);
 
     assert!(orig
         .iter()
-        .enumerate()
-        .all(|(index, elem)| *elem - inp[index] < 1E-5_f64));
+        .zip(inp)
+        .all(|(elem, inp)| (*elem - inp).abs() < 1e-4));
 }

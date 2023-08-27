@@ -1,47 +1,45 @@
 use crate::utils::complex::{Complex, Number, PI};
 use std::ops::{Add, AddAssign, Mul};
 
-
 /// Perform Fast Fourier Transform
-/// on n values of Vector, and returns the floating values
-/// 
+/// on `n` values of Vector, and returns the floating values
+///
 /// Uses Divide-and-Conquer method, and non-recursive method
 pub fn fast_fft<T>(array: &Vec<T>) -> Vec<Complex>
 where
     T: Number + AddAssign + Mul + Add + std::convert::Into<f64> + Copy,
     f64: From<T>,
 {
-    let dft = |array: &mut Vec<Complex>, start: usize, end: usize| {
-        let mut result: Vec<Complex> = vec![Complex::new(0.0, 0.0); end - start];
-        let size = end - start;
+    let dft = |array: &mut [Complex]| {
+        let mut result: Vec<Complex> =
+            vec![Complex::new(0.0, 0.0); array.len()];
+        let size = array.len();
         let angle = 2.0 * PI / (size as f64);
         let wlen = Complex::new(angle.cos(), -angle.sin());
         let mut wstart = wlen;
 
-        for index in start..end {
-            result[0] += array[index];
-        }
+        result[0] = array
+            .iter()
+            .fold(Complex::zero(), |prev, curr| prev + *curr);
 
-        for index in 1..size {
+        result.iter_mut().skip(1).for_each(|elem| {
             let mut w = Complex::new(1.0, 0.0);
-            for i in start..end {
-                result[index] += array[i] * w;
+            array.iter().for_each(|val| {
+                *elem += *val * w;
                 w *= wstart;
-            }
+            });
             wstart *= wlen;
-        }
+        });
 
-        for x in start..end {
-            array[x] = result[x - start];
-        }
+        array.copy_from_slice(&result);
     };
     let n = array.len();
     if (n & 1) == 1 || n < 16 {
         let mut input: Vec<Complex> = array
-            .into_iter()
+            .iter()
             .map(|x| Complex::new(f64::from(*x), 0.0))
             .collect::<Vec<Complex>>();
-        dft(&mut input, 0, n);
+        dft(&mut input);
         input
     } else {
         // vec![Complex::new(1.0, 0.0); 10]
@@ -52,9 +50,7 @@ where
         // If MSB is smaller, this method works faster of the order
         // n logn, otherwise, runs at O(n2).
         while (i & 1) == 0 {
-            for k in (i >> 1)..i {
-                indexes[k] = j;
-            }
+            indexes[i >> 1..i].fill(j);
             j <<= 1;
             i >>= 1;
         }
@@ -72,16 +68,14 @@ where
             index <<= 1;
         }
 
-        let mut input: Vec<Complex> = (0..n)
-            .map(|x| Complex::new(f64::from(array[indexes[x]]), 0.0))
+        let mut input: Vec<Complex> = indexes
+            .iter()
+            .map(|x| Complex::new(f64::from(array[*x]), 0.0))
             .collect::<Vec<Complex>>();
 
         if i > 1 {
-            // while i < n && i < 8 {
-            //     i <<= 1;
-            // }
             for index in (0..n).step_by(i) {
-                dft(&mut input, index, index + i);
+                dft(&mut input[index..index + i]);
             }
         }
 
@@ -92,7 +86,8 @@ where
             for i in (0..n).step_by(block_size) {
                 let mut w = Complex::new(1.0, 0.0);
                 for j in 0..(block_size >> 1) {
-                    let (u, v) = (input[i + j], input[i + j + (block_size >> 1)] * w);
+                    let (u, v) =
+                        (input[i + j], input[i + j + (block_size >> 1)] * w);
                     input[i + j] = u + v;
                     input[i + j + (block_size >> 1)] = u - v;
                     w *= winit;
@@ -107,44 +102,43 @@ where
 
 /// Perform Inverse Fast Fourier Transform
 /// on n values of Vector, and returns the floating values
-/// 
+///
 /// Uses Divide-and-Conquer method, and non-recursive method
 pub fn fast_ifft<T>(array: &Vec<Complex>) -> Vec<T>
 where
     T: Number + AddAssign + Mul + Add + std::convert::From<f64> + Copy,
     f64: From<T>,
-    Complex: From<T>
+    Complex: From<T>,
 {
-    let idft = |array: &mut Vec<Complex>, start: usize, end: usize| {
-        let mut result: Vec<Complex> = vec![Complex::new(0.0, 0.0); end - start];
-        let size = end - start;
+    let idft = |array: &mut [Complex]| {
+        let mut result: Vec<Complex> =
+            vec![Complex::new(0.0, 0.0); array.len()];
+        let size = array.len();
         let angle = 2.0 * PI / (size as f64);
         let wlen = Complex::new(angle.cos(), angle.sin());
         let mut wstart = wlen;
 
-        for index in start..end {
-            result[0] += array[index];
-        }
+        result[0] = array
+            .iter()
+            .fold(Complex::zero(), |prev, curr| prev + *curr);
 
-        for index in 1..size {
+        result.iter_mut().skip(1).for_each(|elem| {
             let mut w = Complex::new(1.0, 0.0);
-            for i in start..end {
-                result[index] += array[i] * w;
+            array.iter().for_each(|val| {
+                *elem += *val * w;
                 w *= wstart;
-            }
+            });
             wstart *= wlen;
-        }
+        });
 
-        for x in start..end {
-            array[x] = result[x - start];
-        }
+        array.copy_from_slice(&result);
     };
     let n = array.len();
     if n & 1 == 1 {
-        let mut input: Vec<Complex> = array.into_iter().map(|x| *x).collect::<Vec<Complex>>();
-        idft(&mut input, 0, n);
+        let mut input: Vec<Complex> = array.to_vec();
+        idft(&mut input[..]);
         input
-            .into_iter()
+            .iter()
             .map(|val| T::from(val.real / (n as f64)))
             .collect::<Vec<T>>()
     } else {
@@ -155,9 +149,7 @@ where
         // If MSB is smaller, this method works faster of the order
         // n logn, otherwise, runs at O(n2).
         while (i & 1) == 0 {
-            for k in (i >> 1)..i {
-                indexes[k] = j;
-            }
+            indexes[i >> 1..i].fill(j);
             j <<= 1;
             i >>= 1;
         }
@@ -175,11 +167,12 @@ where
             index <<= 1;
         }
 
-        let mut input: Vec<Complex> = (0..n).map(|x| array[indexes[x]]).collect::<Vec<Complex>>();
+        let mut input: Vec<Complex> =
+            indexes.iter().map(|x| array[*x]).collect::<Vec<Complex>>();
 
         if i > 1 {
-            for index in (0..n).step_by(i) {
-                idft(&mut input, index, index + i);
+            for l in (0..input.len()).step_by(i) {
+                idft(&mut input[l..l + i]);
             }
         }
 
@@ -190,7 +183,8 @@ where
             for i in (0..n).step_by(block_size) {
                 let mut w = Complex::new(1.0, 0.0);
                 for j in 0..(block_size >> 1) {
-                    let (u, v) = (input[i + j], input[i + j + (block_size >> 1)] * w);
+                    let (u, v) =
+                        (input[i + j], input[i + j + (block_size >> 1)] * w);
                     input[i + j] = u + v;
                     input[i + j + (block_size >> 1)] = u - v;
                     w *= winit;
@@ -200,7 +194,7 @@ where
         }
 
         input
-            .into_iter()
+            .iter()
             .map(|val| T::from(val.real / (n as f64)))
             .collect::<Vec<T>>()
     }
@@ -209,7 +203,7 @@ where
 #[test]
 pub fn test_fft_ifft() {
     let sz = 1048576;
-    let inp = (0..sz).into_iter().map(|x| x as f64).collect::<Vec<f64>>();
+    let inp = (0..sz).map(|x| x as f64).collect::<Vec<f64>>();
     let val = fast_fft::<f64>(&inp);
     let orig: Vec<f64> = fast_ifft(&val);
 
@@ -222,26 +216,39 @@ pub fn test_fft_ifft() {
 #[test]
 pub fn test_fft_ifft_small() {
     for sz in vec![8, 16, 24, 32, 40, 48, 56, 64, 72, 80] {
-        let inp = (0..sz).into_iter().map(|x| x as f64).collect::<Vec<f64>>();
+        let inp = (0..sz).map(|x| x as f64).collect::<Vec<f64>>();
         let val = fast_fft::<f64>(&inp);
         let orig: Vec<f64> = fast_ifft(&val);
 
         assert!(orig
             .iter()
-            .enumerate()
-            .all(|(index, elem)| *elem - inp[index] < 1E-5_f64));
+            .zip(inp)
+            .all(|(elem, inp)| (*elem - inp).abs() < 1E-5_f64));
     }
 }
 
 #[test]
 pub fn test_fft_ifft_without_2_power() {
     let sz = 524288 + 262144 + 131072 + 65536;
-    let inp = (0..sz).into_iter().map(|x| x as f64).collect::<Vec<f64>>();
+    let inp = (0..sz).map(|x| x as f64).collect::<Vec<f64>>();
     let val = fast_fft::<f64>(&inp);
     let orig: Vec<f64> = fast_ifft(&val);
 
     assert!(orig
         .iter()
-        .enumerate()
-        .all(|(index, elem)| *elem - inp[index] < 1E-5_f64));
+        .zip(inp)
+        .all(|(elem, inp)| (*elem - inp).abs() < 1E-4_f64));
+}
+
+#[test]
+pub fn test_fft_ifft_with_2_power() {
+    let sz = 1048576;
+    let inp = (0..sz).map(|x| x as f64).collect::<Vec<f64>>();
+    let val = fast_fft::<f64>(&inp);
+    let orig: Vec<f64> = fast_ifft(&val);
+
+    assert!(orig
+        .iter()
+        .zip(inp)
+        .all(|(elem, inp)| (*elem - inp).abs() < 1E-4_f64));
 }

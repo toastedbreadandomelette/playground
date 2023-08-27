@@ -1,5 +1,7 @@
-use std::ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Neg, Sub, SubAssign};
-pub const PI: f64 = 3.141592653589793238462643383279;
+use std::ops::{
+    Add, AddAssign, Div, DivAssign, Mul, MulAssign, Neg, Sub, SubAssign,
+};
+pub const PI: f64 = std::f64::consts::PI;
 
 // Complex number for computing.
 #[derive(Copy, Clone)]
@@ -43,12 +45,10 @@ impl std::fmt::Debug for Complex {
             f.write_str(format!("{:.4}i", self.img).as_str())
         } else if self.img == 0.0 {
             f.write_str(format!("{:.4}", self.real).as_str())
+        } else if self.img > 0.0 {
+            f.write_str(format!("{:.4}+{:.4}i", self.real, self.img).as_str())
         } else {
-            if self.img > 0.0 {
-                f.write_str(format!("{:.4}+{:.4}i", self.real, self.img).as_str())
-            } else {
-                f.write_str(format!("{:.4}{:.4}i", self.real, self.img).as_str())
-            }
+            f.write_str(format!("{:.4}{:.4}i", self.real, self.img).as_str())
         }
     }
 }
@@ -204,7 +204,7 @@ where
 impl Div<&Complex> for Complex {
     type Output = Self;
     fn div(self, b: &Complex) -> Self {
-        let abs = b.real * b.real + b.img * b.img;
+        let abs = b.abs_sq();
         Self {
             real: (self.real * b.real + self.img * b.img) / abs,
             img: (self.img * b.real - self.real * b.img) / abs,
@@ -215,7 +215,7 @@ impl Div<&Complex> for Complex {
 impl Div<Complex> for Complex {
     type Output = Self;
     fn div(self, b: Complex) -> Self {
-        let abs = b.real * b.real + b.img * b.img;
+        let abs = b.abs_sq();
         Self {
             real: (self.real * b.real + self.img * b.img) / abs,
             img: (self.img * b.real - self.real * b.img) / abs,
@@ -238,7 +238,7 @@ where
 
 impl DivAssign<Complex> for Complex {
     fn div_assign(&mut self, b: Self) {
-        let abs = b.real * b.real + b.img * b.img;
+        let abs = b.abs_sq();
         *self = Self {
             real: (self.real * b.real + self.img * b.img) / abs,
             img: (self.img * b.real - self.real * b.img) / abs,
@@ -248,7 +248,7 @@ impl DivAssign<Complex> for Complex {
 
 impl DivAssign<&Complex> for Complex {
     fn div_assign(&mut self, b: &Self) {
-        let abs = b.real * b.real + b.img * b.img;
+        let abs = b.abs_sq();
         *self = Self {
             real: (self.real * b.real + self.img * b.img) / abs,
             img: (self.img * b.real - self.real * b.img) / abs,
@@ -274,12 +274,10 @@ impl std::fmt::Display for Complex {
             f.write_str(format!("{:.4}i", self.img).as_str())
         } else if self.img == 0.0 {
             f.write_str(format!("{:.4}", self.real).as_str())
+        } else if self.img > 0.0 {
+            f.write_str(format!("{:.4}+{:.4}i", self.real, self.img).as_str())
         } else {
-            if self.img > 0.0 {
-                f.write_str(format!("{:.4}+{:.4}i", self.real, self.img).as_str())
-            } else {
-                f.write_str(format!("{:.4}{:.4}i", self.real, self.img).as_str())
-            }
+            f.write_str(format!("{:.4}{:.4}i", self.real, self.img).as_str())
         }
     }
 }
@@ -353,7 +351,7 @@ macro_rules! impl_op_for_type {
             type Output = Complex;
             fn div(self, b: Complex) -> Complex {
                 let slf = (self as f64);
-                let abs = b.abs();
+                let abs = b.abs_sq();
                 Complex {
                     real: (slf * b.real) / abs,
                     img: (slf * b.img) / abs,
@@ -382,11 +380,18 @@ impl Complex {
         Self { real: r, img: i }
     }
 
+    pub fn zero() -> Self {
+        Self {
+            real: 0.0,
+            img: 0.0,
+        }
+    }
+
     #[inline(always)]
     pub fn abs_sq(self) -> f64 {
         self.real * self.real + self.img * self.img
     }
-    
+
     #[inline(always)]
     pub fn abs(self) -> f64 {
         self.abs_sq().sqrt()
