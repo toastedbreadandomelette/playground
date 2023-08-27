@@ -196,6 +196,22 @@ where
         }
     }
 
+    /// Returns whether function has child nodes
+    ///
+    /// Leaf node implies `left` and `right` branch is `Some(Link<T>)`
+    #[inline(always)]
+    pub fn has_both_children_with_compare(node: Link<T>, left_data: T, right_data: T) -> bool {
+        node.borrow()
+            .left
+            .as_ref()
+            .is_some_and(|f| *f.borrow_mut().data == left_data)
+            && node
+                .borrow()
+                .right
+                .as_ref()
+                .is_some_and(|f| *f.borrow_mut().data == right_data)
+    }
+
     /// Assert data that is the root of the tree
     #[inline(always)]
     pub fn get_root_node(&mut self) -> MaybeLink<T> {
@@ -601,5 +617,13 @@ mod test {
 
         assert_eq!(p.len, 3);
         assert_eq!(p.inorder(), [8, 10, 12]);
+
+        assert!(p.is_at_root(10));
+        assert!(p.is_at_root(10));
+
+        assert!(p
+            .get_root_node()
+            .is_some_and(|root| *root.borrow().data == 10
+                && BSTree::has_both_children_with_compare(Rc::clone(&root), 8, 12)));
     }
 }
