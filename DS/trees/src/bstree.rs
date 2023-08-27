@@ -580,15 +580,11 @@ mod test {
 
         assert!(p.find_node(&9) == None);
         let f = p.find_node(&10);
-        assert!(f.is_some());
-        if let Some((node, par, _)) = f {
-            assert_eq!(*node.borrow().data, 10);
-            assert!(par.is_some());
 
-            if let Some(p) = par {
-                assert_eq!(*p.borrow().data, 8);
-            }
-        }
+        assert!(f.is_some_and(|(node, par, _)| {
+            *node.borrow().data == 10 && par.is_some_and(|p| *p.borrow().data == 8)
+        }));
+
         assert_eq!(p.inorder(), [1, 2, 3, 4, 6, 7, 8, 10]);
     }
 
