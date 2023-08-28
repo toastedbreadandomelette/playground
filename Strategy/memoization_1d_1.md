@@ -178,6 +178,42 @@ $$
 \end{array}
 $$
 
+```rust
+/// Basic collatz sequence length for number `n`
+fn collatz_basic(mut n: u64) -> u64 {
+    let mut count = 0;
+    while n > 1 {
+        while n & 1 == 0 {
+            n >>= 1;
+            count += 1;
+        }
+        if n == 1 { break }
+        n *= 3;
+        n += 1;
+        count += 2;
+    }
+    count
+}
+
+/// Basic collatz sequence length for number `n`, but uses previously stored values
+/// to compute next values
+fn collatz_memo(mut n: u64, map: &mut std::collections::HashMap<u64, u64>) -> u64 {
+    if n == 1 {
+        0
+    } else if let Some(valid) = map.get(&n) {
+        *valid
+    } else if n & 1 == 0 {
+        let val = collatz_memo(n >> 1, map);
+        map.insert(n, 1 + val);
+        1 + val
+    } else {
+        let val = collatz_memo((3 * n + 1) >> 1, map);
+        map.insert(n, 2 + val);
+        2 + val
+    }
+}
+```
+
 ## House Robbers
 House robbers deals with maximizing value a robber can steal from sealed houses, given that they cannot steal from two adjacent houses.
 

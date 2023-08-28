@@ -55,15 +55,18 @@ impl<T> RBNode<T> {
     }
 }
 
-/// Binary Search Tree implementation
+/// Binary RB Tree implementation
 #[derive(Debug, Clone)]
 pub struct RBTree<T>
 where
     T: Clone + PartialOrd + PartialEq + Debug,
 {
+    /// Root of the tree
     root: Option<Rc<RefCell<RBNode<T>>>>,
+    /// Compare function: this decides the traversal algorithm
     cmp: fn(&T, &T) -> TreeInsOrder,
-    len: usize,
+    /// Size of the tree generated
+    size: usize,
 }
 
 impl<T> RBTree<T>
@@ -87,7 +90,7 @@ where
         Self {
             root: None,
             cmp,
-            len: 0,
+            size: 0,
         }
     }
 }

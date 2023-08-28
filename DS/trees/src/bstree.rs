@@ -92,8 +92,12 @@ pub struct BSTree<T>
 where
     T: Clone + PartialOrd + PartialEq + Debug,
 {
+    /// Root of the node as `MaybeLink<T>`, `None` implies there are no nodes
     root: MaybeLink<T>,
+    /// Comparison function: This decides the traversal, insertion and 
+    /// find algorithm
     cmp: fn(&T, &T) -> TreeInsOrder,
+    /// Size of the tree
     len: usize,
 }
 

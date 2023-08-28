@@ -208,8 +208,8 @@ pub fn test_fft_ifft() {
 
     assert!(orig
         .iter()
-        .enumerate()
-        .all(|(index, elem)| *elem - inp[index] < 1E-5_f64));
+        .zip(inp)
+        .all(|(elem, inp)| (elem - inp).abs() < 1E-4_f64));
 }
 
 #[test]

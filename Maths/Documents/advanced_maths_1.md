@@ -81,7 +81,6 @@ def partitioning_numbers(n: int) -> int:
 
 Source: https://discuss.codechef.com/t/linear-recurrence-using-cayley-hamilton-theorem/6776
 
-
 ## Solving Diophatine Equation (Pell's equation)
 
 
