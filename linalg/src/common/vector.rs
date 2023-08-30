@@ -69,6 +69,7 @@ impl<T> Vector<T> {
     fn mutate_add(&mut self, element: T) {
         if self.len == 0 {
             *self = Self::zeroed(1);
+            unsafe { self.ptr.write(element) };
         } else {
             if self.len == self.capacity {
                 // Allocate 2 times the current size of memory.
