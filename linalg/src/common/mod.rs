@@ -82,8 +82,8 @@ pub fn transpose_vec(
 
     a.chunks(n).enumerate().for_each(|(i, avec)| {
         avec.iter().zip(ta.iter_mut().skip(i).step_by(m)).for_each(
-            |(aval, ta)| {
-                *ta = *aval;
+            |(aval, ta_val)| {
+                *ta_val = *aval;
             },
         );
     });

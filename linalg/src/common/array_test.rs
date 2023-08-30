@@ -1,6 +1,7 @@
 #[cfg(test)]
 mod test {
     use crate::common::vector::Vector;
+
     #[test]
     pub fn test_alloc() {
         let mut p: Vector<i32> = Vector::new(5);
@@ -54,5 +55,12 @@ mod test {
         let p: Vector<usize> = Vector::from_range(12..24);
 
         assert!(p.iter().zip(12..24).all(|(a, b)| *a == b));
+    }
+
+    #[test]
+    #[should_panic]
+    pub fn test_out_of_bound() {
+        let p: Vector<usize> = Vector::from_range(12..24);
+        _ = p[14];
     }
 }
