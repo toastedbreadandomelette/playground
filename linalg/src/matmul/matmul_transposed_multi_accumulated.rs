@@ -26,24 +26,21 @@ pub fn matmul_transposed_multi_accumulated(
     let (tb, _) = transpose_vec(b, (n, p));
 
     a.chunks(n).zip(c.chunks_mut(p)).for_each(|(avec, cvec)| {
-        tb.chunks_exact(n * 4).zip(cvec.chunks_mut(4)).for_each(|(bvec, cval_vec)| {
-            // let j = jl * 4;
-            // 4 adjacent are computed simultaneously
-            // so that values in row `avec` is used once for multiple
-            // mul operations at once, reducing branches
-            (
-                cval_vec[0],
-                cval_vec[1],
-                cval_vec[2],
-                cval_vec[3],
-            ) = dot4(
-                &avec,
-                &bvec[0..n],
-                &bvec[n..2 * n],
-                &bvec[2 * n..3 * n],
-                &bvec[3 * n..4 * n],
-            );
-        });
+        tb.chunks_exact(n * 4).zip(cvec.chunks_mut(4)).for_each(
+            |(bvec, cval_vec)| {
+                // let j = jl * 4;
+                // 4 adjacent are computed simultaneously
+                // so that values in row `avec` is used once for multiple
+                // mul operations at once, reducing branches
+                (cval_vec[0], cval_vec[1], cval_vec[2], cval_vec[3]) = dot4(
+                    &avec,
+                    &bvec[0..n],
+                    &bvec[n..2 * n],
+                    &bvec[2 * n..3 * n],
+                    &bvec[3 * n..4 * n],
+                );
+            },
+        );
         // Residual operation is done after the above computation
         let val = tb.chunks_exact(n * 4).remainder();
         match val.len() / n {

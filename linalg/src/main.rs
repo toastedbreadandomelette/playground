@@ -64,4 +64,13 @@ fn main() {
         t.elapsed().as_millis(),
         orig == c
     );
+
+    t = std::time::Instant::now();
+    c = cf_blocked_simd::cf_blocked_simd(&a, &b, (sz, sz), (sz, sz));
+
+    println!(
+        "Cache friendly blocked transposed and multi-accumulated simd Iter 4x4 {}ms, {}",
+        t.elapsed().as_millis(),
+        orig == c
+    );
 }
