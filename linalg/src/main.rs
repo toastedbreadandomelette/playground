@@ -1,6 +1,4 @@
-#![feature(stdsimd)]
 #![feature(portable_simd)]
-// #![feature(array)]
 #![feature(step_trait)]
 // #![no_std]
 mod common;

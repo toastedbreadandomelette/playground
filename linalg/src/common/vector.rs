@@ -9,11 +9,11 @@ use core::slice::{
 };
 
 #[cfg(feature = "array_chunks")]
-use core::slice::VectorChunks;
+use core::slice::ArrayChunks;
 #[cfg(feature = "array_chunks")]
-use core::slice::VectorChunksMut;
+use core::slice::ArrayChunksMut;
 #[cfg(feature = "array_windows")]
-use core::slice::VectorWindows;
+use core::slice::ArrayWindows;
 
 extern crate alloc;
 
@@ -37,14 +37,20 @@ pub struct Vector<T> {
 }
 
 impl<T> Vector<T> {
+    /// Return total bytes of value, adjusted to multiple of 
+    /// `32 * core::mem::size_of::<T>()`
     #[inline(always)]
     fn align_nearest_to(val: usize) -> usize {
         (((val + 31) >> 5) << 5) * core::mem::size_of::<T>()
     }
 
+    /// Total Capacity of the array, adjusted to multiple of
+    /// `32`
+    #[inline(always)]
     fn calc_capacity(val: usize) -> usize {
         ((val + 31) >> 5) << 5
     }
+
     /// Create a new array, this is a custom made array
     /// with an intention to use no_std allocation
     #[inline]
@@ -135,7 +141,7 @@ impl<T> Vector<T> {
                 core::ptr::copy_nonoverlapping(self.ptr, new_ptr, self.len);
                 alloc::alloc::dealloc(self.ptr.cast::<u8>(), self.layout);
                 new_ptr
-            };
+            };  
             self.layout = new_layout;
             self.capacity = Self::calc_capacity(self.capacity + extra_capacity);
         }
@@ -276,7 +282,7 @@ impl<T> Vector<T> {
     }
 
     /// Create a new array filled with value, this is a custom made array
-    /// with an intention to use no_std allocation
+    /// with an intention to use `![no_std]` allocation
     #[inline]
     pub fn zeroed(len: usize) -> Self {
         unsafe {
@@ -330,23 +336,19 @@ where
     }
 }
 
-// /// Iterator for Vector
-// pub struct VectorIterator<'a, T> {
-//     arr: &'a Vector<T>,
-//     curr_index: usize,
-// }
-
 impl<T> FromIterator<T> for Vector<T> {
     fn from_iter<I: IntoIterator<Item = T>>(iter: I) -> Self {
         // Newly created array, with size zero
         let mut new_array: Vector<T> = Vector::zeroed(0);
 
         // Unfortunately this is extended similar to vector
-        // and returned to the user, as there is no hint regarding
-        // total elements generated from the iterator
+        // and returned to the user, as there is no hint in advance the
+        // total elements returned by the iterator
         for item in iter {
             new_array.mutate_add(item);
         }
+        // A space optimization could be to 
+        // apply shrink-to-fit, but this is not the focus; currently.
         new_array
     }
 }
@@ -360,11 +362,6 @@ impl<'a, T> IntoIterator for &'a Vector<T> {
         self.iter()
     }
 }
-
-// impl<T> IntoIterator for Vector<T> {
-//     type Item = T;
-//     type IntoIter = core::
-// }
 
 impl<T> Index<usize> for Vector<T> {
     type Output = T;
@@ -520,6 +517,7 @@ impl<T> IndexMut<core::ops::RangeToInclusive<usize>> for Vector<T> {
 impl<T> IndexMut<RangeFull> for Vector<T> {
     #[inline]
     fn index_mut(&mut self, _: RangeFull) -> &mut [T] {
+        // Only way for this is to expose the value as mut slice
         unsafe { &mut *core::slice::from_raw_parts_mut(self.ptr, self.len) }
     }
 }

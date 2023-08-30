@@ -5,6 +5,10 @@ use core::simd::SimdFloat;
 
 const BLOCKSIZE: usize = 32;
 
+/// Cache friendly and blocked matrix multiplication of two matrices
+/// `a` and `b` of shape `ashape (m x n)` and `bshape (n x p)` respectively
+/// 
+/// Uses SIMD functions: calls unsafe functions internally for computation
 #[inline(always)]
 pub fn cf_blocked_simd(
     a: &[f64],
@@ -15,6 +19,12 @@ pub fn cf_blocked_simd(
     unsafe { cf_blocked_simd_unsafe(a, b, ashape, bshape) }
 }
 
+
+/// We're computing values of 4x4 sub-matrix of `c`.
+/// We'll be computing 16 dot products at a time.
+/// i.e. for submatrices,
+/// 
+/// Iterate on 4 of these rows of a_block at a time
 #[cfg(target_arch = "x86_64")]
 #[target_feature(enable = "avx,avx2,fma")]
 pub unsafe fn cf_blocked_simd_unsafe(
@@ -25,22 +35,37 @@ pub unsafe fn cf_blocked_simd_unsafe(
 ) -> Vector<f64> {
 
     let mut c = Vector::zeroed(m * p);
+    // Transposed matrix `b`, we're aware of 
+    // resultant shape
     let (tb, _) = transpose_vec(b, (n, p));
     let block_size = BLOCKSIZE;
 
     a.chunks(n * block_size)
         .enumerate()
         .for_each(|(i_index, a_block)| {
+            // ibl be starting point of block of rows for matrix `a`
             let ibl = i_index * block_size;
             tb.chunks(n * block_size).enumerate().for_each(
                 |(j_index, b_block)| {
+                    // jbl be starting point of block of rows for matrix `b`
                     let jbl = j_index * block_size;
+                    // We're computing values of 4x4 sub-matrix of `c`.
+                    // We'll be computing 16 dot products at a time.
+                    // i.e. for submatrices,
+                    //
+                    // c_{i+0}{j}   c_{i+0}_{j+1}   c_{i+0}_{j+2}   c_{i+0}_{j+3}
+                    // c_{i+1}{j}   c_{i+1}_{j+1}   c_{i+1}_{j+2}   c_{i+1}_{j+3}
+                    // c_{i+2}{j}   c_{i+2}_{j+1}   c_{i+2}_{j+2}   c_{i+2}_{j+3}
+                    // c_{i+3}{j}   c_{i+3}_{j+1}   c_{i+3}_{j+2}   c_{i+3}_{j+3}
+                    //
+                    // Iterate on 4 of these rows of a_block at a time
                     a_block.chunks_exact(n * 4).enumerate().for_each(
                         |(a4_index, a_4_row)| {
+                            // Iterate on 4 of these rows of b_block at a time
                             b_block.chunks_exact(n * 4).enumerate().for_each(
                                 |(b4_index, b_4_row)| {
                                     let (i, j) = (
-                                        ibl + (a4_index << 2),
+                                        ibl + (a4_index << 2), // << 2 same as * 4
                                         jbl + (b4_index << 2),
                                     );
                                     let (a0, a1, a2, a3) = (
@@ -93,6 +118,7 @@ pub unsafe fn cf_blocked_simd_unsafe(
     c
 }
 
+/// Same same but different
 #[cfg(target_arch = "x86_64")]
 #[target_feature(enable = "avx,avx2,fma")]
 pub unsafe fn cf_block_transposed_multi_accumulated_simd_matmul_4x4(

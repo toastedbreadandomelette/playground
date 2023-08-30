@@ -1,4 +1,8 @@
-This note is an extension to the [[matrix#Matrix multiplication.|original topic]]. In short, matrix multiplication of two matrix $A$ of size $m\times n$ and $B$ of size $n\times p$ is defined:
+# Matrix Multiplication
+
+This note is an extension to the [[matrix#Matrix multiplication.|original topic]]. 
+
+Matrix multiplication of two matrix $A$ of size $m\times n$ and $B$ of size $n\times p$ is defined:
 
 $$
 \begin{matrix}
@@ -41,7 +45,7 @@ $$
 Noting that these $|$ symbol is used as a logical compartment, but in fact stored in a contiguous fashion.
 
 ```rust
-/// Mulstiply two matrices `a` and `b` of size
+/// Multiply two matrices `a` and `b` of size
 /// `ashape (m x n)` and `bshape(n x p)`
 /// 
 /// Returns new matrix vector `c` of size (m x p)
