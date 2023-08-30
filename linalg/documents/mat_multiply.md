@@ -101,8 +101,8 @@ Another way to read values sequentially is to transpose the matrix. This convert
 
 $$
 \begin{matrix}
-C_{ij}&=&A_{i}\cdot B'_{j},&\forall\ i\in[1,m], j\in[1,p]\\
-&=&\sum\limits_{k=1}^{n}A_{ik}\cdot B'_{jk}
+C_{ij}&=&A_i \cdot B^T_j,& \forall\ i\in [1,m], j\in [1,p]\\
+&=&\sum\limits_{k=0}^{n} A_{ik}\cdot B^T_{jk}
 \end{matrix}
 $$
 
