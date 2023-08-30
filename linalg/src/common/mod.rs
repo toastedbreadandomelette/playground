@@ -20,14 +20,12 @@ pub fn reduce_sum(asimd: &[Simd<f64, 4>], bsimd: &[Simd<f64, 4>]) -> f64 {
         .iter()
         .zip(bsimd)
         .fold(f64x4::splat(0.0), |c, (a, b)| c + a * b);
-    let ans_sep = ans.as_array();
-    ans_sep[0] + ans_sep[1] + ans_sep[2] + ans_sep[3]
+    ans.as_array().iter().fold(0.0, |p, c| p + c)
 }
 
-#[inline]
+#[inline(always)]
 pub fn red(asimd: Simd<f64, 4>) -> f64 {
-    let ans_sep = asimd.as_array();
-    ans_sep[0] + ans_sep[1] + ans_sep[2] + ans_sep[3]
+    asimd.as_array().iter().fold(0.0, |p, c| p + c)
 }
 
 /// Internal: Dot SIMD product of two vectors.

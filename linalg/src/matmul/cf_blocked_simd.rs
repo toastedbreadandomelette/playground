@@ -3,7 +3,7 @@ use crate::common::vector::Vector;
 use core::simd::f64x4;
 use core::simd::SimdFloat;
 
-const BLOCKSIZE: usize = 64;
+const BLOCKSIZE: usize = 32;
 
 #[inline(always)]
 pub fn cf_blocked_simd(
