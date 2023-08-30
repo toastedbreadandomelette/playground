@@ -112,7 +112,7 @@ impl<T> Vector<T> {
     /// Mutates the capacity of array
     ///
     /// Note that this does not take into consideration the current
-    /// capacity and adds the value. To prevent unnecessary `extra_capacity`,
+    /// capacity and adds the value. To extend capacity appropriately,
     /// refer `mutate_capacity_by`
     ///
     /// The alignment is strictly kept to `32`.
