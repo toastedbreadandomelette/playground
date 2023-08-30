@@ -5,6 +5,7 @@ use core::simd::SimdFloat;
 
 const BLOCKSIZE: usize = 64;
 
+#[inline(always)]
 pub fn cf_blocked_simd(
     a: &[f64],
     b: &[f64],
@@ -26,14 +27,6 @@ pub unsafe fn cf_blocked_simd_unsafe(
     let mut c = Vector::zeroed(m * p);
     let (tb, _) = transpose_vec(b, (n, p));
     let block_size = BLOCKSIZE;
-
-    // let irem = m % block_size;
-    // let jrem = p % block_size;
-
-    // let (mut ans00, mut ans01, mut ans02, mut ans03);
-    // let (mut ans10, mut ans11, mut ans12, mut ans13);
-    // let (mut ans20, mut ans21, mut ans22, mut ans23);
-    // let (mut ans30, mut ans31, mut ans32, mut ans33);
 
     a.chunks(n * block_size)
         .enumerate()
