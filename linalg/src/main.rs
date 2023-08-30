@@ -5,7 +5,6 @@
 // #![no_std]
 mod common;
 mod matmul;
-mod benchmark;
 
 use crate::common::vector::Vector;
 use matmul::*;
