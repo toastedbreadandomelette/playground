@@ -1,4 +1,5 @@
 pub mod cf_blocked_simd;
+mod cf_process_blocks;
 pub mod matmul_ikj;
 pub mod matmul_normal;
 pub mod matmul_transposed;

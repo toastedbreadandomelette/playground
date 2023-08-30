@@ -2,6 +2,7 @@
 #![feature(step_trait)]
 // #![no_std]
 mod common;
+mod inv;
 mod matmul;
 
 use crate::common::vector::Vector;
@@ -44,21 +45,6 @@ fn main() {
     c = matmul_transposed_multi_accumulated::matmul_transposed_multi_accumulated(&a, &b, (sz, sz), (sz, sz));
     println!(
         "transposed and multi accumulated: {}ms {}",
-        t.elapsed().as_millis(),
-        orig == c
-    );
-
-    t = std::time::Instant::now();
-    c = unsafe {
-        cf_blocked_simd::cf_block_transposed_multi_accumulated_simd_matmul_4x4(
-            &a,
-            &b,
-            (sz, sz),
-            (sz, sz),
-        )
-    };
-    println!(
-        "Cache friendly blocked transposed and multi-accumulated simd 4x4 {}ms, {}",
         t.elapsed().as_millis(),
         orig == c
     );

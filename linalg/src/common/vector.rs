@@ -37,7 +37,7 @@ pub struct Vector<T> {
 }
 
 impl<T> Vector<T> {
-    /// Return total bytes of value, adjusted to multiple of 
+    /// Return total bytes of value, adjusted to multiple of
     /// `32 * core::mem::size_of::<T>()`
     #[inline(always)]
     fn align_nearest_to(val: usize) -> usize {
@@ -141,7 +141,7 @@ impl<T> Vector<T> {
                 core::ptr::copy_nonoverlapping(self.ptr, new_ptr, self.len);
                 alloc::alloc::dealloc(self.ptr.cast::<u8>(), self.layout);
                 new_ptr
-            };  
+            };
             self.layout = new_layout;
             self.capacity = Self::calc_capacity(self.capacity + extra_capacity);
         }
@@ -347,7 +347,7 @@ impl<T> FromIterator<T> for Vector<T> {
         for item in iter {
             new_array.mutate_add(item);
         }
-        // A space optimization could be to 
+        // A space optimization could be to
         // apply shrink-to-fit, but this is not the focus; currently.
         new_array
     }

@@ -1,13 +1,16 @@
-use crate::common::{transpose_vec, dot_simd_4};
+use crate::common::transpose_vec;
 use crate::common::vector::Vector;
 use core::simd::f64x4;
 use core::simd::SimdFloat;
+use crate::matmul::cf_process_blocks::{
+    iter_blocks_on_1xN, iter_blocks_on_2xN, iter_blocks_on_3xN, iter_blocks_on_4xN
+};
 
 const BLOCKSIZE: usize = 32;
 
 /// Cache friendly and blocked matrix multiplication of two matrices
 /// `a` and `b` of shape `ashape (m x n)` and `bshape (n x p)` respectively
-/// 
+///
 /// Uses SIMD functions: calls unsafe functions internally for computation
 #[inline(always)]
 pub fn cf_blocked_simd(
@@ -19,11 +22,10 @@ pub fn cf_blocked_simd(
     unsafe { cf_blocked_simd_unsafe(a, b, ashape, bshape) }
 }
 
-
 /// We're computing values of 4x4 sub-matrix of `c`.
 /// We'll be computing 16 dot products at a time.
 /// i.e. for submatrices,
-/// 
+///
 /// Iterate on 4 of these rows of a_block at a time
 #[cfg(target_arch = "x86_64")]
 #[target_feature(enable = "avx,avx2,fma")]
@@ -33,9 +35,8 @@ pub unsafe fn cf_blocked_simd_unsafe(
     (m, n): (usize, usize),
     (_, p): (usize, usize),
 ) -> Vector<f64> {
-
     let mut c = Vector::zeroed(m * p);
-    // Transposed matrix `b`, we're aware of 
+    // Transposed matrix `b`, we're aware of
     // resultant shape
     let (tb, _) = transpose_vec(b, (n, p));
     let block_size = BLOCKSIZE;
@@ -59,58 +60,25 @@ pub unsafe fn cf_blocked_simd_unsafe(
                     // c_{i+3}{j}   c_{i+3}_{j+1}   c_{i+3}_{j+2}   c_{i+3}_{j+3}
                     //
                     // Iterate on 4 of these rows of a_block at a time
-                    a_block.chunks_exact(n * 4).enumerate().for_each(
-                        |(a4_index, a_4_row)| {
-                            // Iterate on 4 of these rows of b_block at a time
-                            b_block.chunks_exact(n * 4).enumerate().for_each(
-                                |(b4_index, b_4_row)| {
-                                    let (i, j) = (
-                                        ibl + (a4_index << 2), // << 2 same as * 4
-                                        jbl + (b4_index << 2),
-                                    );
-                                    let (a0, a1, a2, a3) = (
-                                        &a_4_row[0..n],
-                                        &a_4_row[n..2 * n],
-                                        &a_4_row[2 * n..3 * n],
-                                        &a_4_row[3 * n..],
-                                    );
-                                    let (b0, b1, b2, b3) = (
-                                        &b_4_row[0..n],
-                                        &b_4_row[n..2 * n],
-                                        &b_4_row[2 * n..3 * n],
-                                        &b_4_row[3 * n..],
-                                    );
-                                    (
-                                        c[i * p + j],
-                                        c[i * p + j + 1],
-                                        c[i * p + j + 2],
-                                        c[i * p + j + 3],
-                                    ) = dot_simd_4(a0, b0, b1, b2, b3);
-
-                                    (
-                                        c[(i + 1) * p + j],
-                                        c[(i + 1) * p + j + 1],
-                                        c[(i + 1) * p + j + 2],
-                                        c[(i + 1) * p + j + 3],
-                                    ) = dot_simd_4(a1, b0, b1, b2, b3);
-
-                                    (
-                                        c[(i + 2) * p + j],
-                                        c[(i + 2) * p + j + 1],
-                                        c[(i + 2) * p + j + 2],
-                                        c[(i + 2) * p + j + 3],
-                                    ) = dot_simd_4(a2, b0, b1, b2, b3);
-
-                                    (
-                                        c[(i + 3) * p + j],
-                                        c[(i + 3) * p + j + 1],
-                                        c[(i + 3) * p + j + 2],
-                                        c[(i + 3) * p + j + 3],
-                                    ) = dot_simd_4(a3, b0, b1, b2, b3);
-                                },
-                            );
-                        },
+                    iter_blocks_on_4xN(
+                        a_block, b_block, &mut c, ibl, jbl, n, p,
                     );
+
+                    let a_block_len = a_block.len() / n;
+                    let a_rem = a_block.chunks_exact(n * 4).remainder();
+
+                    match a_rem.len() / n {
+                        1 => iter_blocks_on_1xN(
+                            a_rem, b_block, &mut c, ibl + a_block_len - 1, jbl, n, p,
+                        ),
+                        2 => iter_blocks_on_2xN(
+                            a_rem, b_block, &mut c, ibl + a_block_len - 2, jbl, n, p,
+                        ),
+                        3 => iter_blocks_on_3xN(
+                            a_rem, b_block, &mut c, ibl + a_block_len - 3, jbl, n, p,
+                        ),
+                        _ => {} // No cases to be considered
+                    }
                 },
             );
         });

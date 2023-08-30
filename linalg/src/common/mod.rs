@@ -18,7 +18,6 @@ pub fn reduce_sum(asimd: Simd<f64, 4>) -> f64 {
     asimd.as_array().iter().fold(0.0, |p, c| p + c)
 }
 
-
 /// Internal: Dot SIMD product of vector `a` and `b`.
 ///
 /// Returns the value
@@ -28,16 +27,13 @@ pub fn dot_simd(avec: &[f64], bvec0: &[f64]) -> f64 {
         .chunks_exact(4)
         .map(f64x4::from_slice)
         .zip(bvec0.chunks_exact(4).map(f64x4::from_slice))
-        .fold(
-            f64x4::splat(0.0),
-            |prev0, (a, b0)| (prev0 + a * b0),
-        );
+        .fold(f64x4::splat(0.0), |prev0, (a, b0)| (prev0 + a * b0));
 
     let (posta, postb0) = (
         avec.chunks_exact(4).remainder(),
         bvec0.chunks_exact(4).remainder(),
     );
-    
+
     reduce_sum(pre0) + dot(posta, postb0)
 }
 
