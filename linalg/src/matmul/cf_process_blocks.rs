@@ -488,14 +488,11 @@ pub unsafe fn process_4x3_block(
         c[(i + 1) * p + j],
         c[(i + 2) * p + j],
         c[(i + 3) * p + j],
-    ) = dot_simd_4(b0, a0, a1, a2, a3);
-
-    (
         c[i * p + j + 1],
         c[(i + 1) * p + j + 1],
         c[(i + 2) * p + j + 1],
         c[(i + 3) * p + j + 1],
-    ) = dot_simd_4(b1, a0, a1, a2, a3);
+    ) = dot_simd_4x2(b0, b1, a0, a1, a2, a3);
 
     (
         c[i * p + j + 2],
@@ -572,14 +569,11 @@ pub unsafe fn process_3x4_block(
         c[i * p + j + 1],
         c[i * p + j + 2],
         c[i * p + j + 3],
-    ) = dot_simd_4(a0, b0, b1, b2, b3);
-
-    (
         c[(i + 1) * p + j],
         c[(i + 1) * p + j + 1],
         c[(i + 1) * p + j + 2],
         c[(i + 1) * p + j + 3],
-    ) = dot_simd_4(a1, b0, b1, b2, b3);
+    ) = dot_simd_4x2(a0, a1, b0, b1, b2, b3);
 
     (
         c[(i + 2) * p + j],
