@@ -1,7 +1,7 @@
 use self::vector::Vector;
 use core::simd::{f64x4, Simd};
-pub mod vector_test;
 pub mod vector;
+pub mod vector_test;
 
 /// Internal: Dot product of two vectors.
 ///

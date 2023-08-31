@@ -42,7 +42,7 @@ A_{m1}&A_{m2}&\ldots&A_{mn}
 \end{bmatrix}
 $$
 
-Noting that these $|$ symbol is used as a logical compartment, but in fact stored in a contiguous fashion.
+Noting that these $|$ symbol is shown as a compartment, but in fact stored in a `vec<f64>`.
 
 ```rust
 /// Multiply two matrices `a` and `b` of size

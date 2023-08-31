@@ -1,3 +1,4 @@
+/// Custom `Vector` implementation also supports `![no_std]`.
 use core::alloc::Layout;
 use core::ops::{
     Deref, DerefMut, Range, RangeFrom, RangeFull, RangeInclusive, RangeTo,
@@ -17,7 +18,7 @@ use core::slice::ArrayWindows;
 
 extern crate alloc;
 
-/// A custom vector for `![no_std]`
+/// A custom vector for `![no_std]` implementation
 ///
 /// This struct will have constant heap allocated value for type `T`
 /// and would only implement traits for following types:
@@ -40,14 +41,14 @@ impl<T> Vector<T> {
     /// Return total bytes of value, adjusted to multiple of
     /// `32 * core::mem::size_of::<T>()`
     #[inline(always)]
-    fn align_nearest_to(val: usize) -> usize {
+    const fn align_nearest_to(val: usize) -> usize {
         (((val + 31) >> 5) << 5) * core::mem::size_of::<T>()
     }
 
     /// Total Capacity of the array, adjusted to multiple of
     /// `32`
     #[inline(always)]
-    fn calc_capacity(val: usize) -> usize {
+    const fn calc_capacity(val: usize) -> usize {
         ((val + 31) >> 5) << 5
     }
 
@@ -72,7 +73,7 @@ impl<T> Vector<T> {
     /// Mutate and add an element into array to fit the size internally.
     ///
     /// The alignment is strictly kept as `32`.
-    fn mutate_add(&mut self, element: T) {
+    pub fn mutate_add(&mut self, element: T) {
         if self.len == 0 {
             *self = Self::zeroed(1);
             unsafe { self.ptr.write(element) };
@@ -162,13 +163,13 @@ impl<T> Vector<T> {
 
     /// Length of the array
     #[inline(always)]
-    pub fn len(&self) -> usize {
+    pub const fn len(&self) -> usize {
         self.len
     }
 
     /// Capacity of array
     #[inline(always)]
-    pub fn cap(&self) -> usize {
+    pub const fn cap(&self) -> usize {
         self.capacity
     }
 

@@ -2,7 +2,7 @@ use crate::common::transpose_vec;
 use crate::common::vector::Vector;
 use crate::matmul::cf_process_blocks::{
     iter_blocks_on_1xN, iter_blocks_on_2xN, iter_blocks_on_3xN,
-    iter_blocks_on_4xN,
+    iter_blocks_on_NxN,
 };
 use core::simd::f64x4;
 use core::simd::SimdFloat;
@@ -65,7 +65,7 @@ pub unsafe fn cf_blocked_simd_unsafe(
                     // c_{i+3}{j}   c_{i+3}_{j+1}   c_{i+3}_{j+2}   c_{i+3}_{j+3}
                     //
                     // Iterate on 4 of these rows of a_block at a time
-                    iter_blocks_on_4xN(
+                    iter_blocks_on_NxN(
                         a_block, b_block, &mut c, ibl, jbl, n, p,
                     );
 

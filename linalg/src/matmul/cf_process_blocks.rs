@@ -159,7 +159,7 @@ pub unsafe fn iter_blocks_on_3xN(
 #[cfg(target_arch = "x86_64")]
 #[target_feature(enable = "avx,avx2,fma")]
 #[allow(non_snake_case)]
-pub unsafe fn iter_blocks_on_4xN(
+pub unsafe fn iter_blocks_on_NxN(
     a_block: &[f64],
     b_block: &[f64],
     c: &mut [f64],

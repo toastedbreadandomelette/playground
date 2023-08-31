@@ -51,6 +51,35 @@ mod test {
     }
 
     #[test]
+    pub fn test_mutate_add_small_arr() {
+        // Collect uses mutate_add: therefore, increases capacity 2 times
+        // if exceeds, but base minimum capacity is `32`.
+        let new_arr: Vector<u32> = (0..8).collect();
+        assert_eq!(new_arr.len(), 8);
+        assert_eq!(new_arr.cap(), 32);
+    }
+
+    #[test]
+    pub fn test_mutate_add() {
+        // Collect uses mutate_add: therefore, increases capacity 2 times
+        // if exceeds, but base size is 32.
+        let mut new_arr: Vector<u32> = (0..100).collect();
+        assert_eq!(new_arr.len(), 100);
+        assert_eq!(new_arr.cap(), 128);
+
+        // This loop forces the addition to extend capacity to
+        // Twice the original one.
+        for x in 100..200 {
+            new_arr.mutate_add(x);
+        }
+
+        assert!(new_arr.iter().zip(0..200).all(|(a, b)| *a == b));
+
+        assert_eq!(new_arr.len(), 200);
+        assert_eq!(new_arr.cap(), 256);
+    }
+
+    #[test]
     pub fn test_alloc_2() {
         let p: Vector<usize> = Vector::from_range(12..24);
 
@@ -58,8 +87,18 @@ mod test {
     }
 
     #[test]
+    fn test_for_loop() {
+        let p: Vector<usize> = (0..100).step_by(2).collect();
+        let mut start_value = 0;
+        for x in &p {
+            assert_eq!(start_value, *x);
+            start_value += 2;
+        }
+    }
+
+    #[test]
     #[should_panic]
-    pub fn test_out_of_bound() {
+    fn test_out_of_bound() {
         let p: Vector<usize> = Vector::from_range(12..24);
         _ = p[14];
     }
