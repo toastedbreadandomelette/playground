@@ -1,4 +1,6 @@
-use crate::common::{dot_simd, dot_simd_2, dot_simd_3, dot_simd_4, dot_simd_4x2};
+use crate::common::{
+    dot_simd, dot_simd_2, dot_simd_3, dot_simd_4, dot_simd_4x2,
+};
 
 /// Iterate on 1 strip vector of `a` with block of vectors `b`
 ///
@@ -543,14 +545,11 @@ pub unsafe fn process_2x4_block(
         c[i * p + j + 1],
         c[i * p + j + 2],
         c[i * p + j + 3],
-    ) = dot_simd_4(a0, b0, b1, b2, b3);
-
-    (
         c[(i + 1) * p + j],
         c[(i + 1) * p + j + 1],
         c[(i + 1) * p + j + 2],
         c[(i + 1) * p + j + 3],
-    ) = dot_simd_4(a1, b0, b1, b2, b3);
+    ) = dot_simd_4x2(a0, a1, b0, b1, b2, b3);
 }
 
 /// Processing 3x4 kernel
