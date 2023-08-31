@@ -1,6 +1,6 @@
 use self::vector::Vector;
 use core::simd::{f64x4, Simd};
-pub mod array_test;
+pub mod vector_test;
 pub mod vector;
 
 /// Internal: Dot product of two vectors.

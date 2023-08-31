@@ -9,6 +9,9 @@ use core::simd::SimdFloat;
 
 const BLOCKSIZE: usize = 32;
 
+const R_BLOCKSIZE: usize = 32;
+const C_BLOCKSIZE: usize = 32;
+
 /// Cache friendly and blocked matrix multiplication of two matrices
 /// `a` and `b` of shape `ashape (m x n)` and `bshape (n x p)` respectively
 ///
@@ -40,17 +43,18 @@ pub unsafe fn cf_blocked_simd_unsafe(
     // Transposed matrix `b`, we're aware of
     // resultant shape
     let (tb, _) = transpose_vec(b, (n, p));
-    let block_size = BLOCKSIZE;
+    let r_block_size = R_BLOCKSIZE;
+    let c_block_size = C_BLOCKSIZE;
 
-    a.chunks(n * block_size)
+    a.chunks(n * r_block_size)
         .enumerate()
         .for_each(|(i_index, a_block)| {
             // ibl be starting point of block of rows for matrix `a`
-            let ibl = i_index * block_size;
-            tb.chunks(n * block_size).enumerate().for_each(
+            let ibl = i_index * r_block_size;
+            tb.chunks(n * c_block_size).enumerate().for_each(
                 |(j_index, b_block)| {
                     // jbl be starting point of block of rows for matrix `b`
-                    let jbl = j_index * block_size;
+                    let jbl = j_index * c_block_size;
                     // We're computing values of 4x4 sub-matrix of `c`.
                     // We'll be computing 16 dot products at a time.
                     // i.e. for submatrices,
