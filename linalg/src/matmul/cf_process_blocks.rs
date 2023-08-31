@@ -1,4 +1,4 @@
-use crate::common::{dot_simd, dot_simd_2, dot_simd_3, dot_simd_4};
+use crate::common::{dot_simd, dot_simd_2, dot_simd_3, dot_simd_4, dot_simd_4x2};
 
 /// Iterate on 1 strip vector of `a` with block of vectors `b`
 ///
@@ -390,14 +390,11 @@ pub unsafe fn process_4x2_block(
         c[(i + 1) * p + j],
         c[(i + 2) * p + j],
         c[(i + 3) * p + j],
-    ) = dot_simd_4(b0, a0, a1, a2, a3);
-
-    (
         c[i * p + j + 1],
         c[(i + 1) * p + j + 1],
         c[(i + 2) * p + j + 1],
         c[(i + 3) * p + j + 1],
-    ) = dot_simd_4(b1, a0, a1, a2, a3);
+    ) = dot_simd_4x2(b0, b1, a0, a1, a2, a3);
 }
 
 /// Processing 1x3 kernel
@@ -614,26 +611,20 @@ pub unsafe fn process_4x4_block(
         c[i * p + j + 1],
         c[i * p + j + 2],
         c[i * p + j + 3],
-    ) = dot_simd_4(a0, b0, b1, b2, b3);
-
-    (
         c[(i + 1) * p + j],
         c[(i + 1) * p + j + 1],
         c[(i + 1) * p + j + 2],
         c[(i + 1) * p + j + 3],
-    ) = dot_simd_4(a1, b0, b1, b2, b3);
+    ) = dot_simd_4x2(a0, a1, b0, b1, b2, b3);
 
     (
         c[(i + 2) * p + j],
         c[(i + 2) * p + j + 1],
         c[(i + 2) * p + j + 2],
         c[(i + 2) * p + j + 3],
-    ) = dot_simd_4(a2, b0, b1, b2, b3);
-
-    (
         c[(i + 3) * p + j],
         c[(i + 3) * p + j + 1],
         c[(i + 3) * p + j + 2],
         c[(i + 3) * p + j + 3],
-    ) = dot_simd_4(a3, b0, b1, b2, b3);
+    ) = dot_simd_4x2(a2, a3, b0, b1, b2, b3);
 }

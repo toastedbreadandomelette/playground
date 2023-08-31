@@ -9,7 +9,7 @@ use crate::common::vector::Vector;
 use matmul::*;
 
 fn main() {
-    let sz = 1024;
+    let sz = 1026;
     let a = (0..sz * sz)
         .map(|c| c as f64 / 2.0)
         .collect::<Vector<f64>>();

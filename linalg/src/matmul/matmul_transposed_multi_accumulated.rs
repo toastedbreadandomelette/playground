@@ -58,3 +58,147 @@ pub fn matmul_transposed_multi_accumulated(
     });
     c
 }
+
+/// Multiply two matrices `a` and `b` of size
+/// `ashape (m x n)` and `bshape(n x p)`
+///
+/// Difference is that the natrix `b` is transposed and
+/// transposed matrix is used as a way to multiply.
+///
+/// Also accumulation is done by computing 4 cells per iteration.
+///
+/// Returns new matrix vector `c` of size (m x p)
+///
+/// This can also be stated as `1x4` kernel multiplication
+pub fn matmul_transposed_multi_accumulated_4x4(
+    a: &[f64],
+    b: &[f64],
+    ashape: (usize, usize),
+    bshape: (usize, usize),
+) -> Vector<f64> {
+    assert!(ashape.1 == bshape.0);
+    let (m, n, p) = (ashape.0, ashape.1, bshape.1);
+    let mut c: Vector<f64> = Vector::zeroed(m * p);
+
+    // Before computing matrix multiplication:
+    // we transpose them
+    let (tb, _) = transpose_vec(b, (n, p));
+
+    a.chunks_exact(n * 4).enumerate().for_each(|(ibl, avec)| {
+        let i = ibl * 4;
+        let (a0, a1, a2, a3) = (
+            &avec[..n],
+            &avec[n..2 * n],
+            &avec[2 * n..3 * n],
+            &avec[3 * n..],
+        );
+        tb.chunks_exact(n * 4).enumerate().for_each(|(jbl, bvec)| {
+            let j = jbl * 4;
+            // let j = jl * 4;
+            // 4 adjacent are computed simultaneously
+            // so that values in row `avec` is used once for multiple
+            // mul operations at once, reducing branches
+            (
+                c[i * p + j],
+                c[i * p + j + 1],
+                c[i * p + j + 2],
+                c[i * p + j + 3],
+            ) = dot4(
+                &a0,
+                &bvec[..n],
+                &bvec[n..2 * n],
+                &bvec[2 * n..3 * n],
+                &bvec[3 * n..],
+            );
+
+            (
+                c[(i + 1) * p + j],
+                c[(i + 1) * p + j + 1],
+                c[(i + 1) * p + j + 2],
+                c[(i + 1) * p + j + 3],
+            ) = dot4(
+                &a1,
+                &bvec[..n],
+                &bvec[n..2 * n],
+                &bvec[2 * n..3 * n],
+                &bvec[3 * n..],
+            );
+
+            (
+                c[(i + 2) * p + j],
+                c[(i + 2) * p + j + 1],
+                c[(i + 2) * p + j + 2],
+                c[(i + 2) * p + j + 3],
+            ) = dot4(
+                &a2,
+                &bvec[..n],
+                &bvec[n..2 * n],
+                &bvec[2 * n..3 * n],
+                &bvec[3 * n..],
+            );
+
+            (
+                c[(i + 3) * p + j],
+                c[(i + 3) * p + j + 1],
+                c[(i + 3) * p + j + 2],
+                c[(i + 3) * p + j + 3],
+            ) = dot4(
+                &a3,
+                &bvec[..n],
+                &bvec[n..2 * n],
+                &bvec[2 * n..3 * n],
+                &bvec[3 * n..],
+            );
+        });
+        // Residual operation is done after the above computation
+        let val = tb.chunks_exact(n * 4).remainder();
+        match val.len() / n {
+            1 => {
+                (
+                    c[i * p + p - 1],
+                    c[(i + 1) * p + p - 1],
+                    c[(i + 2) * p + p - 1],
+                    c[(i + 3) * p + p - 1],
+                ) = dot4(val, a0, a1, a2, a3);
+            }
+            2 => {
+                let (b0, b1) = (&val[..n], &val[n..]);
+                (
+                    c[i * p + p - 2],
+                    c[(i + 1) * p + p - 2],
+                    c[(i + 2) * p + p - 2],
+                    c[(i + 3) * p + p - 2],
+                ) = dot4(b0, a0, a1, a2, a3);
+                (
+                    c[i * p + p - 1],
+                    c[(i + 1) * p + p - 1],
+                    c[(i + 2) * p + p - 1],
+                    c[(i + 3) * p + p - 1],
+                ) = dot4(b1, a0, a1, a2, a3);
+            }
+            3 => {
+                let (b0, b1, b2) = (&val[..n], &val[n..2 * n], &val[2 * n..]);
+                (
+                    c[i * p + p - 3],
+                    c[(i + 1) * p + p - 3],
+                    c[(i + 2) * p + p - 3],
+                    c[(i + 3) * p + p - 3],
+                ) = dot4(b0, a0, a1, a2, a3);
+                (
+                    c[i * p + p - 2],
+                    c[(i + 1) * p + p - 2],
+                    c[(i + 2) * p + p - 2],
+                    c[(i + 3) * p + p - 2],
+                ) = dot4(b1, a0, a1, a2, a3);
+                (
+                    c[i * p + p - 1],
+                    c[(i + 1) * p + p - 1],
+                    c[(i + 2) * p + p - 1],
+                    c[(i + 3) * p + p - 1],
+                ) = dot4(b2, a0, a1, a2, a3);
+            }
+            _ => {}
+        }
+    });
+    c
+}

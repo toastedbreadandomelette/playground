@@ -1,10 +1,11 @@
 use crate::common::transpose_vec;
 use crate::common::vector::Vector;
+use crate::matmul::cf_process_blocks::{
+    iter_blocks_on_1xN, iter_blocks_on_2xN, iter_blocks_on_3xN,
+    iter_blocks_on_4xN,
+};
 use core::simd::f64x4;
 use core::simd::SimdFloat;
-use crate::matmul::cf_process_blocks::{
-    iter_blocks_on_1xN, iter_blocks_on_2xN, iter_blocks_on_3xN, iter_blocks_on_4xN
-};
 
 const BLOCKSIZE: usize = 32;
 
@@ -69,13 +70,31 @@ pub unsafe fn cf_blocked_simd_unsafe(
 
                     match a_rem.len() / n {
                         1 => iter_blocks_on_1xN(
-                            a_rem, b_block, &mut c, ibl + a_block_len - 1, jbl, n, p,
+                            a_rem,
+                            b_block,
+                            &mut c,
+                            ibl + a_block_len - 1,
+                            jbl,
+                            n,
+                            p,
                         ),
                         2 => iter_blocks_on_2xN(
-                            a_rem, b_block, &mut c, ibl + a_block_len - 2, jbl, n, p,
+                            a_rem,
+                            b_block,
+                            &mut c,
+                            ibl + a_block_len - 2,
+                            jbl,
+                            n,
+                            p,
                         ),
                         3 => iter_blocks_on_3xN(
-                            a_rem, b_block, &mut c, ibl + a_block_len - 3, jbl, n, p,
+                            a_rem,
+                            b_block,
+                            &mut c,
+                            ibl + a_block_len - 3,
+                            jbl,
+                            n,
+                            p,
                         ),
                         _ => {} // No cases to be considered
                     }

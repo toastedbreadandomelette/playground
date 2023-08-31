@@ -151,6 +151,223 @@ pub unsafe fn dot_simd_4(
     )
 }
 
+/// Internal: Dot SIMD product of four simultaneous vectors.
+///
+/// Returns the value
+#[inline]
+#[cfg(target_arch = "x86_64")]
+#[target_feature(enable = "avx,avx2,fma")]
+pub unsafe fn dot_simd_4x2(
+    avec0: &[f64],
+    avec1: &[f64],
+    bvec0: &[f64],
+    bvec1: &[f64],
+    bvec2: &[f64],
+    bvec3: &[f64],
+) -> (f64, f64, f64, f64, f64, f64, f64, f64) {
+    let (pre0, pre1, pre2, pre3, pre4, pre5, pre6, pre7) = avec0
+        .chunks_exact(4)
+        .map(f64x4::from_slice)
+        .zip(avec1.chunks_exact(4).map(f64x4::from_slice))
+        .zip(bvec0.chunks_exact(4).map(f64x4::from_slice))
+        .zip(bvec1.chunks_exact(4).map(f64x4::from_slice))
+        .zip(bvec2.chunks_exact(4).map(f64x4::from_slice))
+        .zip(bvec3.chunks_exact(4).map(f64x4::from_slice))
+        .fold(
+            (
+                f64x4::splat(0.0),
+                f64x4::splat(0.0),
+                f64x4::splat(0.0),
+                f64x4::splat(0.0),
+                f64x4::splat(0.0),
+                f64x4::splat(0.0),
+                f64x4::splat(0.0),
+                f64x4::splat(0.0),
+            ),
+            |(prev0, prev1, prev2, prev3, prev4, prev5, prev6, prev7),
+             (((((a0, a1), b0), b1), b2), b3)| {
+                (
+                    prev0 + a0 * b0,
+                    prev1 + a0 * b1,
+                    prev2 + a0 * b2,
+                    prev3 + a0 * b3,
+                    prev4 + a1 * b0,
+                    prev5 + a1 * b1,
+                    prev6 + a1 * b2,
+                    prev7 + a1 * b3,
+                )
+            },
+        );
+
+    let (posta0, posta1, postb0, postb1, postb2, postb3) = (
+        avec0.chunks_exact(4).remainder(),
+        avec1.chunks_exact(4).remainder(),
+        bvec0.chunks_exact(4).remainder(),
+        bvec1.chunks_exact(4).remainder(),
+        bvec2.chunks_exact(4).remainder(),
+        bvec3.chunks_exact(4).remainder(),
+    );
+    (
+        reduce_sum(pre0) + dot(posta0, postb0),
+        reduce_sum(pre1) + dot(posta0, postb1),
+        reduce_sum(pre2) + dot(posta0, postb2),
+        reduce_sum(pre3) + dot(posta0, postb3),
+        reduce_sum(pre4) + dot(posta1, postb0),
+        reduce_sum(pre5) + dot(posta1, postb1),
+        reduce_sum(pre6) + dot(posta1, postb2),
+        reduce_sum(pre7) + dot(posta1, postb3),
+    )
+}
+
+/// Internal: Dot SIMD product of four simultaneous vectors.
+///
+/// Returns the value
+#[inline]
+#[cfg(target_arch = "x86_64")]
+#[target_feature(enable = "avx,avx2,fma")]
+pub unsafe fn dot_simd_4x4(
+    avec0: &[f64],
+    avec1: &[f64],
+    avec2: &[f64],
+    avec3: &[f64],
+    bvec0: &[f64],
+    bvec1: &[f64],
+    bvec2: &[f64],
+    bvec3: &[f64],
+) -> (
+    f64,
+    f64,
+    f64,
+    f64,
+    f64,
+    f64,
+    f64,
+    f64,
+    f64,
+    f64,
+    f64,
+    f64,
+    f64,
+    f64,
+    f64,
+    f64,
+) {
+    let (
+        pre0,
+        pre1,
+        pre2,
+        pre3,
+        pre4,
+        pre5,
+        pre6,
+        pre7,
+        pre8,
+        pre9,
+        pre10,
+        pre11,
+        pre12,
+        pre13,
+        pre14,
+        pre15,
+    ) = avec0
+        .chunks_exact(4)
+        .map(f64x4::from_slice)
+        .zip(avec1.chunks_exact(4).map(f64x4::from_slice))
+        .zip(avec2.chunks_exact(4).map(f64x4::from_slice))
+        .zip(avec3.chunks_exact(4).map(f64x4::from_slice))
+        .zip(bvec0.chunks_exact(4).map(f64x4::from_slice))
+        .zip(bvec1.chunks_exact(4).map(f64x4::from_slice))
+        .zip(bvec2.chunks_exact(4).map(f64x4::from_slice))
+        .zip(bvec3.chunks_exact(4).map(f64x4::from_slice))
+        .fold(
+            (
+                f64x4::splat(0.0),
+                f64x4::splat(0.0),
+                f64x4::splat(0.0),
+                f64x4::splat(0.0),
+                f64x4::splat(0.0),
+                f64x4::splat(0.0),
+                f64x4::splat(0.0),
+                f64x4::splat(0.0),
+                f64x4::splat(0.0),
+                f64x4::splat(0.0),
+                f64x4::splat(0.0),
+                f64x4::splat(0.0),
+                f64x4::splat(0.0),
+                f64x4::splat(0.0),
+                f64x4::splat(0.0),
+                f64x4::splat(0.0),
+            ),
+            |(
+                prev0,
+                prev1,
+                prev2,
+                prev3,
+                prev4,
+                prev5,
+                prev6,
+                prev7,
+                prev8,
+                prev9,
+                prev10,
+                prev11,
+                prev12,
+                prev13,
+                prev14,
+                prev15,
+            ),
+             (((((((a0, a1), a2), a3), b0), b1), b2), b3)| {
+                (
+                    prev0 + a0 * b0,
+                    prev1 + a0 * b1,
+                    prev2 + a0 * b2,
+                    prev3 + a0 * b3,
+                    prev4 + a1 * b0,
+                    prev5 + a1 * b1,
+                    prev6 + a1 * b2,
+                    prev7 + a1 * b3,
+                    prev8 + a2 * b0,
+                    prev9 + a2 * b1,
+                    prev10 + a2 * b2,
+                    prev11 + a2 * b3,
+                    prev12 + a3 * b0,
+                    prev13 + a3 * b1,
+                    prev14 + a3 * b2,
+                    prev15 + a3 * b3,
+                )
+            },
+        );
+
+    let (posta0, posta1, posta2, posta3, postb0, postb1, postb2, postb3) = (
+        avec0.chunks_exact(4).remainder(),
+        avec1.chunks_exact(4).remainder(),
+        avec2.chunks_exact(4).remainder(),
+        avec3.chunks_exact(4).remainder(),
+        bvec0.chunks_exact(4).remainder(),
+        bvec1.chunks_exact(4).remainder(),
+        bvec2.chunks_exact(4).remainder(),
+        bvec3.chunks_exact(4).remainder(),
+    );
+    (
+        reduce_sum(pre0) + dot(posta0, postb0),
+        reduce_sum(pre1) + dot(posta0, postb1),
+        reduce_sum(pre2) + dot(posta0, postb2),
+        reduce_sum(pre3) + dot(posta0, postb3),
+        reduce_sum(pre4) + dot(posta1, postb0),
+        reduce_sum(pre5) + dot(posta1, postb1),
+        reduce_sum(pre6) + dot(posta1, postb2),
+        reduce_sum(pre7) + dot(posta1, postb3),
+        reduce_sum(pre8) + dot(posta2, postb0),
+        reduce_sum(pre9) + dot(posta2, postb1),
+        reduce_sum(pre10) + dot(posta2, postb2),
+        reduce_sum(pre11) + dot(posta2, postb3),
+        reduce_sum(pre12) + dot(posta3, postb0),
+        reduce_sum(pre13) + dot(posta3, postb1),
+        reduce_sum(pre14) + dot(posta3, postb2),
+        reduce_sum(pre15) + dot(posta3, postb3),
+    )
+}
+
 /// Internal: Dot product of two vectors, but two are computed at a time.
 ///
 /// Returns the pair (`avec . bvec0`, `avec . bvec1`)
