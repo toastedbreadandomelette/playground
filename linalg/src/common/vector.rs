@@ -1,12 +1,16 @@
 /// Custom `Vector` implementation that also supports `#![no_std]`.
 use core::alloc::Layout;
+use core::convert::From;
+use core::iter::Step;
 use core::ops::{
     Deref, DerefMut, Range, RangeFrom, RangeFull, RangeInclusive, RangeTo,
     RangeToInclusive,
 };
-use core::ops::{Index, IndexMut};
+use core::ops::{Index, IndexMut, Sub};
+use core::ptr::copy_nonoverlapping;
 use core::slice::{
-    Chunks, ChunksExact, ChunksExactMut, ChunksMut, Iter, IterMut, Windows,
+    from_raw_parts, from_raw_parts_mut, Chunks, ChunksExact, ChunksExactMut,
+    ChunksMut, Iter, IterMut, Windows,
 };
 
 #[cfg(feature = "array_chunks")]
@@ -90,7 +94,7 @@ impl<T> Vector<T> {
                     // Documentation states that this will be deprecated.
                     let new_ptr =
                         alloc::alloc::alloc_zeroed(new_layout).cast::<T>();
-                    core::ptr::copy_nonoverlapping(self.ptr, new_ptr, self.len);
+                    copy_nonoverlapping(self.ptr, new_ptr, self.len);
                     alloc::alloc::dealloc(self.ptr.cast::<u8>(), self.layout);
                     new_ptr
                 };
@@ -139,7 +143,7 @@ impl<T> Vector<T> {
                 // Documentation states that this will be deprecated.
                 let new_ptr =
                     alloc::alloc::alloc_zeroed(new_layout).cast::<T>();
-                core::ptr::copy_nonoverlapping(self.ptr, new_ptr, self.len);
+                copy_nonoverlapping(self.ptr, new_ptr, self.len);
                 alloc::alloc::dealloc(self.ptr.cast::<u8>(), self.layout);
                 new_ptr
             };
@@ -176,15 +180,13 @@ impl<T> Vector<T> {
     /// Returns the borrowed values from iterator
     #[inline(always)]
     pub fn iter(&self) -> Iter<'_, T> {
-        unsafe { core::slice::from_raw_parts(self.ptr, self.len).iter() }
+        unsafe { from_raw_parts(self.ptr, self.len).iter() }
     }
 
     /// Returns the mutable borrowed iterator
     #[inline(always)]
     pub fn iter_mut(&mut self) -> IterMut<'_, T> {
-        unsafe {
-            core::slice::from_raw_parts_mut(self.ptr, self.len).iter_mut()
-        }
+        unsafe { from_raw_parts_mut(self.ptr, self.len).iter_mut() }
     }
 
     /// Returns the chunks of `n` size
@@ -192,9 +194,7 @@ impl<T> Vector<T> {
     /// Remainder will yield array of `len < chunk_size`
     #[inline(always)]
     pub fn chunks(&self, chunk_size: usize) -> Chunks<'_, T> {
-        unsafe {
-            core::slice::from_raw_parts(self.ptr, self.len).chunks(chunk_size)
-        }
+        unsafe { from_raw_parts(self.ptr, self.len).chunks(chunk_size) }
     }
 
     /// Returns the chunks of exactly `n` size
@@ -202,10 +202,7 @@ impl<T> Vector<T> {
     /// Remainder can be accessed from `remainder`
     #[inline(always)]
     pub fn chunks_exact(&self, chunk_size: usize) -> ChunksExact<'_, T> {
-        unsafe {
-            core::slice::from_raw_parts(self.ptr, self.len)
-                .chunks_exact(chunk_size)
-        }
+        unsafe { from_raw_parts(self.ptr, self.len).chunks_exact(chunk_size) }
     }
 
     /// Returns the mutable slice of `n` size
@@ -213,10 +210,7 @@ impl<T> Vector<T> {
     /// Remainder will yield array of `len < chunk_size`
     #[inline(always)]
     pub fn chunks_mut(&self, chunk_size: usize) -> ChunksMut<'_, T> {
-        unsafe {
-            core::slice::from_raw_parts_mut(self.ptr, self.len)
-                .chunks_mut(chunk_size)
-        }
+        unsafe { from_raw_parts_mut(self.ptr, self.len).chunks_mut(chunk_size) }
     }
 
     /// Returns the mutable chunks of exactly `n` size
@@ -225,8 +219,7 @@ impl<T> Vector<T> {
     #[inline(always)]
     pub fn chunks_exact_mut(&self, chunk_size: usize) -> ChunksExactMut<'_, T> {
         unsafe {
-            core::slice::from_raw_parts_mut(self.ptr, self.len)
-                .chunks_exact_mut(chunk_size)
+            from_raw_parts_mut(self.ptr, self.len).chunks_exact_mut(chunk_size)
         }
     }
 
@@ -236,10 +229,7 @@ impl<T> Vector<T> {
     /// If window size is larger, then it won't yield a slice.
     #[inline(always)]
     pub fn windows(&self, window_size: usize) -> Windows<'_, T> {
-        unsafe {
-            core::slice::from_raw_parts_mut(self.ptr, self.len)
-                .windows(window_size)
-        }
+        unsafe { from_raw_parts_mut(self.ptr, self.len).windows(window_size) }
     }
 
     /// Returns the window iterator of exactly `n` size, iterating through
@@ -249,10 +239,7 @@ impl<T> Vector<T> {
     #[inline(always)]
     #[cfg(feature = "array_chunks")]
     pub fn array_chunks<const SIZE: usize>(&self) -> VectorChunks<'_, T, SIZE> {
-        unsafe {
-            core::slice::from_raw_parts_mut(self.ptr, self.len)
-                .array_chunks::<SIZE>()
-        }
+        unsafe { from_raw_parts_mut(self.ptr, self.len).array_chunks::<SIZE>() }
     }
 
     /// Returns the window iterator of exactly `n` size, iterating through
@@ -265,8 +252,7 @@ impl<T> Vector<T> {
         &self,
     ) -> VectorChunksMut<'_, T, SIZE> {
         unsafe {
-            core::slice::from_raw_parts_mut(self.ptr, self.len)
-                .array_chunks_mut::<SIZE>()
+            from_raw_parts_mut(self.ptr, self.len).array_chunks_mut::<SIZE>()
         }
     }
 
@@ -277,8 +263,7 @@ impl<T> Vector<T> {
         &self,
     ) -> VectorWindows<'_, T, SIZE> {
         unsafe {
-            core::slice::from_raw_parts_mut(self.ptr, self.len)
-                .array_windows::<SIZE>()
+            from_raw_parts_mut(self.ptr, self.len).array_windows::<SIZE>()
         }
     }
 
@@ -304,8 +289,8 @@ impl<T> Vector<T> {
     /// with an intention to use `#![no_std]` allocation
     pub fn from_range(range: Range<T>) -> Self
     where
-        T: core::iter::Step + core::ops::Sub<Output = T> + Into<usize> + Copy,
-        usize: core::convert::From<T>,
+        T: Step + Sub<Output = T> + Into<usize> + Copy,
+        usize: From<T>,
     {
         unsafe {
             let layout = Layout::from_size_align_unchecked(
@@ -357,7 +342,7 @@ impl<T> FromIterator<T> for Vector<T> {
 impl<'a, T> IntoIterator for &'a Vector<T> {
     // Into Iterator for &'a Vector<T>
     type Item = &'a T;
-    type IntoIter = core::slice::Iter<'a, T>;
+    type IntoIter = Iter<'a, T>;
 
     fn into_iter(self) -> Self::IntoIter {
         self.iter()
@@ -394,10 +379,7 @@ impl<T> Index<Range<usize>> for Vector<T> {
     fn index(&self, range: Range<usize>) -> &Self::Output {
         debug_assert!(range.start < self.len && range.end <= self.len);
         unsafe {
-            core::slice::from_raw_parts(
-                self.ptr.add(range.start),
-                range.end - range.start,
-            )
+            from_raw_parts(self.ptr.add(range.start), range.end - range.start)
         }
     }
 }
@@ -409,22 +391,19 @@ impl<T> Index<RangeFrom<usize>> for Vector<T> {
     fn index(&self, range: RangeFrom<usize>) -> &Self::Output {
         debug_assert!(range.start < self.len);
         unsafe {
-            core::slice::from_raw_parts(
-                self.ptr.add(range.start),
-                self.len - range.start,
-            )
+            from_raw_parts(self.ptr.add(range.start), self.len - range.start)
         }
     }
 }
 
-impl<T> Index<core::ops::RangeInclusive<usize>> for Vector<T> {
+impl<T> Index<RangeInclusive<usize>> for Vector<T> {
     type Output = [T];
 
     #[inline]
     fn index(&self, range: RangeInclusive<usize>) -> &Self::Output {
         debug_assert!(*range.start() < self.len && *range.end() < self.len);
         unsafe {
-            core::slice::from_raw_parts(
+            from_raw_parts(
                 self.ptr.add(*range.start()),
                 *range.end() - *range.start(),
             )
@@ -432,22 +411,22 @@ impl<T> Index<core::ops::RangeInclusive<usize>> for Vector<T> {
     }
 }
 
-impl<T> Index<core::ops::RangeTo<usize>> for Vector<T> {
+impl<T> Index<RangeTo<usize>> for Vector<T> {
     type Output = [T];
     #[inline]
     fn index(&self, range: RangeTo<usize>) -> &Self::Output {
         debug_assert!(range.end < self.len);
-        unsafe { core::slice::from_raw_parts(self.ptr, range.end) }
+        unsafe { from_raw_parts(self.ptr, range.end) }
     }
 }
 
-impl<T> Index<core::ops::RangeToInclusive<usize>> for Vector<T> {
+impl<T> Index<RangeToInclusive<usize>> for Vector<T> {
     type Output = [T];
 
     #[inline]
     fn index(&self, range: RangeToInclusive<usize>) -> &Self::Output {
         debug_assert!(range.end < self.len);
-        unsafe { core::slice::from_raw_parts(self.ptr, range.end) }
+        unsafe { from_raw_parts(self.ptr, range.end) }
     }
 }
 
@@ -456,7 +435,7 @@ impl<T> Index<RangeFull> for Vector<T> {
 
     #[inline]
     fn index(&self, _: RangeFull) -> &Self::Output {
-        unsafe { core::slice::from_raw_parts(self.ptr, self.len) }
+        unsafe { from_raw_parts(self.ptr, self.len) }
     }
 }
 
@@ -465,7 +444,7 @@ impl<T> IndexMut<Range<usize>> for Vector<T> {
     fn index_mut(&mut self, range: Range<usize>) -> &mut [T] {
         debug_assert!(range.start < self.len && range.end < self.len);
         unsafe {
-            &mut *core::slice::from_raw_parts_mut(
+            &mut *from_raw_parts_mut(
                 self.ptr.add(range.start),
                 range.end - range.start,
             )
@@ -478,7 +457,7 @@ impl<T> IndexMut<RangeFrom<usize>> for Vector<T> {
     fn index_mut(&mut self, range: RangeFrom<usize>) -> &mut [T] {
         debug_assert!(range.start < self.len);
         unsafe {
-            &mut *core::slice::from_raw_parts_mut(
+            &mut *from_raw_parts_mut(
                 self.ptr.add(range.start),
                 self.len - range.start,
             )
@@ -486,12 +465,12 @@ impl<T> IndexMut<RangeFrom<usize>> for Vector<T> {
     }
 }
 
-impl<T> IndexMut<core::ops::RangeInclusive<usize>> for Vector<T> {
+impl<T> IndexMut<RangeInclusive<usize>> for Vector<T> {
     #[inline]
     fn index_mut(&mut self, range: RangeInclusive<usize>) -> &mut [T] {
         debug_assert!(*range.start() < self.len && *range.end() < self.len);
         unsafe {
-            &mut *core::slice::from_raw_parts_mut(
+            &mut *from_raw_parts_mut(
                 self.ptr.add(*range.start()),
                 *range.end() - *range.start(),
             )
@@ -499,19 +478,19 @@ impl<T> IndexMut<core::ops::RangeInclusive<usize>> for Vector<T> {
     }
 }
 
-impl<T> IndexMut<core::ops::RangeTo<usize>> for Vector<T> {
+impl<T> IndexMut<RangeTo<usize>> for Vector<T> {
     #[inline]
     fn index_mut(&mut self, range: RangeTo<usize>) -> &mut [T] {
         debug_assert!(range.end < self.len);
-        unsafe { &mut *core::slice::from_raw_parts_mut(self.ptr, range.end) }
+        unsafe { &mut *from_raw_parts_mut(self.ptr, range.end) }
     }
 }
 
-impl<T> IndexMut<core::ops::RangeToInclusive<usize>> for Vector<T> {
+impl<T> IndexMut<RangeToInclusive<usize>> for Vector<T> {
     #[inline]
     fn index_mut(&mut self, range: RangeToInclusive<usize>) -> &mut [T] {
         debug_assert!(range.end < self.len);
-        unsafe { &mut *core::slice::from_raw_parts_mut(self.ptr, range.end) }
+        unsafe { &mut *from_raw_parts_mut(self.ptr, range.end) }
     }
 }
 
@@ -519,7 +498,7 @@ impl<T> IndexMut<RangeFull> for Vector<T> {
     #[inline]
     fn index_mut(&mut self, _: RangeFull) -> &mut [T] {
         // Only way for this is to expose the value as mut slice
-        unsafe { &mut *core::slice::from_raw_parts_mut(self.ptr, self.len) }
+        unsafe { &mut *from_raw_parts_mut(self.ptr, self.len) }
     }
 }
 
