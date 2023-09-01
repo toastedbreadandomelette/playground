@@ -1,4 +1,4 @@
-/// Custom `Vector` implementation also supports `![no_std]`.
+/// Custom `Vector` implementation that also supports `#![no_std]`.
 use core::alloc::Layout;
 use core::ops::{
     Deref, DerefMut, Range, RangeFrom, RangeFull, RangeInclusive, RangeTo,
@@ -18,13 +18,13 @@ use core::slice::ArrayWindows;
 
 extern crate alloc;
 
-/// A custom vector for `![no_std]` implementation
+/// A custom vector for `#![no_std]` implementation
 ///
-/// This struct will have constant heap allocated value for type `T`
+/// This struct will have constant heap allocated value for type [`T`]
 /// and would only implement traits for following types:
-/// - `Index` (for type `usize`, `Range`, `RangeInclusive` (and maybe `isize`))
-/// - `IndexMut` (for type `usize`, `Range`, `RangeInclusive` (and maybe `isize`))
-/// - `Iterator`
+/// - [`Index`] (for type [`usize`], [`Range`], [`RangeInclusive`] (and maybe [`isize`]))
+/// - [`IndexMut`] (for type [`usize`], [`Range`], [`RangeInclusive`] (and maybe [`isize`]))
+/// - [`Iterator`]
 pub struct Vector<T> {
     /// Pointer to the array
     ptr: *mut T,
@@ -283,7 +283,7 @@ impl<T> Vector<T> {
     }
 
     /// Create a new array filled with value, this is a custom made array
-    /// with an intention to use `![no_std]` allocation
+    /// with an intention to use `#![no_std]` allocation
     #[inline]
     pub fn zeroed(len: usize) -> Self {
         unsafe {
@@ -301,7 +301,7 @@ impl<T> Vector<T> {
     }
 
     /// Create a new array filled with value, this is a custom made array
-    /// with an intention to use `![no_std]` allocation
+    /// with an intention to use `#![no_std]` allocation
     pub fn from_range(range: Range<T>) -> Self
     where
         T: core::iter::Step + core::ops::Sub<Output = T> + Into<usize> + Copy,

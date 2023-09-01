@@ -8,7 +8,7 @@ use crate::common::{vector::Vector, *};
 ///
 /// Also accumulation is done by computing 4 cells per iteration.
 ///
-/// Returns new matrix vector `c` of size (m x p)
+/// Returns new matrix vector `c` of size `(m x p)`
 ///
 /// This can also be stated as `1x4` kernel multiplication
 pub fn matmul_transposed_multi_accumulated(

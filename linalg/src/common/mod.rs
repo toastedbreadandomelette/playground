@@ -13,6 +13,9 @@ pub fn dot(avec: &[f64], bvec: &[f64]) -> f64 {
         .fold(0.0, |prev, (a1, b1)| prev + (a1 * b1))
 }
 
+/// Reduce 4-way lane SIMD value to one.
+///
+/// Returns f64
 #[inline(always)]
 pub fn reduce_sum(asimd: Simd<f64, 4>) -> f64 {
     asimd.as_array().iter().fold(0.0, |p, c| p + c)
@@ -99,6 +102,63 @@ pub fn dot_simd_3(
     )
 }
 
+/// Internal: Dot SIMD product of three simultaneous vectors.
+///
+/// Returns the value
+#[inline]
+pub fn dot_simd_2x3(
+    avec0: &[f64],
+    avec1: &[f64],
+    bvec0: &[f64],
+    bvec1: &[f64],
+    bvec2: &[f64],
+) -> (f64, f64, f64, f64, f64, f64) {
+    let (pre0, pre1, pre2, pre3, pre4, pre5) = avec0
+        .chunks_exact(4)
+        .map(f64x4::from_slice)
+        .zip(avec1.chunks_exact(4).map(f64x4::from_slice))
+        .zip(bvec0.chunks_exact(4).map(f64x4::from_slice))
+        .zip(bvec1.chunks_exact(4).map(f64x4::from_slice))
+        .zip(bvec2.chunks_exact(4).map(f64x4::from_slice))
+        .fold(
+            (
+                f64x4::splat(0.0),
+                f64x4::splat(0.0),
+                f64x4::splat(0.0),
+                f64x4::splat(0.0),
+                f64x4::splat(0.0),
+                f64x4::splat(0.0),
+            ),
+            |(prev0, prev1, prev2, prev3, prev4, prev5),
+             ((((a0, a1), b0), b1), b2)| {
+                (
+                    prev0 + a0 * b0,
+                    prev1 + a0 * b1,
+                    prev2 + a0 * b2,
+                    prev3 + a1 * b0,
+                    prev4 + a1 * b1,
+                    prev5 + a1 * b2,
+                )
+            },
+        );
+
+    let (posta0, posta1, postb0, postb1, postb2) = (
+        avec0.chunks_exact(4).remainder(),
+        avec1.chunks_exact(4).remainder(),
+        bvec0.chunks_exact(4).remainder(),
+        bvec1.chunks_exact(4).remainder(),
+        bvec2.chunks_exact(4).remainder(),
+    );
+    (
+        reduce_sum(pre0) + dot(posta0, postb0),
+        reduce_sum(pre1) + dot(posta0, postb1),
+        reduce_sum(pre2) + dot(posta0, postb2),
+        reduce_sum(pre3) + dot(posta1, postb0),
+        reduce_sum(pre4) + dot(posta1, postb1),
+        reduce_sum(pre5) + dot(posta1, postb2),
+    )
+}
+
 /// Internal: Dot SIMD product of four simultaneous vectors.
 ///
 /// Returns the value
@@ -151,13 +211,13 @@ pub unsafe fn dot_simd_4(
     )
 }
 
-/// Internal: Dot SIMD product of four simultaneous vectors.
+/// Internal: Dot SIMD product of two against four simultaneous vectors.
 ///
 /// Returns the value
 #[inline]
 #[cfg(target_arch = "x86_64")]
 #[target_feature(enable = "avx,avx2,fma")]
-pub unsafe fn dot_simd_4x2(
+pub unsafe fn dot_simd_2x4(
     avec0: &[f64],
     avec1: &[f64],
     bvec0: &[f64],

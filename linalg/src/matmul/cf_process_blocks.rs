@@ -1,10 +1,10 @@
 use crate::common::{
-    dot_simd, dot_simd_2, dot_simd_3, dot_simd_4, dot_simd_4x2,
+    dot_simd, dot_simd_2, dot_simd_2x3, dot_simd_2x4, dot_simd_3, dot_simd_4,
 };
 
-/// Iterate on 1 strip vector of `a` with block of vectors `b`
+/// Iterate on 1 strip vector of [`a`] with block of vectors [`b`]
 ///
-/// Taking 4 strips at a time, and evaluating remainder strips later
+/// Taking 4 strips of [`b_block`] at a time, and evaluating remainder strips later
 #[cfg(target_arch = "x86_64")]
 #[target_feature(enable = "avx,avx2,fma")]
 #[allow(non_snake_case)]
@@ -54,9 +54,9 @@ pub unsafe fn iter_blocks_on_1xN(
     }
 }
 
-/// Iterate on 2 strip vector of `a` with block of vectors `b`
+/// Iterate on 2 strip vector of [`a_rem`] with block of vectors [`b_block`]
 ///
-/// Taking 4 strips at a time, and evaluating remainder strips later
+/// Taking 4 strips of matrix [`b_block`] at a time, and evaluating remainder strips later
 #[cfg(target_arch = "x86_64")]
 #[target_feature(enable = "avx,avx2,fma")]
 #[allow(non_snake_case)]
@@ -105,9 +105,9 @@ pub unsafe fn iter_blocks_on_2xN(
     }
 }
 
-/// Iterate on 3 strip vector of `a` with block of vectors `b`
+/// Iterate on 3 strip vector of [`a_rem`] with block of vectors [`b_block`]
 ///
-/// Taking 4 strips at a time, and evaluating remainder strips later
+/// Taking 4 strips of matrix [`b_block`] at a time, and evaluating remainder strips later
 #[cfg(target_arch = "x86_64")]
 #[target_feature(enable = "avx,avx2,fma")]
 #[allow(non_snake_case)]
@@ -363,14 +363,14 @@ pub unsafe fn process_3x2_block(
     (i, j): (usize, usize),
     (_, p): (usize, usize),
 ) {
-    (c[i * p + j], c[(i + 1) * p + j], c[(i + 2) * p + j]) =
-        dot_simd_3(b0, a0, a1, a2);
-
     (
+        c[i * p + j],
+        c[(i + 1) * p + j],
+        c[(i + 2) * p + j],
         c[(i) * p + j + 1],
         c[(i + 1) * p + j + 1],
         c[(i + 2) * p + j + 1],
-    ) = dot_simd_3(b1, a0, a1, a2);
+    ) = dot_simd_2x3(b0, b1, a0, a1, a2);
 }
 
 /// Processing 4x2 kernel
@@ -396,7 +396,7 @@ pub unsafe fn process_4x2_block(
         c[(i + 1) * p + j + 1],
         c[(i + 2) * p + j + 1],
         c[(i + 3) * p + j + 1],
-    ) = dot_simd_4x2(b0, b1, a0, a1, a2, a3);
+    ) = dot_simd_2x4(b0, b1, a0, a1, a2, a3);
 }
 
 /// Processing 1x3 kernel
@@ -428,14 +428,14 @@ pub unsafe fn process_2x3_block(
     (i, j): (usize, usize),
     (_, p): (usize, usize),
 ) {
-    (c[i * p + j], c[i * p + j + 1], c[i * p + j + 2]) =
-        dot_simd_3(a0, b0, b1, b2);
-
     (
+        c[i * p + j],
+        c[i * p + j + 1],
+        c[i * p + j + 2],
         c[(i + 1) * p + j],
         c[(i + 1) * p + j + 1],
         c[(i + 1) * p + j + 2],
-    ) = dot_simd_3(a1, b0, b1, b2);
+    ) = dot_simd_2x3(a0, a1, b0, b1, b2);
 }
 
 /// Processing 3x3 kernel
@@ -452,14 +452,14 @@ pub unsafe fn process_3x3_block(
     (i, j): (usize, usize),
     (_, p): (usize, usize),
 ) {
-    (c[i * p + j], c[i * p + j + 1], c[i * p + j + 2]) =
-        dot_simd_3(a0, b0, b1, b2);
-
     (
+        c[i * p + j],
+        c[i * p + j + 1],
+        c[i * p + j + 2],
         c[(i + 1) * p + j],
         c[(i + 1) * p + j + 1],
         c[(i + 1) * p + j + 2],
-    ) = dot_simd_3(a1, b0, b1, b2);
+    ) = dot_simd_2x3(a0, a1, b0, b1, b2);
 
     (
         c[(i + 2) * p + j],
@@ -492,7 +492,7 @@ pub unsafe fn process_4x3_block(
         c[(i + 1) * p + j + 1],
         c[(i + 2) * p + j + 1],
         c[(i + 3) * p + j + 1],
-    ) = dot_simd_4x2(b0, b1, a0, a1, a2, a3);
+    ) = dot_simd_2x4(b0, b1, a0, a1, a2, a3);
 
     (
         c[i * p + j + 2],
@@ -546,7 +546,7 @@ pub unsafe fn process_2x4_block(
         c[(i + 1) * p + j + 1],
         c[(i + 1) * p + j + 2],
         c[(i + 1) * p + j + 3],
-    ) = dot_simd_4x2(a0, a1, b0, b1, b2, b3);
+    ) = dot_simd_2x4(a0, a1, b0, b1, b2, b3);
 }
 
 /// Processing 3x4 kernel
@@ -573,7 +573,7 @@ pub unsafe fn process_3x4_block(
         c[(i + 1) * p + j + 1],
         c[(i + 1) * p + j + 2],
         c[(i + 1) * p + j + 3],
-    ) = dot_simd_4x2(a0, a1, b0, b1, b2, b3);
+    ) = dot_simd_2x4(a0, a1, b0, b1, b2, b3);
 
     (
         c[(i + 2) * p + j],
@@ -608,7 +608,7 @@ pub unsafe fn process_4x4_block(
         c[(i + 1) * p + j + 1],
         c[(i + 1) * p + j + 2],
         c[(i + 1) * p + j + 3],
-    ) = dot_simd_4x2(a0, a1, b0, b1, b2, b3);
+    ) = dot_simd_2x4(a0, a1, b0, b1, b2, b3);
 
     (
         c[(i + 2) * p + j],
@@ -619,5 +619,5 @@ pub unsafe fn process_4x4_block(
         c[(i + 3) * p + j + 1],
         c[(i + 3) * p + j + 2],
         c[(i + 3) * p + j + 3],
-    ) = dot_simd_4x2(a2, a3, b0, b1, b2, b3);
+    ) = dot_simd_2x4(a2, a3, b0, b1, b2, b3);
 }

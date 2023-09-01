@@ -26,7 +26,7 @@ pub fn cf_blocked_simd(
     unsafe { cf_blocked_simd_unsafe(a, b, ashape, bshape) }
 }
 
-/// We're computing values of 4x4 sub-matrix of `c`.
+/// We're computing values of 4x4 sub-matrix of [`c`].
 /// We'll be computing 16 dot products at a time.
 /// i.e. for submatrices,
 ///
