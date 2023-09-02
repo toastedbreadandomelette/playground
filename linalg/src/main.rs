@@ -1,5 +1,6 @@
 #![feature(portable_simd)]
 #![feature(step_trait)]
+#![feature(array_windows)]
 // #![no_std]
 mod common;
 mod inv;

@@ -1,6 +1,7 @@
 /// Custom `Vector` implementation that also supports `#![no_std]`.
 use core::alloc::Layout;
 use core::convert::From;
+use core::fmt::Debug;
 use core::iter::Step;
 use core::ops::{
     Deref, DerefMut, Range, RangeFrom, RangeFull, RangeInclusive, RangeTo,
@@ -13,12 +14,14 @@ use core::slice::{
     ChunksMut, Iter, IterMut, Windows,
 };
 
-#[cfg(feature = "array_chunks")]
-use core::slice::ArrayChunks;
-#[cfg(feature = "array_chunks")]
-use core::slice::ArrayChunksMut;
 #[cfg(feature = "array_windows")]
 use core::slice::ArrayWindows;
+#[cfg(feature = "array_chunks")]
+use core::slice::{ArrayChunks, ArrayChunksMut};
+#[cfg(feature = "slice_group_by")]
+use core::slice::{GroupBy, GroupByMut};
+
+use super::shrink_iterator::{ShrinkHeadSlice, ShrinkHeadSliceMut};
 
 extern crate alloc;
 
@@ -39,6 +42,15 @@ pub struct Vector<T> {
     capacity: usize,
     /// Actual length of an array.
     len: usize,
+}
+
+impl<T> core::fmt::Debug for Vector<T>
+where
+    T: Debug,
+{
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+        unsafe { core::slice::from_raw_parts(self.ptr, self.len).fmt(f) }
+    }
 }
 
 impl<T> Vector<T> {
@@ -267,6 +279,45 @@ impl<T> Vector<T> {
         }
     }
 
+    /// Returns the slice group that separates the values based on condition
+    #[inline(always)]
+    #[cfg(feature = "slice_group_by")]
+    pub fn group_by<'a, F>(&self, f: F) -> GroupBy<'a, T, F>
+    where
+        F: FnMut(&T, &T) -> bool,
+    {
+        unsafe { from_raw_parts_mut(self.ptr, self.len).group_by::<F>(f) }
+    }
+
+    /// Returns the mutable slice group that separates the values based on condition
+    #[inline(always)]
+    #[cfg(feature = "slice_group_by")]
+    pub fn group_by_mut<'a, F>(&self, f: F) -> GroupByMut<'a, T, F>
+    where
+        F: FnMut(&T, &T) -> bool,
+    {
+        unsafe { from_raw_parts_mut(self.ptr, self.len).group_by_mut::<F>(f) }
+    }
+
+    /// Returns the mutable slice group that shrinks
+    #[inline(always)]
+    pub fn shrink_head(&self, size: usize) -> ShrinkHeadSlice<'_, T> {
+        unsafe {
+            ShrinkHeadSlice::new(from_raw_parts_mut(self.ptr, self.len), size)
+        }
+    }
+
+    /// Returns the mutable slice group that shrinks from head
+    #[inline(always)]
+    pub fn shrink_head_mut(&self, size: usize) -> ShrinkHeadSliceMut<'_, T> {
+        unsafe {
+            ShrinkHeadSliceMut::new(
+                from_raw_parts_mut(self.ptr, self.len),
+                size,
+            )
+        }
+    }
+
     /// Create a new array filled with value, this is a custom made array
     /// with an intention to use `#![no_std]` allocation
     #[inline]
@@ -319,6 +370,24 @@ where
 {
     fn eq(&self, other: &Self) -> bool {
         self.len == other.len && self.iter().zip(other).all(|(a, b)| a == b)
+    }
+}
+
+impl<T> PartialEq<[T]> for Vector<T>
+where
+    T: PartialEq,
+{
+    fn eq(&self, other: &[T]) -> bool {
+        self.len == other.len() && self.iter().zip(other).all(|(a, b)| a == b)
+    }
+}
+
+impl<T> PartialEq<&[T]> for Vector<T>
+where
+    T: PartialEq,
+{
+    fn eq(&self, other: &&[T]) -> bool {
+        self.len == other.len() && self.iter().zip(*other).all(|(a, b)| a == b)
     }
 }
 

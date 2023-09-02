@@ -33,7 +33,7 @@ pub fn matmul_transposed_multi_accumulated(
                 // so that values in row `avec` is used once for multiple
                 // mul operations at once, reducing branches
                 (cval_vec[0], cval_vec[1], cval_vec[2], cval_vec[3]) = dot4(
-                    &avec,
+                    avec,
                     &bvec[0..n],
                     &bvec[n..2 * n],
                     &bvec[2 * n..3 * n],
@@ -104,7 +104,7 @@ pub fn matmul_transposed_multi_accumulated_4x4(
                 c[i * p + j + 2],
                 c[i * p + j + 3],
             ) = dot4(
-                &a0,
+                a0,
                 &bvec[..n],
                 &bvec[n..2 * n],
                 &bvec[2 * n..3 * n],
@@ -117,7 +117,7 @@ pub fn matmul_transposed_multi_accumulated_4x4(
                 c[(i + 1) * p + j + 2],
                 c[(i + 1) * p + j + 3],
             ) = dot4(
-                &a1,
+                a1,
                 &bvec[..n],
                 &bvec[n..2 * n],
                 &bvec[2 * n..3 * n],
@@ -130,7 +130,7 @@ pub fn matmul_transposed_multi_accumulated_4x4(
                 c[(i + 2) * p + j + 2],
                 c[(i + 2) * p + j + 3],
             ) = dot4(
-                &a2,
+                a2,
                 &bvec[..n],
                 &bvec[n..2 * n],
                 &bvec[2 * n..3 * n],
@@ -143,7 +143,7 @@ pub fn matmul_transposed_multi_accumulated_4x4(
                 c[(i + 3) * p + j + 2],
                 c[(i + 3) * p + j + 3],
             ) = dot4(
-                &a3,
+                a3,
                 &bvec[..n],
                 &bvec[n..2 * n],
                 &bvec[2 * n..3 * n],
