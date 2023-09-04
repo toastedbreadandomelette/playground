@@ -1,5 +1,4 @@
 use crate::common::*;
-
 use vector::vector::Vector;
 
 /// Multiply two matrices `a` and `b` of size
