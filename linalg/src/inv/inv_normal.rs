@@ -49,18 +49,18 @@ pub fn inv_normal(a: &[f64], n: usize) -> Vector<f64> {
             ainv[x * n + row] *= red_factor;
         }
 
-        println!("A INV AF");
-        display_mat(&ainv, n);
+        // println!("A INV AF");
+        // display_mat(&ainv, n);
 
-        println!("A AF");
-        display_mat(&a_copy, n);
+        // println!("A AF");
+        // display_mat(&a_copy, n);
     }
 
     println!("Halfway acopy");
     display_mat(&a_copy, n);
 
     for r in (0..n).rev() {
-        let diag_index = r * (n + 1);
+        // let diag_index = r * (n + 1);
         // let elem = a_copy[diag_index];
         let inv_slice = &ainv[r * n..(r + 1) * n];
         // display_mat(&ainv, n);
