@@ -1,5 +1,5 @@
 use crate::common::transpose_vec;
-use crate::common::vector::Vector;
+use vector::vector::Vector;
 use crate::matmul::cf_process_blocks::{
     iter_blocks_on_1xN, iter_blocks_on_2xN, iter_blocks_on_3xN,
     iter_blocks_on_NxN,

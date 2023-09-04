@@ -1,9 +1,5 @@
-use self::vector::Vector;
+use vector::vector::Vector;
 use core::simd::{f64x4, Simd};
-pub mod shrink_iter_test;
-pub mod shrink_iterator;
-pub mod vector;
-pub mod vector_test;
 
 /// Internal: Dot product of two vectors.
 ///

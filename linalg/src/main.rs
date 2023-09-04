@@ -1,18 +1,23 @@
 #![feature(portable_simd)]
 #![feature(step_trait)]
-#![feature(array_windows)]
+// #![feature(array_windows)]
 // #![no_std]
+
+extern crate vector;
 mod common;
 mod inv;
 mod matmul;
+use vector::vector::Vector;
 
-use crate::common::vector::Vector;
+use crate::inv::inv_normal;
 use matmul::*;
+use rand::Rng;
 
-fn main() {
+fn matmul() {
     let sz = 1024;
-    let a: Vector<f64> = (0..sz * sz).map(|c| c as f64 / 2.0).collect();
-    let b: Vector<f64> = (0..sz * sz).map(|c| c as f64 / 2.0).collect();
+    let mut rng = rand::thread_rng();
+    let a: Vector<f64> = (0..sz * sz).map(|_| rng.gen::<f64>()).collect();
+    let b: Vector<f64> = (0..sz * sz).map(|_| rng.gen::<f64>()).collect();
 
     let mut t = std::time::Instant::now();
     let orig = matmul_normal::matmul_normal(&a, &b, (sz, sz), (sz, sz));
@@ -52,6 +57,30 @@ fn main() {
     println!(
         "Cache friendly blocked transposed and multi-accumulated simd Iter 4x4 {}ms, {}",
         t.elapsed().as_millis(),
-        orig == c
+        orig.iter().zip(c.iter()).all(|(o, a)| {
+            (o - a).abs() < 1e-6 + 1e-6 * a.abs()
+        })
     );
+}
+
+fn inv() {
+    let sz = 5;
+    let mut rng = rand::thread_rng();
+    let a: Vector<f64> = (1..(sz * sz) + 1)
+        .map(|_| ((rng.gen::<f64>() * 50.0) + 1.0).round())
+        .collect();
+    // a.chunks_exact(sz).for_each(|c| println!("{:?}", c));
+
+    let t = std::time::Instant::now();
+    let x = inv_normal::inv_normal(&a, sz);
+    println!("Inverse {}ms", t.elapsed().as_millis(),);
+    // x.chunks_exact(sz).for_each(|c| println!("{:?}", c));
+    println!();
+    let mul = matmul::matmul_normal::matmul_normal(&a, &x, (sz, sz), (sz, sz));
+
+    mul.chunks_exact(sz).for_each(|c| println!("{:?}", c));
+}
+
+fn main() {
+    inv();
 }
