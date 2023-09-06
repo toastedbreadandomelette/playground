@@ -1,10 +1,12 @@
 use crate::common::TreeInsOrder;
-use std::{
+use core::{
     cell::RefCell,
     fmt::Debug,
     ops::{Deref, DerefMut},
-    rc::Rc,
 };
+extern crate alloc;
+use alloc::boxed::Box;
+use alloc::rc::Rc;
 
 type Link<T> = Rc<RefCell<Node<T>>>;
 type MaybeLink<T> = Option<Link<T>>;
@@ -32,7 +34,7 @@ impl<T> Node<T> {
 
     /// Returns `true` when node is a leaf
     ///
-    /// Leaf node implies `left` and `right` branch is `None`
+    /// Leaf node implies `left` and `right` branch is [`None`]
     #[inline(always)]
     pub fn is_leaf(&self) -> bool {
         self.left.is_none() && self.right.is_none()
@@ -40,17 +42,16 @@ impl<T> Node<T> {
 
     /// Returns whether function has child nodes
     ///
-    /// Leaf node implies `left` and `right` branch is `Some(Link<T>)`
+    /// Leaf node implies `left` and `right` branch is [`Some(Link<T>)`]
     #[inline(always)]
     pub fn has_both_children(&self) -> bool {
         self.left.is_some() && self.right.is_some()
     }
 
     /// Return sizeof current node in bytes, plus
-    ///
     /// all size from sub-branches
     pub fn size_of(&self) -> usize {
-        std::mem::size_of::<Self>()
+        core::mem::size_of::<Self>()
             + match &self.left {
                 Some(left) => left.borrow().size_of(),
                 None => 0,
@@ -67,6 +68,8 @@ where
     T: Deref<Target = T>,
 {
     type Target = Self;
+
+    #[inline(always)]
     fn deref(&self) -> &Self::Target {
         self
     }
@@ -76,6 +79,7 @@ impl<T> DerefMut for Node<T>
 where
     T: DerefMut<Target = T>,
 {
+    #[inline(always)]
     fn deref_mut(&mut self) -> &mut Self::Target {
         self
     }
@@ -86,7 +90,7 @@ where
 ///
 /// ### Condition for type `T`
 ///
-/// should Implement `PartialEq`, `PartialOrd`, `Clone`, `Debug`
+/// should Implement [`PartialEq`], [`PartialOrd`], [`Clone`], [`Debug`]
 #[derive(Debug, Clone)]
 pub struct BSTree<T>
 where
@@ -94,7 +98,7 @@ where
 {
     /// Root of the node as `MaybeLink<T>`, `None` implies there are no nodes
     root: MaybeLink<T>,
-    /// Comparison function: This decides the traversal, insertion and 
+    /// Comparison function: This decides the traversal, insertion and
     /// find algorithm
     cmp: fn(&T, &T) -> TreeInsOrder,
     /// Size of the tree
@@ -127,7 +131,7 @@ where
         }
     }
 
-    /// Internal: Capsule data as `Rc` and `RefCell`
+    /// Internal: Capsule data as [`Rc`] and [`RefCell`]
     /// for dynamic mutability
     #[inline(always)]
     fn capsule(data: T) -> MaybeLink<T> {
@@ -223,7 +227,7 @@ where
 
     /// Internal: Get left most children is a hierarchy given a parent node
     ///
-    /// Returns the pair: shared `Rc` for `Node<T>` and it's parent
+    /// Returns the pair: shared [`Rc`] for `Node<T>` and it's parent
     fn get_last_node_with_parent(node: &Link<T>, parent: MaybeLink<T>) -> (Link<T>, MaybeLink<T>) {
         let (mut rc, mut par_rc) = (Rc::clone(node), parent);
 
@@ -239,7 +243,7 @@ where
 
     /// Internal: Get left most children is a hierarchy given a parent node
     ///
-    /// Returns the shared `Rc` for `Node<T>`
+    /// Returns the shared [`Rc`] for `Node<T>`
     fn get_first_node_with_parent(node: &Link<T>, parent: MaybeLink<T>) -> (Link<T>, MaybeLink<T>) {
         let (mut rc, mut par_rc) = (Rc::clone(node), parent);
 
@@ -256,9 +260,9 @@ where
     /// Internal: finds a node that gives three values if the node is found.
     ///
     /// - The node with same value `data`
-    /// - Parent of the searched node, if exists (else returns `None`)
+    /// - Parent of the searched node, if exists (else returns [`None`])
     /// - Relation type between parent node and searched node: `Left`, `Right`
-    /// otherwise returns `Eq` if there is no parent
+    /// otherwise returns [`Eq`] if there is no parent
     fn find_node(&mut self, data: &T) -> Option<(Link<T>, MaybeLink<T>, TreeInsOrder)> {
         let (mut parent, mut child_type) = (None, TreeInsOrder::Eq);
         let mut answer: Option<(_, _, _)> = None;
@@ -446,6 +450,14 @@ where
     }
 }
 
+impl<T> FromIterator<T> for BSTree<T> where T: Clone + PartialEq + PartialOrd + Debug {
+    fn from_iter<I: IntoIterator<Item = T>>(iter: I) -> Self {
+        let mut tree: BSTree<T> = BSTree::new(None);
+        iter.into_iter().for_each(|c| { _ = tree.insert(c); });
+        tree
+    }
+}
+
 #[cfg(test)]
 mod test {
     use super::*;
@@ -545,8 +557,7 @@ mod test {
 
     #[test]
     pub fn test_delete_skewed() {
-        let mut p = BSTree::new(None);
-        let _ = p.batch_insert(&(0..10).collect::<Vec<u32>>().as_slice());
+        let mut p = (0..10).collect::<BSTree<u32>>();
 
         assert!(p.find_node(&8) != None);
         assert!(p.inorder() == (0..10).collect::<Vec<u32>>());

@@ -1,7 +1,11 @@
+#![no_std]
 use crate::common::TreeInsOrder;
-use std::cell::RefCell;
-use std::fmt::Debug;
-use std::rc::Rc;
+use core::cell::RefCell;
+use core::fmt::Debug;
+
+extern crate alloc;
+use alloc::boxed::Box;
+use alloc::rc::Rc;
 
 /// Logical color
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
