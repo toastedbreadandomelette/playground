@@ -1,6 +1,4 @@
-#![feature(portable_simd)]
-#![feature(step_trait)]
-// #![feature(array_windows)]
+#![feature(step_trait, array_windows, portable_simd)]
 // #![no_std]
 
 extern crate vector;
@@ -57,7 +55,7 @@ fn matmul() {
     println!(
         "Cache friendly blocked transposed and multi-accumulated simd Iter 4x4 {}ms, {}",
         t.elapsed().as_millis(),
-        orig.iter().zip(c.iter()).all(|(o, a)| {
+        orig.iter().zip(&c).all(|(o, a)| {
             (o - a).abs() < 1e-6 + 1e-6 * a.abs()
         })
     );
@@ -82,5 +80,5 @@ fn inv() {
 }
 
 fn main() {
-    inv();
+    matmul();
 }

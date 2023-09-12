@@ -379,8 +379,9 @@ impl<T> Vector<T> {
         }
     }
 
-    /// Returns the mutable slice group that shrinks
-    #[inline(always)]
+    /// Returns the mutable chunk of slice, with the
+    /// previous elements of array and next element slices.
+    #[inline]
     pub fn chunks_with_pre_and_post_mut(
         &self,
         size: usize,
@@ -449,7 +450,7 @@ impl<T> PartialEq for Vector<T>
 where
     T: PartialEq,
 {
-    #[inline(always)]
+    #[inline]
     fn eq(&self, other: &Self) -> bool {
         self.len == other.len && self.iter().zip(other).all(|(a, b)| a == b)
     }
@@ -459,7 +460,7 @@ impl<T> PartialEq<[T]> for Vector<T>
 where
     T: PartialEq,
 {
-    #[inline(always)]
+    #[inline]
     fn eq(&self, other: &[T]) -> bool {
         self.len == other.len() && self.iter().zip(other).all(|(a, b)| a == b)
     }
@@ -469,7 +470,7 @@ impl<T> PartialEq<&[T]> for Vector<T>
 where
     T: PartialEq,
 {
-    #[inline(always)]
+    #[inline]
     fn eq(&self, other: &&[T]) -> bool {
         self.len == other.len() && self.iter().zip(*other).all(|(a, b)| a == b)
     }

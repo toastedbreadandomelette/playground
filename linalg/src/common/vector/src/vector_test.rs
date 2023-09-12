@@ -81,7 +81,7 @@ mod test {
 
     #[test]
     pub fn test_alloc_2() {
-        let p: Vector<usize> = Vector::from_range(12..24);
+        let p: Vector<usize> = (12..24).collect();
 
         assert!(p.iter().zip(12..24).all(|(a, b)| *a == b));
     }
@@ -99,7 +99,7 @@ mod test {
     #[test]
     #[should_panic]
     fn test_out_of_bound() {
-        let p: Vector<usize> = Vector::from_range(12..24);
+        let p: Vector<usize> = (12..24).collect();
         _ = p[14];
     }
 }
