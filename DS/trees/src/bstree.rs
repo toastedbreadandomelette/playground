@@ -141,14 +141,20 @@ where
     /// Insert value based on criteria in cmp function
     ///
     /// Returns the level at which the value is inserted
-    pub fn insert(&mut self, data: T) -> Result<i32, Box<dyn std::error::Error>> {
+    pub fn insert(
+        &mut self,
+        data: T,
+    ) -> Result<i32, Box<dyn std::error::Error>> {
         self.insert_replace(data)
     }
 
     /// Insert value based on criteria in cmp function
     ///
     /// Returns the level at which the value is inserted or replaced
-    pub fn insert_replace(&mut self, data: T) -> Result<i32, Box<dyn std::error::Error>> {
+    pub fn insert_replace(
+        &mut self,
+        data: T,
+    ) -> Result<i32, Box<dyn std::error::Error>> {
         let mut height = 0;
 
         if let Some(ref mut value) = self.root {
@@ -199,7 +205,10 @@ where
     pub fn is_at_root(&mut self, data: T) -> bool {
         let some_func = self.cmp;
         match &self.root {
-            Some(node) => some_func(node.borrow().data.as_ref(), &data) == TreeInsOrder::Eq,
+            Some(node) => {
+                some_func(node.borrow().data.as_ref(), &data)
+                    == TreeInsOrder::Eq
+            }
             None => false,
         }
     }
@@ -207,7 +216,11 @@ where
     /// Returns whether function has child nodes with values as `left_data` in left node
     /// and `right_data` in right node
     #[inline(always)]
-    pub fn has_both_children_with_compare(node: Link<T>, left_data: T, right_data: T) -> bool {
+    pub fn has_both_children_with_compare(
+        node: Link<T>,
+        left_data: T,
+        right_data: T,
+    ) -> bool {
         node.borrow()
             .left
             .as_ref()
@@ -228,7 +241,10 @@ where
     /// Internal: Get left most children is a hierarchy given a parent node
     ///
     /// Returns the pair: shared [`Rc`] for `Node<T>` and it's parent
-    fn get_last_node_with_parent(node: &Link<T>, parent: MaybeLink<T>) -> (Link<T>, MaybeLink<T>) {
+    fn get_last_node_with_parent(
+        node: &Link<T>,
+        parent: MaybeLink<T>,
+    ) -> (Link<T>, MaybeLink<T>) {
         let (mut rc, mut par_rc) = (Rc::clone(node), parent);
 
         'iter: loop {
@@ -244,7 +260,10 @@ where
     /// Internal: Get left most children is a hierarchy given a parent node
     ///
     /// Returns the shared [`Rc`] for `Node<T>`
-    fn get_first_node_with_parent(node: &Link<T>, parent: MaybeLink<T>) -> (Link<T>, MaybeLink<T>) {
+    fn get_first_node_with_parent(
+        node: &Link<T>,
+        parent: MaybeLink<T>,
+    ) -> (Link<T>, MaybeLink<T>) {
         let (mut rc, mut par_rc) = (Rc::clone(node), parent);
 
         'iter: loop {
@@ -263,7 +282,10 @@ where
     /// - Parent of the searched node, if exists (else returns [`None`])
     /// - Relation type between parent node and searched node: `Left`, `Right`
     /// otherwise returns [`Eq`] if there is no parent
-    fn find_node(&mut self, data: &T) -> Option<(Link<T>, MaybeLink<T>, TreeInsOrder)> {
+    fn find_node(
+        &mut self,
+        data: &T,
+    ) -> Option<(Link<T>, MaybeLink<T>, TreeInsOrder)> {
         let (mut parent, mut child_type) = (None, TreeInsOrder::Eq);
         let mut answer: Option<(_, _, _)> = None;
 
@@ -320,20 +342,31 @@ where
     /// (Either `TreeInsOrder::Left` or `TreeInsOrder::Right`)
     ///
     /// On success, will delete the `to_delete` node.
-    fn delete_inner_node(&mut self, to_delete: &Link<T>, par: Link<T>, child_type: TreeInsOrder) {
+    fn delete_inner_node(
+        &mut self,
+        to_delete: &Link<T>,
+        par: Link<T>,
+        child_type: TreeInsOrder,
+    ) {
         let to_delete_node = to_delete.borrow();
 
         match (&to_delete_node.left, &to_delete_node.right) {
             // Deleted child does not have children, remove child of par
             (None, None) => Self::attach(None, par, child_type),
             // Deleted child have left node, attach left node as par's child
-            (Some(left), None) => Self::attach(Some(Rc::clone(left)), par, child_type),
+            (Some(left), None) => {
+                Self::attach(Some(Rc::clone(left)), par, child_type)
+            }
             // Deleted child have right node, attach left node as par's child
-            (None, Some(right)) => Self::attach(Some(Rc::clone(right)), par, child_type),
+            (None, Some(right)) => {
+                Self::attach(Some(Rc::clone(right)), par, child_type)
+            }
             // Get last node of left subtree and attach to right
             (Some(left), Some(right)) => {
-                let (right_most_node, parent) =
-                    Self::get_last_node_with_parent(left, Some(Rc::clone(&par)));
+                let (right_most_node, parent) = Self::get_last_node_with_parent(
+                    left,
+                    Some(Rc::clone(&par)),
+                );
 
                 if let Some(new_par) = parent {
                     // If the parent of the right_most_node is the one we're
@@ -346,7 +379,8 @@ where
                             child_type,
                         );
                     } else {
-                        new_par.borrow_mut().right = right_most_node.borrow_mut().left.clone();
+                        new_par.borrow_mut().right =
+                            right_most_node.borrow_mut().left.clone();
                         Self::attach(
                             Some(Rc::clone(&right_most_node)),
                             Rc::clone(&par),
@@ -377,18 +411,24 @@ where
                     Self::get_last_node_with_parent(left, None);
                 if Rc::ptr_eq(&last_node_from_left, left) {
                     self.root = Some(Rc::clone(&last_node_from_left));
-                    last_node_from_left.borrow_mut().right = Some(Rc::clone(right));
+                    last_node_from_left.borrow_mut().right =
+                        Some(Rc::clone(right));
                 } else {
-                    if let Some(last_node_left) = &last_node_from_left.borrow_mut().left {
+                    if let Some(last_node_left) =
+                        &last_node_from_left.borrow_mut().left
+                    {
                         if let Some(pol) = parent_of_left {
-                            pol.borrow_mut().right = Some(Rc::clone(last_node_left));
+                            pol.borrow_mut().right =
+                                Some(Rc::clone(last_node_left));
                         }
                     } else if let Some(pol) = parent_of_left {
                         pol.borrow_mut().right = None;
                     }
 
-                    last_node_from_left.borrow_mut().left = Some(Rc::clone(left));
-                    last_node_from_left.borrow_mut().right = Some(Rc::clone(right));
+                    last_node_from_left.borrow_mut().left =
+                        Some(Rc::clone(left));
+                    last_node_from_left.borrow_mut().right =
+                        Some(Rc::clone(right));
                     self.root = Some(Rc::clone(&last_node_from_left));
                 }
             }
@@ -424,7 +464,10 @@ where
     /// Insert multiple elements at once.
     ///
     /// Returns the max height of the tree in return
-    pub fn batch_insert(&mut self, data: &[T]) -> Result<i32, Box<dyn std::error::Error>> {
+    pub fn batch_insert(
+        &mut self,
+        data: &[T],
+    ) -> Result<i32, Box<dyn std::error::Error>> {
         Ok(data.iter().fold(0, |prev_height, t| {
             if let Ok(v) = self.insert((*t).clone()) {
                 return if prev_height >= v { prev_height } else { v };
@@ -450,10 +493,15 @@ where
     }
 }
 
-impl<T> FromIterator<T> for BSTree<T> where T: Clone + PartialEq + PartialOrd + Debug {
+impl<T> FromIterator<T> for BSTree<T>
+where
+    T: Clone + PartialEq + PartialOrd + Debug,
+{
     fn from_iter<I: IntoIterator<Item = T>>(iter: I) -> Self {
         let mut tree: BSTree<T> = BSTree::new(None);
-        iter.into_iter().for_each(|c| { _ = tree.insert(c); });
+        iter.into_iter().for_each(|c| {
+            _ = tree.insert(c);
+        });
         tree
     }
 }
@@ -544,7 +592,8 @@ mod test {
         // Check deleting node that has two children
 
         let some_node = p.find_node(&(556, "custom"));
-        assert!(some_node.is_some_and(|(node, _, _)| { node.borrow().has_both_children() }));
+        assert!(some_node
+            .is_some_and(|(node, _, _)| { node.borrow().has_both_children() }));
 
         let len = p.len;
         _ = p.delete(&(556, "custom"));
@@ -597,7 +646,8 @@ mod test {
         let f = p.find_node(&10);
 
         assert!(f.is_some_and(|(node, par, _)| {
-            *node.borrow().data == 10 && par.is_some_and(|p| *p.borrow().data == 8)
+            *node.borrow().data == 10
+                && par.is_some_and(|p| *p.borrow().data == 8)
         }));
 
         assert_eq!(p.inorder(), [1, 2, 3, 4, 6, 7, 8, 10]);
@@ -629,9 +679,12 @@ mod test {
         assert!(p.is_at_root(10));
         assert!(p.is_at_root(10));
 
-        assert!(p
-            .get_root_node()
-            .is_some_and(|root| *root.borrow().data == 10
-                && BSTree::has_both_children_with_compare(Rc::clone(&root), 8, 12)));
+        assert!(p.get_root_node().is_some_and(|root| *root.borrow().data
+            == 10
+            && BSTree::has_both_children_with_compare(
+                Rc::clone(&root),
+                8,
+                12
+            )));
     }
 }
