@@ -1,5 +1,5 @@
 use crate::utils::complex::{Complex, Number, PI};
-use std::ops::{AddAssign, Mul};
+use core::ops::{AddAssign, Mul};
 
 /// Perform Discrete Fourier Transform on n values of Vector, and returns the complex
 ///
@@ -32,7 +32,7 @@ where
 
 /// Perform Inverse Discrete Fourier Transform on n values of Vector, and returns the floating values
 pub fn idft<
-    T: From<T> + AddAssign + Mul + Copy + Number + std::convert::From<f64>,
+    T: From<T> + AddAssign + Mul + Copy + Number + core::convert::From<f64>,
 >(
     arr: &Vec<Complex>,
 ) -> Vec<T>
@@ -86,7 +86,7 @@ pub fn idft_complex(arr: &Vec<Complex>) -> Vec<Complex> {
 ///
 /// Uses Divide-and-Conquer method.
 pub fn fft<
-    T: From<T> + AddAssign + Mul + Copy + Number + std::default::Default,
+    T: From<T> + AddAssign + Mul + Copy + Number + core::default::Default,
 >(
     arr: &Vec<T>,
 ) -> Vec<Complex>

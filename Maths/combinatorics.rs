@@ -1,3 +1,4 @@
+#[inline]
 fn factorial(n: usize) -> u128 {
     if n <= 1 {
         1
@@ -41,6 +42,7 @@ fn ncr_memoize(n: usize, r: usize, mem: &mut Vec<Vec<u128>>) -> u128 {
     }
 }
 
+#[inline(always)]
 fn ir(val: usize, n: usize) -> bool {
     val >= 0 && val <= n
 }

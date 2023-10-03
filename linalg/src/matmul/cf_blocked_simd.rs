@@ -1,11 +1,11 @@
 use crate::common::transpose_vec;
-use vector::vector::Vector;
 use crate::matmul::cf_process_blocks::{
     iter_blocks_on_1xN, iter_blocks_on_2xN, iter_blocks_on_3xN,
     iter_blocks_on_NxN,
 };
 use core::simd::f64x4;
 use core::simd::SimdFloat;
+use vector::vector::Vector;
 
 const BLOCKSIZE: usize = 32;
 

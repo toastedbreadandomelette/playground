@@ -1,7 +1,7 @@
-use std::ops::{
+use core::ops::{
     Add, AddAssign, Div, DivAssign, Mul, MulAssign, Neg, Sub, SubAssign,
 };
-pub const PI: f64 = std::f64::consts::PI;
+pub const PI: f64 = core::f64::consts::PI;
 
 // Complex number for computing.
 #[derive(Copy, Clone)]
@@ -37,8 +37,8 @@ impl Neg for Complex {
     }
 }
 
-impl std::fmt::Debug for Complex {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+impl core::fmt::Debug for Complex {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         if self.real == 0.0 && self.img == 0.0 {
             f.write_str("0")
         } else if self.real == 0.0 {
@@ -98,7 +98,7 @@ impl SubAssign<&Complex> for Complex {
 
 impl<T> SubAssign<T> for Complex
 where
-    T: Number + std::convert::Into<f64> + Clone + Copy,
+    T: Number + core::convert::Into<f64> + Clone + Copy,
 {
     fn sub_assign(&mut self, b: T) {
         self.real -= b.into();
@@ -107,7 +107,7 @@ where
 
 impl<T> Sub<T> for Complex
 where
-    T: Number + std::convert::Into<f64> + Clone + Copy,
+    T: Number + core::convert::Into<f64> + Clone + Copy,
 {
     type Output = Self;
     fn sub(self, b: T) -> Self {
@@ -120,7 +120,7 @@ where
 
 impl<T> Add<T> for Complex
 where
-    T: Number + std::convert::Into<f64> + Clone + Copy,
+    T: Number + core::convert::Into<f64> + Clone + Copy,
 {
     type Output = Complex;
     fn add(self, b: T) -> Complex {
@@ -143,7 +143,7 @@ impl Add<Complex> for Complex {
 
 impl<T> AddAssign<T> for Complex
 where
-    T: Number + std::convert::Into<f64> + Clone + Copy,
+    T: Number + core::convert::Into<f64> + Clone + Copy,
 {
     fn add_assign(&mut self, b: T) {
         self.real += b.into();
@@ -162,7 +162,7 @@ impl Mul<Complex> for Complex {
 
 impl<T> Mul<T> for Complex
 where
-    T: Number + std::convert::Into<f64> + Clone + Copy,
+    T: Number + core::convert::Into<f64> + Clone + Copy,
 {
     type Output = Complex;
     fn mul(self, b: T) -> Complex {
@@ -193,7 +193,7 @@ impl MulAssign<Complex> for Complex {
 
 impl<T> MulAssign<T> for Complex
 where
-    T: Number + std::convert::Into<f64> + Clone + Copy,
+    T: Number + core::convert::Into<f64> + Clone + Copy,
 {
     fn mul_assign(&mut self, b: T) {
         self.real *= b.into();
@@ -225,7 +225,7 @@ impl Div<Complex> for Complex {
 
 impl<T> Div<T> for Complex
 where
-    T: Number + std::convert::Into<f64> + Clone + Copy,
+    T: Number + core::convert::Into<f64> + Clone + Copy,
 {
     type Output = Complex;
     fn div(self, b: T) -> Complex {
@@ -258,7 +258,7 @@ impl DivAssign<&Complex> for Complex {
 
 impl<T> DivAssign<T> for Complex
 where
-    T: Number + std::convert::Into<f64> + Clone + Copy,
+    T: Number + core::convert::Into<f64> + Clone + Copy,
 {
     fn div_assign(&mut self, b: T) {
         self.real /= b.into();
@@ -266,8 +266,8 @@ where
     }
 }
 
-impl std::fmt::Display for Complex {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+impl core::fmt::Display for Complex {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         if self.real == 0.0 && self.img == 0.0 {
             f.write_str("0")
         } else if self.real == 0.0 {
@@ -284,7 +284,7 @@ impl std::fmt::Display for Complex {
 
 macro_rules! impl_op_for_type {
     ($type: ident) => {
-        impl std::convert::From<$type> for Complex {
+        impl core::convert::From<$type> for Complex {
             fn from(item: $type) -> Complex {
                 Complex {
                     real: (item as f64),
@@ -293,7 +293,7 @@ macro_rules! impl_op_for_type {
             }
         }
 
-        impl std::convert::From<Complex> for $type {
+        impl core::convert::From<Complex> for $type {
             fn from(item: Complex) -> Self {
                 item.real as $type
             }

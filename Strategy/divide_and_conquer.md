@@ -4,8 +4,8 @@ Divide and conquer problem deals with solving smaller parts of problem and combi
 ## [[searching#Binary Search|Binary Search Method]]
 A sorted array/space is searched by splitting that space into two halves.
 
-## Strassen's Method for Matrix Multiplication
-In terms of computer algorithm, the matrix multiplication is much faster than naive multiplication for large matrices.
+## Strassen's Method for [[matrix#Matrix multiplication.|Matrix Multiplication]]
+In terms of computer algorithm, the strassen's method of matrix multiplication can be much faster than naive multiplication for large matrices.
 
 Considering matrices $A$ and $B$:
 

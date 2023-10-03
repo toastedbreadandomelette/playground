@@ -1,5 +1,5 @@
-use vector::vector::Vector;
 use core::simd::{f64x4, Simd};
+use vector::vector::Vector;
 
 /// Internal: Dot product of two vectors.
 ///

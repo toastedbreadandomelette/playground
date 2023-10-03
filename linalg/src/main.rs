@@ -5,6 +5,7 @@ extern crate vector;
 mod common;
 mod inv;
 mod matmul;
+
 use vector::vector::Vector;
 
 use crate::inv::inv_normal;
@@ -21,20 +22,14 @@ fn matmul() {
     let orig = matmul_normal::matmul_normal(&a, &b, (sz, sz), (sz, sz));
     println!("Naive: {}ms", t.elapsed().as_millis());
 
-    // let mut t = std::time::Instant::now();
-    // let vec_orig = matmul_normal::matmul_normal_vec(&a, &b, (sz, sz), (sz, sz));
-    // println!(
-    //     "Naive vec: {}ms {}",
-    //     t.elapsed().as_millis(),
-    //     orig.iter().zip(vec_orig).all(|(a, b)| *a == b)
-    // );
-
     t = std::time::Instant::now();
     let mut c = matmul_ikj::matmul_ikj(&a, &b, (sz, sz), (sz, sz));
     println!(
         "Reordered matrix multiplication: {}ms {}",
         t.elapsed().as_millis(),
-        orig == c
+        orig.iter()
+            .zip(&c)
+            .all(|(o, a)| { (o - a).abs() < 1e-6 + 1e-6 * a.abs() })
     );
 
     t = std::time::Instant::now();
@@ -44,17 +39,21 @@ fn matmul() {
     t = std::time::Instant::now();
     c = matmul_transposed_multi_accumulated::matmul_transposed_multi_accumulated(&a, &b, (sz, sz), (sz, sz));
     println!(
-        "transposed and multi accumulated: {}ms {}",
+        "transposed and multi accumulated: {}ms {} GFLOPS/s {}",
         t.elapsed().as_millis(),
-        orig == c
+        ((2 * sz * sz * sz) as f64) / (1e6 * t.elapsed().as_millis() as f64),
+        orig.iter()
+            .zip(&c)
+            .all(|(o, a)| { (o - a).abs() < 1e-6 + 1e-6 * a.abs() })
     );
 
     t = std::time::Instant::now();
     c = cf_blocked_simd::cf_blocked_simd(&a, &b, (sz, sz), (sz, sz));
 
     println!(
-        "Cache friendly blocked transposed and multi-accumulated simd Iter 4x4 {}ms, {}",
+        "Cache friendly blocked transposed and multi-accumulated simd Iter 4x4 {}ms, {} GFLOPS/s {}",
         t.elapsed().as_millis(),
+        ((2 * sz * sz * sz) as f64) / (1e6 * t.elapsed().as_millis() as f64),
         orig.iter().zip(&c).all(|(o, a)| {
             (o - a).abs() < 1e-6 + 1e-6 * a.abs()
         })

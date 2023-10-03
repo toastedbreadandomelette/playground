@@ -174,11 +174,11 @@ impl<T> Vector<T> {
     ///
     /// ## Note
     /// This does not take into consideration the current
-    /// capacity and directly increases by [`extra_capacity`]. 
+    /// capacity and directly increases by [`extra_capacity`].
     /// To extend capacity appropriately, refer function [`mutate_capacity_by`]
     ///
     /// The alignment is strictly kept to `32`.
-    /// 
+    ///
     /// ## Safety
     /// Reallocates the pointer with new size and copies all the content from
     /// old location
@@ -395,11 +395,12 @@ impl<T> Vector<T> {
     }
 
     /// Create a new array filled with zero
-    /// 
+    ///
     /// ```
     /// use vector::vector::Vector;
-    /// 
+    ///
     /// let vector: Vector<u16> = Vector::zeroed(12);
+    /// assert!(vector.len() == 12);
     /// assert!(vector.iter().all(|item| *item == 0));
     /// ```
     #[inline]
@@ -419,7 +420,7 @@ impl<T> Vector<T> {
     }
 
     /// Create a new array filled with value by range
-    /// 
+    ///
     /// Returns the array with the values generated from the range
     pub fn from_range(range: Range<T>) -> Self
     where
@@ -477,7 +478,6 @@ where
 }
 
 impl<T> FromIterator<T> for Vector<T> {
-
     /// Unfortunately this is extended similar to [`std::vec::Vec`]
     fn from_iter<I: IntoIterator<Item = T>>(iter: I) -> Self {
         // Newly created array, with size zero

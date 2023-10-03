@@ -18,7 +18,7 @@ where $a_0,\ a_1,\ a_2,\ ...\ a_k, c_0,\ c_1,\ c_2,\ ...\ c_k \in \mathbb{R}$ (a
 
 As the length of the recurrence relation is $k$, the complexity of evaluating $f(n)$ would take an huge amount of time (of the order $O(k^n)$), since each of these calls would generate a k-ary tree.
 
-E.g., For tribonacci series $trib(n) = trib(n-1) + trib(n-2) + trib(n-3)$, the tree for $n = 5$ would be 
+E.g., For tribonacci series $trib(n) = trib(n-1) + trib(n-2) + trib(n-3)$, the tree for $n = 6$ would be 
 
 ```mermaid
 graph TD

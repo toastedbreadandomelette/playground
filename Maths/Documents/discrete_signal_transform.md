@@ -139,12 +139,14 @@ A_{\text{even}}(x)=a_0+a_2\cdot x+a_4\cdot x^2+\ldots+a_{n-2}\cdot x^{n-2}\\ \\
 \end{matrix}
 $$
 
-Then we perform DFT (or FFT if it can be divided evenly again) on these separately. This is done till size of the array is 2.
+Then we perform DFT (or FFT if it can be divided evenly again) on $A_{\text{odd}}$ and $A_{\text{even}}$ separately. This is done till size of the array turns to $2$. Note that we're performing straight-forward FFT when size of array is power of $2$.
+
+If array size is not same as integral of power $2$, array is extended by appending zeroes till the size $n\equiv 2^p,\ p\in\mathbb{N},\ p\geq \log_2{|A|}$.
 
 **2**. **Combine**
-- [ ] Todo: Proper explaination
+- [ ] To do: Proper explanation
 
-To combine these values; consider an evaluated DFT of $p$ size (say). Combining these values in $A'$ array:
+To combine these values; consider an evaluated DFT of $n$ size (say). Combining these values in $A'$ array:
 
 Combining two vectors: $A_{\text{odd}}$ and $A_{\text{even}}$.
 

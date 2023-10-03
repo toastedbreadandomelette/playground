@@ -1,5 +1,5 @@
 # Trees
-```ad-important
+```ad-note
 General operations is implemented in `tree.py` file.
 ```
 

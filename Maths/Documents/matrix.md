@@ -45,10 +45,10 @@ $$
 These are also square matrices where
 
 $$
-A_{ij}=\left\{\begin{array}{cl}
+A_{ij}=\begin{cases}
 1,&i=j\\
 0,&i\neq j
-\end{array}\right.
+\end{cases}
 $$
 
 i.e., a $4\times 4$ identity matrix would look like:

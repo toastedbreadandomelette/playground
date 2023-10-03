@@ -4,7 +4,7 @@ Searching can be done on:
 - [[arrays_1d|Arrays]]
 - [[linked_list|Linked List]]
 - Trees
-- [[graphs_1]]
+- [[graphs_1|Graphs]]
 - [[string|Strings]]
 - [[prefix_tree#Trie Prefix tree|Prefix Trees]]
 - Suffix trees, etc.
@@ -65,7 +65,19 @@ M,&M=\dfrac{L+R}{2}, f(S,M,T)=0\\
 \right.
 $$
 
-Finding $\lfloor\sqrt{n}\rfloor$ of a number $n$.
+where $f(S,M,T)$ is a comparison function that tells which part of the space should be ignored. With that, we need to decide what the limits $L$ and $R$ are going to be.
+
+### Finding $\lfloor\sqrt{n}\rfloor$ of a number $n$.
+
+Here we compare the values from range $[0,n]$. $\implies S\in [0,n],\ L=0, R=n$. And the function $f(S,M,T)$ is defined as:
+
+$$
+f(S,M,T)=\begin{cases}
+0,&m\times m = T\\
+1,&m\times m> T\\
+-1,&m\times m< T
+\end{cases}
+$$
 
 ```python
 def sqrt_bin_search(n: int) -> int:

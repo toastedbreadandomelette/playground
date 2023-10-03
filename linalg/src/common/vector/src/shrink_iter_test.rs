@@ -1,4 +1,3 @@
-
 #[cfg(test)]
 pub mod tests {
     use super::super::{shrink_iterator::ShrinkHeadSlice, vector::Vector};

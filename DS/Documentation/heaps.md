@@ -158,7 +158,7 @@ Anything that has to do with **retrieving lowest/highest matching criteria in co
 - Sorting an array (heap sort in $O(n\cdot \log_2{n})$).
 	- [ ] To do 
 - Implement a priority queue (retrieve highest priority value in $O(\log_2{n})$):
-	- [x] Implementation is done above
+	- [x] Implementation
 - Return $k^{th}$ largest/smallest element from an array. Takes $O(k\cdot \log_2{n})$.
 - Modified Dijkstra / Prim's algorithm for finding lowest distance vertex: $O((|V|+|E|)\cdot \log_2{|V|})$.
 - Merge $k$-sorted list into one list: $O\left(\left(\sum\limits_{i=1}^{k}|L_i|\right)\cdot \log_2{k}\right)$. This is an online algorithm if incoming input stream are in ascending order (Here $|L_i|$ is the size of $i^{th}$ list).

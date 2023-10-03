@@ -183,9 +183,9 @@ These values would work for most of the string sets almost all the time.
 Generating strings: Dumb but keep in head: There is a minimum string length $n$ above which generating all string would definitely collide hashes with one another.
 
 E.g., For string of length $7$, number of ways to make a string of length $7$ from first $128$ characters: $128^7 = 562949953421312 > 344555666677777$ unique hashes.
-i.e., By pigeonhole's principle, there are **at least** $562949953421312\text{ (eggs)} - 344555666677777\text{ (nests/holes)}=218394286743535\text{ (extra eggs)}$ strings that will collide with existing strings (eggs), although there might be more string that could collide. But for unique strings $\leq 10^7$, the probability of strings having same hash values is pretty low.
+i.e., By pigeonhole's principle, there are **at least** $562949953421312\text{ (hash values generated)} - 344555666677777\text{ (possible hash values)}=218394286743535\text{ (extra hashes)}$ strings that will collide with existing strings (eggs), although there might be more string that could collide. But for unique strings $\leq 10^7$, the probability of strings having same hash values is pretty low.
 
-Also, having $344555666677777$ strings of length $7$ amounts to $2193.6 \text{ TB}$ of memory space. Absurdly Huge Bruh.
+Also, having $344555666677777$ strings of length $7$ amounts to $2193.6 \text{ TB}$ of memory space. Absurdly huge bruh!
 
 ## Knuth - Morris - Pratt (KMP) Method.
 It's one of the well known method to find a pattern in a string, using prefix function. We'll suppose $S$ to be the string to search and $T$ as substring pattern

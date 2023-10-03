@@ -70,7 +70,8 @@ pub fn matmul(
 ```
 
 ## Optimization #1
-Noting that matrix $B$ jumps $n$ steps results in too many cache misses. We can rearrange them such that fetching array values is sequential.
+Note that by traversing matrix $B$, we jump $n$ steps in for loop (`for k in 0..n`), resulting in too many cache misses. We can rearrange for loop so that reading array values both $A$ and $B$ is sequential.
+
 ```rust
 /// Multiply two matrices `a` and `b` of size
 /// `ashape (m x n)` and `bshape(n x p)`
@@ -164,7 +165,11 @@ pub fn matmul_transposed(
 ```
 
 ## Optimization #3
-On a transposed matrix, we're directly storing the values in result $C_{ij}$. Instead we'll just use multiple accumulators.
+On a transposed matrix, we're storing the values in result $C_{ij}$. Instead we'll compute multiple values (currently $4$ at a time).
+
+Dot product of $1$ vector $A_{i}$ with $4$ vectors $B_{j}$ gives high throughput due to [Instruction Pipelining](https://en.wikipedia.org/wiki/Instruction_pipelining).
+
+To what extent do we perform simultaneous updates: experimentation (I currently don't know how to evaluate ILP (Instruction-Level Parallelism) degree, below code performs on $4$ vectors at a time. But performing on $8$ vectors at a time is possible as well).
 
 ```rust
 /// Internal: Dot product of two vectors.

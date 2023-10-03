@@ -1,5 +1,5 @@
 use crate::utils::complex::{Complex, Number, PI};
-use std::ops::{Add, AddAssign, Mul};
+use core::ops::{Add, AddAssign, Mul};
 
 /// Perform Fast Fourier Transform
 /// on `n` values of Vector, and returns the floating values
@@ -7,7 +7,7 @@ use std::ops::{Add, AddAssign, Mul};
 /// Uses Divide-and-Conquer method, and non-recursive method
 pub fn fast_fft<T>(array: &Vec<T>) -> Vec<Complex>
 where
-    T: Number + AddAssign + Mul + Add + std::convert::Into<f64> + Copy,
+    T: Number + AddAssign + Mul + Add + core::convert::Into<f64> + Copy,
     f64: From<T>,
 {
     let dft = |array: &mut [Complex]| {
@@ -105,7 +105,7 @@ where
 /// Uses Divide-and-Conquer method, and non-recursive method
 pub fn fast_ifft<T>(array: &Vec<Complex>) -> Vec<T>
 where
-    T: Number + AddAssign + Mul + Add + std::convert::From<f64> + Copy,
+    T: Number + AddAssign + Mul + Add + core::convert::From<f64> + Copy,
     f64: From<T>,
     Complex: From<T>,
 {
