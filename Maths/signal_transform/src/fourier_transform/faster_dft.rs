@@ -24,12 +24,8 @@ where
     res[0] = arr.iter().fold(C64::zero(), |p, c| p + *c);
 
     res[1..].chunks_exact_mut(4).for_each(|elem| {
-        let (mut w0, mut w1, mut w2, mut w3) = (
-            C64::new(1.0, 0.0),
-            C64::new(1.0, 0.0),
-            C64::new(1.0, 0.0),
-            C64::new(1.0, 0.0),
-        );
+        let (mut w0, mut w1, mut w2, mut w3) =
+            (C64::unit(), C64::unit(), C64::unit(), C64::unit());
         let (mut acc0, mut acc1, mut acc2, mut acc3) =
             (C64::zero(), C64::zero(), C64::zero(), C64::zero());
 
@@ -56,7 +52,7 @@ where
     let rem = res[1..].chunks_exact_mut(4).into_remainder();
 
     rem.iter_mut().for_each(|res| {
-        let mut w = C64::new(1.0, 0.0);
+        let mut w = C64::unit();
 
         arr.iter().for_each(|y| {
             *res += w * *y;
@@ -91,12 +87,8 @@ where
     res[0] = arr.iter().fold(C64::zero(), |p, c| p + *c);
 
     res[1..].chunks_exact_mut(4).for_each(|elem| {
-        let (mut w0, mut w1, mut w2, mut w3) = (
-            C64::new(1.0, 0.0),
-            C64::new(1.0, 0.0),
-            C64::new(1.0, 0.0),
-            C64::new(1.0, 0.0),
-        );
+        let (mut w0, mut w1, mut w2, mut w3) =
+            (C64::unit(), C64::unit(), C64::unit(), C64::unit());
         let (mut acc0, mut acc1, mut acc2, mut acc3) =
             (C64::zero(), C64::zero(), C64::zero(), C64::zero());
 
@@ -123,7 +115,7 @@ where
     let rem = res[1..].chunks_exact_mut(4).into_remainder();
 
     rem.iter_mut().for_each(|res| {
-        let mut w = C64::new(1.0, 0.0);
+        let mut w = C64::unit();
 
         arr.iter().for_each(|y| {
             *res += w * *y;

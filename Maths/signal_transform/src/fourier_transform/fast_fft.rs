@@ -20,7 +20,7 @@ where
         result[0] = array.iter().fold(C64::zero(), |prev, curr| prev + *curr);
 
         result.iter_mut().skip(1).for_each(|elem| {
-            let mut w = C64::new(1.0, 0.0);
+            let mut w = C64::unit();
             array.iter().for_each(|val| {
                 *elem += *val * w;
                 w *= wstart;
@@ -39,7 +39,7 @@ where
         dft(&mut input);
         input
     } else {
-        // vec![C64::new(1.0, 0.0); 10]
+        // vec![C64::unit(); 10]
         let ls = ((n ^ (n - 1)) + 1) >> 1;
         let mut indexes: Vec<usize> = vec![0; n];
         let (mut j, mut i) = (1, n);
@@ -81,7 +81,7 @@ where
             let angle = 2.0 * PI / (block_size as f64);
             let winit = C64::new(angle.cos(), -angle.sin());
             for i in (0..n).step_by(block_size) {
-                let mut w = C64::new(1.0, 0.0);
+                let mut w = C64::unit();
                 for j in 0..(block_size >> 1) {
                     let (u, v) =
                         (input[i + j], input[i + j + (block_size >> 1)] * w);
@@ -117,7 +117,7 @@ where
         result[0] = array.iter().fold(C64::zero(), |prev, curr| prev + *curr);
 
         result.iter_mut().skip(1).for_each(|elem| {
-            let mut w = C64::new(1.0, 0.0);
+            let mut w = C64::unit();
             array.iter().for_each(|val| {
                 *elem += *val * w;
                 w *= wstart;
@@ -175,7 +175,7 @@ where
             let angle = 2.0 * PI / (block_size as f64);
             let winit = C64::new(angle.cos(), angle.sin());
             for i in (0..n).step_by(block_size) {
-                let mut w = C64::new(1.0, 0.0);
+                let mut w = C64::unit();
                 for j in 0..(block_size >> 1) {
                     let (u, v) =
                         (input[i + j], input[i + j + (block_size >> 1)] * w);

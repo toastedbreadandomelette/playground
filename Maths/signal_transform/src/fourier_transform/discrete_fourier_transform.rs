@@ -16,7 +16,7 @@ where
     result[0] = arr.iter().fold(C64::zero(), |prev, curr| prev + *curr);
 
     result.iter_mut().skip(1).for_each(|res| {
-        let mut w = C64::new(1.0, 0.0);
+        let mut w = C64::unit();
         arr.iter().for_each(|y| {
             *res += w * *y;
             w *= wstart;
@@ -44,7 +44,7 @@ where
     let len = result.len() as f64;
 
     result.iter_mut().skip(1).for_each(|res| {
-        let mut w = C64::new(1.0, 0.0);
+        let mut w = C64::unit();
         arr.iter().for_each(|y| {
             *res += w * *y;
             w *= wstart;
@@ -68,7 +68,7 @@ pub fn idft_C64(arr: &Vec<C64>) -> Vec<C64> {
     result[0] = arr.iter().fold(C64::zero(), |prev, curr| prev + *curr);
 
     result.iter_mut().skip(1).for_each(|res| {
-        let mut w = C64::new(1.0, 0.0);
+        let mut w = C64::unit();
         arr.iter().for_each(|y| {
             *res += w * *y;
             w *= wstart;
@@ -99,7 +99,7 @@ where
         let angle = 2.0 * PI / (arr.len() as f64);
         let wlen = C64::new(angle.cos(), -angle.sin());
 
-        let mut w = C64::new(1.0, 0.0);
+        let mut w = C64::unit();
         let mut result: Vec<C64> = vec![C64::new(0.0, 0.0); arr.len()];
 
         odd_fft.iter().zip(even_fft.iter()).enumerate().for_each(
@@ -132,7 +132,7 @@ pub fn ifft_internal(arr: &Vec<C64>) -> Vec<C64> {
         let angle = 2.0 * PI / (arr.len() as f64);
         let wlen = C64::new(angle.cos(), angle.sin());
 
-        let mut w = C64::new(1.0, 0.0);
+        let mut w = C64::unit();
         let mut result: Vec<C64> = vec![C64::new(0.0, 0.0); arr.len()];
 
         odd_fft.iter().zip(even_fft.iter()).enumerate().for_each(

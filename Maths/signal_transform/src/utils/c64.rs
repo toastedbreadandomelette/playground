@@ -417,6 +417,14 @@ impl C64 {
     }
 
     #[inline(always)]
+    pub fn unit() -> Self {
+        Self {
+            real: 1.0,
+            img: 0.0,
+        }
+    }
+
+    #[inline(always)]
     pub fn abs_sq(self) -> f64 {
         self.real * self.real + self.img * self.img
     }
@@ -428,10 +436,7 @@ impl C64 {
 
     pub fn pow(self, mut power: u32) -> Self {
         match power {
-            0 => Self {
-                real: 1.0,
-                img: 0.0,
-            },
+            0 => C64::unit(),
             1 => self,
             2 => self * self,
             3 => self * self * self,
