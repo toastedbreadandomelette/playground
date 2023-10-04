@@ -1,4 +1,4 @@
-use crate::utils::complex::{Number, PI};
+use crate::utils::c64::{Number, PI};
 use core::ops::{Add, AddAssign};
 
 pub fn dct1<T>(arr: &Vec<T>) -> Vec<f64>

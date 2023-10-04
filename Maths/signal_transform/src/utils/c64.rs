@@ -3,9 +3,9 @@ use core::ops::{
 };
 pub const PI: f64 = core::f64::consts::PI;
 
-// Complex number for computing.
-#[derive(Copy, Clone)]
-pub struct Complex {
+// C64 number for computing.
+#[derive(Copy, Clone, PartialEq)]
+pub struct C64 {
     pub real: f64,
     pub img: f64,
 }
@@ -26,9 +26,9 @@ impl Number for i128 {}
 impl Number for f32 {}
 impl Number for f64 {}
 
-impl Neg for Complex {
+impl Neg for C64 {
     type Output = Self;
-
+    #[inline(always)]
     fn neg(self) -> Self {
         Self {
             real: -self.real,
@@ -37,7 +37,7 @@ impl Neg for Complex {
     }
 }
 
-impl core::fmt::Debug for Complex {
+impl core::fmt::Debug for C64 {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         if self.real == 0.0 && self.img == 0.0 {
             f.write_str("0")
@@ -53,24 +53,26 @@ impl core::fmt::Debug for Complex {
     }
 }
 
-impl AddAssign<&Complex> for Complex {
+impl AddAssign<&C64> for C64 {
+    #[inline(always)]
     fn add_assign(&mut self, b: &Self) {
         self.real += b.real;
         self.img += b.img;
     }
 }
 
-impl AddAssign for Complex {
+impl AddAssign for C64 {
+    #[inline(always)]
     fn add_assign(&mut self, b: Self) {
         self.real += b.real;
         self.img += b.img;
     }
 }
 
-impl Sub<&Complex> for Complex {
+impl Sub<&C64> for C64 {
     type Output = Self;
-
-    fn sub(self, b: &Complex) -> Self {
+    #[inline(always)]
+    fn sub(self, b: &Self) -> Self {
         Self {
             real: self.real - b.real,
             img: self.img - b.img,
@@ -78,10 +80,10 @@ impl Sub<&Complex> for Complex {
     }
 }
 
-impl Sub<Complex> for Complex {
+impl Sub<C64> for C64 {
     type Output = Self;
-
-    fn sub(self, b: Complex) -> Self {
+    #[inline(always)]
+    fn sub(self, b: Self) -> Self {
         Self {
             real: self.real - b.real,
             img: self.img - b.img,
@@ -89,27 +91,30 @@ impl Sub<Complex> for Complex {
     }
 }
 
-impl SubAssign<&Complex> for Complex {
+impl SubAssign<&C64> for C64 {
+    #[inline(always)]
     fn sub_assign(&mut self, b: &Self) {
         self.real -= b.real;
         self.img -= b.img;
     }
 }
 
-impl<T> SubAssign<T> for Complex
+impl<T> SubAssign<T> for C64
 where
     T: Number + core::convert::Into<f64> + Clone + Copy,
 {
+    #[inline(always)]
     fn sub_assign(&mut self, b: T) {
         self.real -= b.into();
     }
 }
 
-impl<T> Sub<T> for Complex
+impl<T> Sub<T> for C64
 where
     T: Number + core::convert::Into<f64> + Clone + Copy,
 {
     type Output = Self;
+    #[inline(always)]
     fn sub(self, b: T) -> Self {
         Self {
             real: self.real - b.into(),
@@ -118,22 +123,24 @@ where
     }
 }
 
-impl<T> Add<T> for Complex
+impl<T> Add<T> for C64
 where
     T: Number + core::convert::Into<f64> + Clone + Copy,
 {
-    type Output = Complex;
-    fn add(self, b: T) -> Complex {
-        Complex {
+    type Output = Self;
+    #[inline(always)]
+    fn add(self, b: T) -> Self {
+        Self {
             real: self.real + b.into(),
-            img: self.img + b.into(),
+            img: self.img,
         }
     }
 }
 
-impl Add<Complex> for Complex {
+impl Add<C64> for C64 {
     type Output = Self;
-    fn add(self, b: Complex) -> Self {
+    #[inline(always)]
+    fn add(self, b: C64) -> Self {
         Self {
             real: self.real + b.real,
             img: self.img + b.img,
@@ -141,39 +148,43 @@ impl Add<Complex> for Complex {
     }
 }
 
-impl<T> AddAssign<T> for Complex
+impl<T> AddAssign<T> for C64
 where
     T: Number + core::convert::Into<f64> + Clone + Copy,
 {
+    #[inline(always)]
     fn add_assign(&mut self, b: T) {
         self.real += b.into();
     }
 }
 
-impl Mul<Complex> for Complex {
-    type Output = Complex;
-    fn mul(self, b: Complex) -> Complex {
-        Complex {
+impl Mul<C64> for C64 {
+    type Output = Self;
+    #[inline(always)]
+    fn mul(self, b: Self) -> Self {
+        Self {
             real: self.real * b.real - self.img * b.img,
             img: self.img * b.real + b.img * self.real,
         }
     }
 }
 
-impl<T> Mul<T> for Complex
+impl<T> Mul<T> for C64
 where
     T: Number + core::convert::Into<f64> + Clone + Copy,
 {
-    type Output = Complex;
-    fn mul(self, b: T) -> Complex {
-        Complex {
+    type Output = Self;
+    #[inline(always)]
+    fn mul(self, b: T) -> Self {
+        Self {
             real: self.real * b.into(),
             img: self.img * b.into(),
         }
     }
 }
 
-impl MulAssign<&Complex> for Complex {
+impl MulAssign<&C64> for C64 {
+    #[inline(always)]
     fn mul_assign(&mut self, b: &Self) {
         *self = Self {
             real: self.real * b.real - self.img * b.img,
@@ -182,7 +193,8 @@ impl MulAssign<&Complex> for Complex {
     }
 }
 
-impl MulAssign<Complex> for Complex {
+impl MulAssign<C64> for C64 {
+    #[inline(always)]
     fn mul_assign(&mut self, b: Self) {
         *self = Self {
             real: self.real * b.real - self.img * b.img,
@@ -191,19 +203,21 @@ impl MulAssign<Complex> for Complex {
     }
 }
 
-impl<T> MulAssign<T> for Complex
+impl<T> MulAssign<T> for C64
 where
     T: Number + core::convert::Into<f64> + Clone + Copy,
 {
+    #[inline(always)]
     fn mul_assign(&mut self, b: T) {
         self.real *= b.into();
         self.img *= b.into();
     }
 }
 
-impl Div<&Complex> for Complex {
+impl Div<&C64> for C64 {
     type Output = Self;
-    fn div(self, b: &Complex) -> Self {
+    #[inline]
+    fn div(self, b: &Self) -> Self {
         let abs = b.abs_sq();
         Self {
             real: (self.real * b.real + self.img * b.img) / abs,
@@ -212,9 +226,10 @@ impl Div<&Complex> for Complex {
     }
 }
 
-impl Div<Complex> for Complex {
+impl Div<C64> for C64 {
     type Output = Self;
-    fn div(self, b: Complex) -> Self {
+    #[inline(always)]
+    fn div(self, b: Self) -> Self {
         let abs = b.abs_sq();
         Self {
             real: (self.real * b.real + self.img * b.img) / abs,
@@ -223,20 +238,22 @@ impl Div<Complex> for Complex {
     }
 }
 
-impl<T> Div<T> for Complex
+impl<T> Div<T> for C64
 where
     T: Number + core::convert::Into<f64> + Clone + Copy,
 {
-    type Output = Complex;
-    fn div(self, b: T) -> Complex {
-        Complex {
+    type Output = Self;
+    #[inline(always)]
+    fn div(self, b: T) -> Self {
+        Self {
             real: self.real / b.into(),
             img: self.img / b.into(),
         }
     }
 }
 
-impl DivAssign<Complex> for Complex {
+impl DivAssign<C64> for C64 {
+    #[inline(always)]
     fn div_assign(&mut self, b: Self) {
         let abs = b.abs_sq();
         *self = Self {
@@ -246,7 +263,8 @@ impl DivAssign<Complex> for Complex {
     }
 }
 
-impl DivAssign<&Complex> for Complex {
+impl DivAssign<&C64> for C64 {
+    #[inline(always)]
     fn div_assign(&mut self, b: &Self) {
         let abs = b.abs_sq();
         *self = Self {
@@ -256,17 +274,18 @@ impl DivAssign<&Complex> for Complex {
     }
 }
 
-impl<T> DivAssign<T> for Complex
+impl<T> DivAssign<T> for C64
 where
     T: Number + core::convert::Into<f64> + Clone + Copy,
 {
+    #[inline(always)]
     fn div_assign(&mut self, b: T) {
         self.real /= b.into();
         self.img /= b.into();
     }
 }
 
-impl core::fmt::Display for Complex {
+impl core::fmt::Display for C64 {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         if self.real == 0.0 && self.img == 0.0 {
             f.write_str("0")
@@ -284,75 +303,84 @@ impl core::fmt::Display for Complex {
 
 macro_rules! impl_op_for_type {
     ($type: ident) => {
-        impl core::convert::From<$type> for Complex {
-            fn from(item: $type) -> Complex {
-                Complex {
+        impl core::convert::From<$type> for C64 {
+            #[inline(always)]
+            fn from(item: $type) -> C64 {
+                C64 {
                     real: (item as f64),
                     img: 0.0,
                 }
             }
         }
 
-        impl core::convert::From<Complex> for $type {
-            fn from(item: Complex) -> Self {
+        impl core::convert::From<C64> for $type {
+            #[inline(always)]
+            fn from(item: C64) -> Self {
                 item.real as $type
             }
         }
 
-        impl Add<Complex> for $type {
-            type Output = Complex;
-            fn add(self, b: Complex) -> Complex {
-                Complex {
+        impl Add<C64> for $type {
+            type Output = C64;
+            #[inline(always)]
+            fn add(self, b: C64) -> C64 {
+                C64 {
                     real: b.real + (self as f64),
                     img: b.img,
                 }
             }
         }
 
-        impl AddAssign<Complex> for $type {
-            fn add_assign(&mut self, b: Complex) {
+        impl AddAssign<C64> for $type {
+            #[inline(always)]
+            fn add_assign(&mut self, b: C64) {
                 *self += (b.real as $type);
             }
         }
 
-        impl Sub<Complex> for $type {
-            type Output = Complex;
-            fn sub(self, b: Complex) -> Complex {
-                Complex {
+        impl Sub<C64> for $type {
+            type Output = C64;
+            #[inline(always)]
+            fn sub(self, b: C64) -> C64 {
+                C64 {
                     real: -b.real + (self as f64),
                     img: -b.img,
                 }
             }
         }
 
-        impl SubAssign<Complex> for $type {
-            fn sub_assign(&mut self, b: Complex) {
+        impl SubAssign<C64> for $type {
+            #[inline(always)]
+            fn sub_assign(&mut self, b: C64) {
                 *self -= (b.real as $type);
             }
         }
 
-        impl Mul<Complex> for $type {
-            type Output = Complex;
-            fn mul(self, b: Complex) -> Complex {
-                Complex {
+        impl Mul<C64> for $type {
+            type Output = C64;
+            #[inline(always)]
+            fn mul(self, b: C64) -> C64 {
+                C64 {
                     real: b.real * (self as f64),
                     img: b.img * (self as f64),
                 }
             }
         }
 
-        impl MulAssign<Complex> for $type {
-            fn mul_assign(&mut self, b: Complex) {
+        impl MulAssign<C64> for $type {
+            #[inline(always)]
+            fn mul_assign(&mut self, b: C64) {
                 *self *= (b.real as $type);
             }
         }
 
-        impl Div<Complex> for $type {
-            type Output = Complex;
-            fn div(self, b: Complex) -> Complex {
+        impl Div<C64> for $type {
+            type Output = C64;
+            #[inline(always)]
+            fn div(self, b: C64) -> C64 {
                 let slf = (self as f64);
                 let abs = b.abs_sq();
-                Complex {
+                C64 {
                     real: (slf * b.real) / abs,
                     img: (slf * b.img) / abs,
                 }
@@ -374,12 +402,13 @@ impl_op_for_type!(u32);
 impl_op_for_type!(u64);
 impl_op_for_type!(u128);
 
-impl Complex {
+impl C64 {
     #[inline(always)]
     pub fn new(r: f64, i: f64) -> Self {
         Self { real: r, img: i }
     }
 
+    #[inline(always)]
     pub fn zero() -> Self {
         Self {
             real: 0.0,
@@ -424,6 +453,7 @@ impl Complex {
         }
     }
 
+    #[inline(always)]
     pub fn conjugate(self) -> Self {
         Self {
             real: self.real,

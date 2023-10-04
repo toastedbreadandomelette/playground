@@ -1,28 +1,26 @@
-use crate::utils::complex::{Complex, Number, PI};
+use crate::utils::c64::{Number, C64, PI};
 use core::ops::{Add, AddAssign, Mul};
 
 /// Perform Fast Fourier Transform
 /// on `n` values of Vector, and returns the floating values
 ///
 /// Uses Divide-and-Conquer method, and non-recursive method
-pub fn fast_fft<T>(array: &Vec<T>) -> Vec<Complex>
+pub fn fast_fft<T>(array: &Vec<T>) -> Vec<C64>
 where
     T: Number + AddAssign + Mul + Add + core::convert::Into<f64> + Copy,
     f64: From<T>,
 {
-    let dft = |array: &mut [Complex]| {
-        let mut result = vec![Complex::zero(); array.len()];
+    let dft = |array: &mut [C64]| {
+        let mut result = vec![C64::zero(); array.len()];
         let size = array.len();
         let angle = 2.0 * PI / (size as f64);
-        let wlen = Complex::new(angle.cos(), -angle.sin());
+        let wlen = C64::new(angle.cos(), -angle.sin());
         let mut wstart = wlen;
 
-        result[0] = array
-            .iter()
-            .fold(Complex::zero(), |prev, curr| prev + *curr);
+        result[0] = array.iter().fold(C64::zero(), |prev, curr| prev + *curr);
 
         result.iter_mut().skip(1).for_each(|elem| {
-            let mut w = Complex::new(1.0, 0.0);
+            let mut w = C64::new(1.0, 0.0);
             array.iter().for_each(|val| {
                 *elem += *val * w;
                 w *= wstart;
@@ -34,20 +32,20 @@ where
     };
     let n = array.len();
     if (n & 1) == 1 || n < 16 {
-        let mut input: Vec<Complex> = array
+        let mut input: Vec<C64> = array
             .iter()
-            .map(|x| Complex::new(f64::from(*x), 0.0))
-            .collect::<Vec<Complex>>();
+            .map(|x| C64::new(f64::from(*x), 0.0))
+            .collect::<Vec<C64>>();
         dft(&mut input);
         input
     } else {
-        // vec![Complex::new(1.0, 0.0); 10]
+        // vec![C64::new(1.0, 0.0); 10]
         let ls = ((n ^ (n - 1)) + 1) >> 1;
         let mut indexes: Vec<usize> = vec![0; n];
         let (mut j, mut i) = (1, n);
         // This shuffling method is done for general FFT method.
         // If MSB is smaller, this method works faster of the order
-        // n logn, otherwise, runs at O(n2).
+        // n log(n), otherwise, runs at O(n2).
         while (i & 1) == 0 {
             indexes[i >> 1..i].fill(j);
             j <<= 1;
@@ -67,10 +65,10 @@ where
             index <<= 1;
         }
 
-        let mut input: Vec<Complex> = indexes
+        let mut input: Vec<C64> = indexes
             .iter()
-            .map(|x| Complex::new(f64::from(array[*x]), 0.0))
-            .collect::<Vec<Complex>>();
+            .map(|x| C64::new(f64::from(array[*x]), 0.0))
+            .collect::<Vec<C64>>();
 
         if i > 1 {
             for index in (0..n).step_by(i) {
@@ -81,9 +79,9 @@ where
         let mut block_size = i << 1;
         while block_size <= n {
             let angle = 2.0 * PI / (block_size as f64);
-            let winit = Complex::new(angle.cos(), -angle.sin());
+            let winit = C64::new(angle.cos(), -angle.sin());
             for i in (0..n).step_by(block_size) {
-                let mut w = Complex::new(1.0, 0.0);
+                let mut w = C64::new(1.0, 0.0);
                 for j in 0..(block_size >> 1) {
                     let (u, v) =
                         (input[i + j], input[i + j + (block_size >> 1)] * w);
@@ -103,26 +101,23 @@ where
 /// on n values of Vector, and returns the floating values
 ///
 /// Uses Divide-and-Conquer method, and non-recursive method
-pub fn fast_ifft<T>(array: &Vec<Complex>) -> Vec<T>
+pub fn fast_ifft<T>(array: &Vec<C64>) -> Vec<T>
 where
     T: Number + AddAssign + Mul + Add + core::convert::From<f64> + Copy,
     f64: From<T>,
-    Complex: From<T>,
+    C64: From<T>,
 {
-    let idft = |array: &mut [Complex]| {
-        let mut result: Vec<Complex> =
-            vec![Complex::new(0.0, 0.0); array.len()];
+    let idft = |array: &mut [C64]| {
+        let mut result: Vec<C64> = vec![C64::new(0.0, 0.0); array.len()];
         let size = array.len();
         let angle = 2.0 * PI / (size as f64);
-        let wlen = Complex::new(angle.cos(), angle.sin());
+        let wlen = C64::new(angle.cos(), angle.sin());
         let mut wstart = wlen;
 
-        result[0] = array
-            .iter()
-            .fold(Complex::zero(), |prev, curr| prev + *curr);
+        result[0] = array.iter().fold(C64::zero(), |prev, curr| prev + *curr);
 
         result.iter_mut().skip(1).for_each(|elem| {
-            let mut w = Complex::new(1.0, 0.0);
+            let mut w = C64::new(1.0, 0.0);
             array.iter().for_each(|val| {
                 *elem += *val * w;
                 w *= wstart;
@@ -134,7 +129,7 @@ where
     };
     let n = array.len();
     if n & 1 == 1 {
-        let mut input: Vec<Complex> = array.to_vec();
+        let mut input: Vec<C64> = array.to_vec();
         idft(&mut input[..]);
         input
             .iter()
@@ -166,8 +161,8 @@ where
             index <<= 1;
         }
 
-        let mut input: Vec<Complex> =
-            indexes.iter().map(|x| array[*x]).collect::<Vec<Complex>>();
+        let mut input: Vec<C64> =
+            indexes.iter().map(|x| array[*x]).collect::<Vec<C64>>();
 
         if i > 1 {
             for l in (0..input.len()).step_by(i) {
@@ -178,9 +173,9 @@ where
         let mut block_size = i << 1;
         while block_size <= n {
             let angle = 2.0 * PI / (block_size as f64);
-            let winit = Complex::new(angle.cos(), angle.sin());
+            let winit = C64::new(angle.cos(), angle.sin());
             for i in (0..n).step_by(block_size) {
-                let mut w = Complex::new(1.0, 0.0);
+                let mut w = C64::new(1.0, 0.0);
                 for j in 0..(block_size >> 1) {
                     let (u, v) =
                         (input[i + j], input[i + j + (block_size >> 1)] * w);
