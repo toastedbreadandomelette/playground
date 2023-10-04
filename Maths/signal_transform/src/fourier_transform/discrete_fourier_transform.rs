@@ -11,7 +11,7 @@ where
     let angle = PI * 2.0 / (arr.len() as f64);
     let wlen = C64::new(angle.cos(), -angle.sin());
     let mut wstart = wlen;
-    let mut result: Vec<C64> = vec![C64::new(0.0, 0.0); arr.len()];
+    let mut result: Vec<C64> = vec![C64::zero(); arr.len()];
 
     result[0] = arr.iter().fold(C64::zero(), |prev, curr| prev + *curr);
 
@@ -37,7 +37,7 @@ where
     let angle = PI * 2.0 / (arr.len() as f64);
     let wlen = C64::new(angle.cos(), angle.sin());
     let mut wstart = wlen;
-    let mut result: Vec<C64> = vec![C64::new(0.0, 0.0); arr.len()];
+    let mut result: Vec<C64> = vec![C64::zero(); arr.len()];
 
     result[0] = arr.iter().fold(C64::zero(), |prev, curr| prev + *curr);
 
@@ -100,7 +100,7 @@ where
         let wlen = C64::new(angle.cos(), -angle.sin());
 
         let mut w = C64::unit();
-        let mut result: Vec<C64> = vec![C64::new(0.0, 0.0); arr.len()];
+        let mut result: Vec<C64> = vec![C64::zero(); arr.len()];
 
         odd_fft.iter().zip(even_fft.iter()).enumerate().for_each(
             |(x, (odd, even))| {
@@ -130,10 +130,10 @@ pub fn ifft_internal(arr: &Vec<C64>) -> Vec<C64> {
         };
 
         let angle = 2.0 * PI / (arr.len() as f64);
-        let wlen = C64::new(angle.cos(), angle.sin());
+        let wlen = C64::unit_ag(angle);
 
         let mut w = C64::unit();
-        let mut result: Vec<C64> = vec![C64::new(0.0, 0.0); arr.len()];
+        let mut result: Vec<C64> = vec![C64::zero(); arr.len()];
 
         odd_fft.iter().zip(even_fft.iter()).enumerate().for_each(
             |(x, (odd, even))| {

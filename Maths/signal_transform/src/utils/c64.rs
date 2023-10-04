@@ -425,6 +425,22 @@ impl C64 {
     }
 
     #[inline(always)]
+    pub fn unit_ag(ag: f64) -> Self {
+        Self {
+            real: ag.cos(),
+            img: ag.sin(),
+        }
+    }
+
+    #[inline(always)]
+    pub fn unit_ag_conj(ag: f64) -> Self {
+        Self {
+            real: ag.cos(),
+            img: -ag.sin(),
+        }
+    }
+
+    #[inline(always)]
     pub fn abs_sq(self) -> f64 {
         self.real * self.real + self.img * self.img
     }

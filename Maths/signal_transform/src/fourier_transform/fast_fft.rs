@@ -14,7 +14,7 @@ where
         let mut result = vec![C64::zero(); array.len()];
         let size = array.len();
         let angle = 2.0 * PI / (size as f64);
-        let wlen = C64::new(angle.cos(), -angle.sin());
+        let wlen = C64::unit_ag_conj(angle);
         let mut wstart = wlen;
 
         result[0] = array.iter().fold(C64::zero(), |prev, curr| prev + *curr);
@@ -111,7 +111,7 @@ where
         let mut result: Vec<C64> = vec![C64::new(0.0, 0.0); array.len()];
         let size = array.len();
         let angle = 2.0 * PI / (size as f64);
-        let wlen = C64::new(angle.cos(), angle.sin());
+        let wlen = C64::unit_ag(angle);
         let mut wstart = wlen;
 
         result[0] = array.iter().fold(C64::zero(), |prev, curr| prev + *curr);
@@ -173,7 +173,7 @@ where
         let mut block_size = i << 1;
         while block_size <= n {
             let angle = 2.0 * PI / (block_size as f64);
-            let winit = C64::new(angle.cos(), angle.sin());
+            let winit = C64::unit_ag(angle);
             for i in (0..n).step_by(block_size) {
                 let mut w = C64::unit();
                 for j in 0..(block_size >> 1) {

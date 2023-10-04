@@ -12,7 +12,7 @@ where
     let mut res = vec![C64::zero(); arr.len()];
     let ag = 2.0 * PI / (len as f64);
 
-    let wlen = C64::new(ag.cos(), -ag.sin());
+    let wlen = C64::unit_ag_conj(ag);
     let wlen2 = wlen * wlen;
     let wlen4 = wlen2 * wlen2;
 
@@ -75,7 +75,7 @@ where
     let mut res = vec![C64::zero(); arr.len()];
     let ag = 2.0 * PI / (len as f64);
 
-    let wlen = C64::new(ag.cos(), ag.sin());
+    let wlen = C64::unit_ag(ag);
     let wlen2 = wlen * wlen;
     let wlen4 = wlen2 * wlen2;
 
