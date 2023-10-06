@@ -60,7 +60,7 @@ where
 }
 
 /// Perform Discrete Fourier Transform on n values of Vector, and returns the C64 values
-pub fn idft_C64(arr: &Vec<C64>) -> Vec<C64> {
+pub fn idft_c64(arr: &Vec<C64>) -> Vec<C64> {
     let angle = PI * 2.0 / (arr.len() as f64);
     let wlen = C64::new(angle.cos(), angle.sin());
     let mut wstart = wlen;
@@ -120,7 +120,7 @@ where
 /// Uses Divide-and-Conquer method.
 pub fn ifft_internal(arr: &Vec<C64>) -> Vec<C64> {
     if arr.len() < 8 || arr.len() & 1 == 1 {
-        idft_C64(arr)
+        idft_c64(arr)
     } else {
         let (odd_fft, even_fft) = {
             let even = arr.iter().step_by(2).copied().collect();

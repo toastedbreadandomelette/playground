@@ -5,7 +5,7 @@ use core::ops::{Add, AddAssign, Mul};
 /// on `n` values of Vector, and returns the floating values
 ///
 /// Uses Divide-and-Conquer method, and non-recursive method
-pub fn fast_fft<T>(array: &Vec<T>) -> Vec<C64>
+pub fn fast_fft<T>(array: &[T]) -> Vec<C64>
 where
     T: Number + AddAssign + Mul + Add + core::convert::Into<f64> + Copy,
     f64: From<T>,
@@ -101,7 +101,7 @@ where
 /// on n values of Vector, and returns the floating values
 ///
 /// Uses Divide-and-Conquer method, and non-recursive method
-pub fn fast_ifft<T>(array: &Vec<C64>) -> Vec<T>
+pub fn fast_ifft<T>(array: &[C64]) -> Vec<T>
 where
     T: Number + AddAssign + Mul + Add + core::convert::From<f64> + Copy,
     f64: From<T>,

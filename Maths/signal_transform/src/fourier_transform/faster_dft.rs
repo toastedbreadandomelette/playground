@@ -14,11 +14,12 @@ where
 
     let wlen = C64::unit_ag_conj(ag);
     let wlen2 = wlen * wlen;
-    let wlen4 = wlen2 * wlen2;
+    let wlen3 = wlen2 * wlen;
+    let wlen4 = wlen3 * wlen;
 
     let mut wstart0 = wlen;
     let mut wstart1 = wlen2;
-    let mut wstart2 = wlen2 * wlen;
+    let mut wstart2 = wlen3;
     let mut wstart3 = wlen4;
 
     res[0] = arr.iter().fold(C64::zero(), |p, c| p + *c);

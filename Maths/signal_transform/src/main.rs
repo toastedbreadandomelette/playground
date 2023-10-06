@@ -11,7 +11,9 @@ fn main() {
     let x = (0..32768).map(|c| c as f64).collect::<Vec<f64>>();
     // println!("{:?}", x);
     let t = std::time::Instant::now();
-    let a = discrete_fourier_transform::dft::<f64>(&x);
+    let a = discrete_fourier_transform::idft::<f64>(
+        &discrete_fourier_transform::dft::<f64>(&x),
+    );
     println!("{}ms", t.elapsed().as_millis());
 
     // let sz = 4096;
@@ -21,13 +23,7 @@ fn main() {
     // println!("{:?}", orig);
 
     let t = std::time::Instant::now();
-    let b = faster_dft::dft_fast::<f64>(&x);
-    println!("{}ms", t.elapsed().as_millis());
-
-    let close = |a: f64, b: f64| (a - b).abs() < 1e-6 + 1e-6 * b.abs();
-
-    let t = std::time::Instant::now();
-    let x = faster_dft::idft_fast::<f64>(&b);
+    let b = faster_dft::idft_fast::<f64>(&faster_dft::dft_fast::<f64>(&x));
     println!("{}ms", t.elapsed().as_millis());
 
     // println!("{:?}", flt);

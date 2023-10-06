@@ -1,7 +1,7 @@
 use crate::utils::c64::{Number, PI};
 use core::ops::{Add, AddAssign};
 
-pub fn dct1<T>(arr: &Vec<T>) -> Vec<f64>
+pub fn dct1<T>(arr: &[T]) -> Vec<f64>
 where
     T: From<T> + Copy + Number + AddAssign + Add,
     f64: From<T>,
@@ -28,7 +28,7 @@ where
     res
 }
 
-pub fn dct2<T>(arr: &Vec<T>) -> Vec<f64>
+pub fn dct2<T>(arr: &[T]) -> Vec<f64>
 where
     T: From<T> + Copy + Number + AddAssign + Add,
     f64: From<T>,

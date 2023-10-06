@@ -450,6 +450,7 @@ impl C64 {
         self.abs_sq().sqrt()
     }
 
+    #[inline]
     pub fn pow(self, mut power: u32) -> Self {
         match power {
             0 => C64::unit(),
@@ -457,11 +458,8 @@ impl C64 {
             2 => self * self,
             3 => self * self * self,
             _ => {
-                let mut result = Self {
-                    real: 1.0,
-                    img: 0.0,
-                };
-                let mut mul = self;
+                let (mut result, mut mul) = (Self::unit(), self);
+
                 while power > 0 {
                     if power & 1 == 1 {
                         result *= mul;
