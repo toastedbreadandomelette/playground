@@ -402,6 +402,13 @@ impl_op_for_type!(u32);
 impl_op_for_type!(u64);
 impl_op_for_type!(u128);
 
+impl Default for C64 {
+    #[inline(always)]
+    fn default() -> Self {
+        Self::zero()
+    }
+}
+
 impl C64 {
     #[inline(always)]
     pub fn new(r: f64, i: f64) -> Self {
