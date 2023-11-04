@@ -1,6 +1,6 @@
 use core::ops::{AddAssign, Mul};
 
-use vector::vector::Vector;
+use vector::Vector;
 
 /// Multiply two matrices `a` and `b` of size
 /// `ashape (m x n)` and `bshape(n x p)`

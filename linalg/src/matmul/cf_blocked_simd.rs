@@ -5,7 +5,7 @@ use crate::matmul::cf_process_blocks::{
 };
 use core::simd::f64x4;
 use core::simd::SimdFloat;
-use vector::vector::Vector;
+use vector::Vector;
 
 const BLOCKSIZE: usize = 32;
 

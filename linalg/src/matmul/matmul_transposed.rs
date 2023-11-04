@@ -1,6 +1,6 @@
 use crate::common::transpose_vec;
 
-use vector::vector::Vector;
+use vector::Vector;
 
 /// Multiply two matrices `a` and `b` of size
 /// `ashape (m x n)` and `bshape(n x p)`

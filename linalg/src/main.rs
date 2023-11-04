@@ -1,12 +1,11 @@
 #![feature(step_trait, array_windows, portable_simd)]
 // #![no_std]
 
-extern crate vector;
 mod common;
 mod inv;
 mod matmul;
 
-use vector::vector::Vector;
+use vector::Vector;
 
 use crate::inv::inv_normal;
 use matmul::*;

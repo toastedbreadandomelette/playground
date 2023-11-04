@@ -9,7 +9,4 @@ opt-level = 2
 
 [dependencies]
 rand = "0.8.5"
-
-[lib]
-name = "vector"
-path = "src/common/vector/src/lib.rs"
+vector = { git = "https://github.com/toastedbreadandomelette/vector-rs", branch = "master" }

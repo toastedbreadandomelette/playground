@@ -1,4 +1,4 @@
-use vector::vector::Vector;
+use vector::Vector;
 
 fn display_mat(arr: &[f64], n: usize) {
     arr.chunks_exact(n).for_each(|c| println!("{:?}", c));
