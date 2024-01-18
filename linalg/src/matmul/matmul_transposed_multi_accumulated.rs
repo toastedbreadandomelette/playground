@@ -46,10 +46,7 @@ pub fn matmul_transposed_multi_accumulated(
         let val = tb.chunks_exact(n * 4).remainder();
         match val.len() / n {
             1 => *cvec.last_mut().unwrap() = dot(avec, val),
-            2 => {
-                (cvec[n - 2], cvec[n - 1]) =
-                    dot2(avec, &val[..n], &val[n..])
-            }
+            2 => (cvec[n - 2], cvec[n - 1]) = dot2(avec, &val[..n], &val[n..]),
             3 => {
                 (cvec[n - 3], cvec[n - 2], cvec[n - 1]) =
                     dot3(avec, &val[..n], &val[n..2 * n], &val[2 * n..])

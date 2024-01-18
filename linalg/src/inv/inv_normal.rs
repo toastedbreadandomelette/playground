@@ -1,69 +1,65 @@
 use vector::Vector;
 
-fn display_mat(arr: &[f64], n: usize) {
+pub fn display_mat(arr: &[f64], n: usize) {
     arr.chunks_exact(n).for_each(|c| println!("{:?}", c));
     println!();
 }
 
+fn swap_rows(a: &mut [f64], b: &mut [f64]) {
+    assert_eq!(a.len(), b.len());
+    a.iter_mut()
+        .zip(b.iter_mut())
+        .for_each(|(a, b)| (*a, *b) = (*b, *a));
+}
+
 /// Inverse of a matrix
-///
 pub fn inv_normal(a: &[f64], n: usize) -> Vector<f64> {
-    todo!()
-    // assert!(n * n == a.len(), "Matrix is not a square");
-    // let mut a_copy: Vector<f64> = a.iter().copied().collect();
-    // let mut ainv: Vector<f64> = Vector::zeroed(a.len());
-    // // println!("A");
-    // // display_mat(&a_copy, n);
-    // ainv.iter_mut().step_by(n + 1).for_each(|f| *f = 1.0);
-    // for x in 0..n {
-    //     // For each row, reduce rows at the bottom
-    //     let start = x * (n + 1);
-    //     // Starting from x + 1 row
-    //     for row_next in (x + 1)..n {
-    //         let factor = a_copy[start + (row_next - x) * n] / a_copy[start];
-    //         a_copy[start + (row_next - x) * n] = 0.0;
+    assert_eq!(a.len(), n * n);
 
-    //         for col in (x + 1)..n {
-    //             // println!("{}", start + (row_next - x) * n);
-    //             a_copy[start + n * (row_next - x) + col - x] -=
-    //                 a_copy[start + col - x] * factor;
-    //         }
+    let mut ac = a.to_vec();
+    let mut inv = (0..n * n)
+        .map(|c| if c % (n + 1) == 0 { 1.0 } else { 0.0 })
+        .collect::<Vector<f64>>();
 
-    //         for col in 0..n {
-    //             ainv[n * row_next + col] -= ainv[n * x + col] * factor;
-    //         }
-    //     }
-    //     // Reduce the current row
-    //     let red_factor = 1.0 / a_copy[start];
-    //     a_copy[start] = 1.0;
-    //     for row in x + 1..n {
-    //         a_copy[start + row - x] *= red_factor;
-    //         ainv[start + row - x] *= red_factor;
-    //     }
+    // For each row
+    for row in 0..n - 1 {
+        // Make the a[i][i] as 1, by first reducing all values beneath that value to zero
+        for next_row in row + 1..n {
+            let value = ac[next_row * n + row] / ac[row * n + row];
+            for col in 0..n {
+                ac[next_row * n + col] -= value * ac[row * n + col];
+                inv[next_row * n + col] -= value * inv[row * n + col];
+            }
 
-    //     for row in 0..x {
-    //         ainv[x * n + row] *= red_factor;
-    //     }
-    // }
+            ac[next_row * n + row] = 0.0;
+        }
 
-    // for r in (0..n).rev() {
-    //     // let diag_index = r * (n + 1);
-    //     // let elem = a_copy[diag_index];
-    //     let inv_slice = &ainv[r * n..(r + 1) * n];
-    //     // display_mat(&ainv, n);
+        let value = ac[row * n + row];
+        for col in 0..n {
+            ac[row * n + col] /= value;
+            inv[row * n + col] /= value;
+        }
+    }
 
-    //     a_copy
-    //         .chunks_exact_mut(n)
-    //         .take(r)
-    //         .zip(ainv.chunks_exact_mut(n).take(r))
-    //         .for_each(|(ac, ai)| {
-    //             let scale = ac[r];
-    //             ac[r] -= scale;
-    //             ai.iter_mut()
-    //                 .zip(inv_slice.iter())
-    //                 .for_each(|(ai_val, ac_val)| *ai_val -= scale * ac_val);
-    //         });
-    // }
+    let last_row = n - 1;
+    let value = *ac.last().unwrap();
 
-    // ainv
+    for col in 0..n {
+        inv[last_row * n + col] /= value;
+    }
+    *ac.last_mut().unwrap() = 1.0;
+
+    for row in (1..n).rev() {
+        for prev_row in (0..row).rev() {
+            let value = ac[prev_row * n + row];
+            for col in 0..n {
+                // ac[prev_row * n + col] -= value * ac[row * n + col];
+                inv[prev_row * n + col] -= value * inv[row * n + col];
+            }
+
+            ac[prev_row * n + row] = 0.0;
+        }
+    }
+
+    inv
 }

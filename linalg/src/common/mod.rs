@@ -1,6 +1,10 @@
 use core::simd::{f64x4, Simd};
 use vector::Vector;
 
+#[inline(always)]
+pub fn close_to(o: f64, a: f64) -> bool {
+    (o - a).abs() < 1e-6 + 1e-6 * a.abs()
+}
 /// Internal: Dot product of two vectors.
 ///
 /// Returns the value

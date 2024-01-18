@@ -6,6 +6,7 @@ use crate::common::{
 ///
 /// Taking 4 strips of [`b_block`] at a time, and evaluating remainder strips later
 #[cfg(target_arch = "x86_64")]
+#[target_feature(enable = "avx,avx2,fma")]
 #[allow(non_snake_case)]
 pub unsafe fn iter_blocks_on_1xN(
     a_rem: &[f64],
