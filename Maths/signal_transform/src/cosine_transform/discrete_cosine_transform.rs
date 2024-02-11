@@ -1,6 +1,9 @@
 use crate::utils::c64::{Number, PI};
 use core::ops::{Add, AddAssign};
 
+/// DCT-I (DCT type 1)
+/// 
+/// [See](https://en.wikipedia.org/wiki/Discrete_cosine_transform#DCT-I)
 pub fn dct1<T>(arr: &[T]) -> Vec<f64>
 where
     T: From<T> + Copy + Number + AddAssign + Add,
@@ -28,6 +31,9 @@ where
     res
 }
 
+/// DCT-II (DCT type 2)
+/// 
+/// [See](https://en.wikipedia.org/wiki/Discrete_cosine_transform#DCT-II)
 pub fn dct2<T>(arr: &[T]) -> Vec<f64>
 where
     T: From<T> + Copy + Number + AddAssign + Add,
@@ -50,4 +56,39 @@ where
     });
 
     res
+}
+
+pub fn dct3<T>(arr: &[T]) -> Vec<f64>
+where
+    T: From<T> + Copy + Number + AddAssign + Add,
+    f64: From<T>,
+{
+    let sz = arr.len();
+    let mut res: Vec<f64> = vec![0.0; sz];
+    let base = PI / (sz as f64);
+
+    res[0] = f64::from(arr[0]) * 0.5
+        + arr
+            .iter()
+            .skip(1)
+            .fold(0.0, |prev, curr| prev + f64::from(*curr));
+
+    res.iter_mut().enumerate().skip(1).for_each(|(k, elem)| {
+        let incr = base * (k as f64);
+        let mut base_angle: f64 = incr * 0.5;
+        *elem = f64::from(arr[0]) * 0.5
+            + arr.iter().skip(1).fold(0.0, |prev, curr| {
+                let ans = prev + f64::from(*curr) * base_angle.cos();
+                base_angle += incr;
+                ans
+            });
+    });
+
+    res
+}
+
+#[cfg(test)]
+pub mod test {
+    #[test]
+    pub fn dft1_test() {}
 }

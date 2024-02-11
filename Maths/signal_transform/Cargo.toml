@@ -9,3 +9,4 @@ edition = "2021"
 opt-level = 2
 
 [dependencies]
+vector = { git = "https://github.com/toastedbreadandomelette/vector-rs", branch = "master" }

@@ -79,7 +79,7 @@ where
         let mut block_size = i << 1;
         while block_size <= n {
             let angle = 2.0 * PI / (block_size as f64);
-            let winit = C64::new(angle.cos(), -angle.sin());
+            let winit = C64::unit_ag_conj(angle);
             for i in (0..n).step_by(block_size) {
                 let mut w = C64::unit();
                 for j in 0..(block_size >> 1) {

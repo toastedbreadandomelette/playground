@@ -1,13 +1,13 @@
 use crate::utils::c64::{Number, C64, PI};
 use core::ops::{Add, AddAssign, Mul};
-
+use vector::Vector;
 use super::faster_dft;
 
 /// Perform Fast Fourier Transform
 /// on `n` values of Vector, and returns the floating values
 ///
 /// Uses Divide-and-Conquer method, and non-recursive method
-pub fn faster_fft<T>(array: &[T]) -> Vec<C64>
+pub fn faster_fft<T>(array: &[T]) -> Vector<C64>
 where
     T: Number + AddAssign + Mul + Add + core::convert::Into<f64> + Copy,
     f64: From<T>,
@@ -18,7 +18,7 @@ where
     } else {
         // vec![C64::unit(); 10]
         let ls = ((n ^ (n - 1)) + 1) >> 1;
-        let mut indexes: Vec<usize> = vec![0; n];
+        let mut indexes: Vector<usize> = Vector::zeroed(n);
         let (mut j, mut i) = (1, n);
         // This shuffling method is done for general FFT method.
         // If MSB is smaller, this method works faster of the order
@@ -42,7 +42,7 @@ where
             index <<= 1;
         }
 
-        let mut input: Vec<C64> = vec![C64::zero(); n];
+        let mut input: Vector<C64> = Vector::zeroed(n);
 
         if i > 1 {
             for index in (0..n).step_by(i) {
@@ -52,9 +52,15 @@ where
                         .skip(index)
                         .take(i)
                         .map(|c| array[*c])
-                        .collect::<Vec<T>>(),
+                        .collect::<Vector<T>>(),
                 ));
             }
+        } else {
+            input.iter_mut()
+                .zip(indexes.iter())
+                .for_each(|(inp, idx)| {
+                    *inp = C64::new(f64::from(array[*idx]), 0.0);
+                })
         }
 
         let mut block_size = i << 1;
@@ -67,7 +73,7 @@ where
 
                 for j in 0..half_block {
                     let (u, v) = (input[i + j], input[i + j + half_block] * w);
-                    
+
                     input[i + j] = u + v;
                     input[i + j + half_block] = u - v;
                     w *= winit;

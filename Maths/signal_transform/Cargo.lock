@@ -5,3 +5,11 @@ version = 3
 [[package]]
 name = "signal_transform"
 version = "0.1.0"
+dependencies = [
+ "vector",
+]
+
+[[package]]
+name = "vector"
+version = "0.1.0"
+source = "git+https://github.com/toastedbreadandomelette/vector-rs?branch=master#d8f2e1e5396416cf8d0956430a6c7b3a1a754fe3"

@@ -1,15 +1,15 @@
 use core::ops::{Add, AddAssign, Mul};
-
+use vector::Vector;
 use crate::utils::c64::{Number, C64, PI};
 
 /// Faster DFT: Use multiple accumulator
-pub fn dft_fast<T>(arr: &[T]) -> Vec<C64>
+pub fn dft_fast<T>(arr: &[T]) -> Vector<C64>
 where
     T: Number + AddAssign + Mul + Add + core::convert::Into<f64> + Copy,
     f64: core::convert::From<T>,
 {
     let len = arr.len();
-    let mut res = vec![C64::zero(); arr.len()];
+    let mut res = Vector::zeroed(arr.len());
     let ag = 2.0 * PI / (len as f64);
 
     let wlen = C64::unit_ag_conj(ag);
@@ -67,18 +67,19 @@ where
 }
 
 /// Faster DFT: Use multiple accumulator
-pub fn idft_fast<T>(arr: &[C64]) -> Vec<T>
+pub fn idft_fast<T>(arr: &[C64]) -> Vector<T>
 where
     T: From<T> + AddAssign + Mul + Copy + Number + core::convert::From<f64>,
     f64: core::convert::Into<T>,
 {
     let len = arr.len();
-    let mut res = vec![C64::zero(); arr.len()];
+    let mut res = Vector::zeroed(arr.len());
     let ag = 2.0 * PI / (len as f64);
 
     let wlen = C64::unit_ag(ag);
     let wlen2 = wlen * wlen;
-    let wlen4 = wlen2 * wlen2;
+    let wlen3 = wlen2 * wlen;
+    let wlen4 = wlen3 * wlen;
 
     let mut wstart0 = wlen;
     let mut wstart1 = wlen2;
@@ -128,15 +129,15 @@ where
 
     res.iter()
         .map(|x| ((*x) / (len as f64)).real.into())
-        .collect::<Vec<T>>()
+        .collect::<Vector<T>>()
 }
 
 #[test]
 pub fn test_fast_dft_idft() {
     let sz = 8192;
-    let inp: Vec<f64> = (0..sz).map(|x| x as f64).collect();
+    let inp: Vector<f64> = (0..sz).map(|x| x as f64).collect();
     let val = dft_fast::<f64>(&inp);
-    let orig: Vec<f64> = idft_fast::<f64>(&val);
+    let orig: Vector<f64> = idft_fast::<f64>(&val);
 
     assert!(orig
         .iter()

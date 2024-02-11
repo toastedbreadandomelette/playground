@@ -1,21 +1,20 @@
 #![feature(portable_simd)]
 
-use crate::fourier_transform::{
-    discrete_fourier_transform,
-    fast_fft::{fast_fft, fast_ifft},
-    faster_dft,
-    faster_fft::faster_fft,
-};
+use crate::fourier_transform::{fast_fft::fast_fft, faster_fft::faster_fft, faster_dft::dft_fast, discrete_fourier_transform::dft};
+use vector::Vector;
 
 mod cosine_transform;
 mod fourier_transform;
 mod utils;
 
+#[inline(always)]
+pub fn close_to(o: f64, a: f64) -> bool {
+    (o - a).abs() < 1e-4 + 1e-4 * a.abs()
+}
+
 fn main() {
     // println!("Hello world");
-    let x = (0..2097152)
-        .map(|c| c as f64)
-        .collect::<Vec<f64>>();
+    let x = (0..32767).map(|c| c as f64).collect::<Vector<f64>>();
     // println!("{:?}", x);
     let t = std::time::Instant::now();
     let a = fast_fft::<f64>(&x);
@@ -31,5 +30,7 @@ fn main() {
     let b = faster_fft::<f64>(&x);
     println!("{}ms", t.elapsed().as_millis());
 
-    // println!("{:?}", flt);
+    println!("{:?}", a.iter().zip(b.iter()).all(|(a, b)| close_to(a.real, b.real) && close_to(a.img, b.img)));
+    // println!("{:?}", &a[..10]);
+    // println!("{:?}", &b[..10]);
 }
