@@ -1,3 +1,4 @@
+use crate::common::diagonal_iter::diagonal_iter_mut;
 use vector::Vector;
 
 pub fn display_mat(arr: &[f64], n: usize) {
@@ -5,21 +6,45 @@ pub fn display_mat(arr: &[f64], n: usize) {
     println!();
 }
 
-fn swap_rows(a: &mut [f64], b: &mut [f64]) {
-    assert_eq!(a.len(), b.len());
-    a.iter_mut()
-        .zip(b.iter_mut())
-        .for_each(|(a, b)| (*a, *b) = (*b, *a));
+pub fn check_and_swap(a: &mut [f64], inv: &mut [f64], n: usize) -> bool {
+    for x in (0..n * n).step_by(n + 1) {
+        if a[x] == 0.0 {
+            let (row, col) = (x / n, x % n);
+            let mut found = false;
+            for next_x in row + 1..n {
+                if a[next_x * n + col] != 0.0 {
+                    found = true;
+                    for col in 0..n {
+                        (a[row * n + col], a[next_x * n + col]) =
+                            (a[next_x * n + col], a[row * n + col]);
+                        (inv[row * n + col], inv[next_x * n + col]) =
+                            (inv[next_x * n + col], inv[row * n + col]);
+                    }
+                }
+            }
+
+            if !found {
+                return false;
+            }
+        }
+    }
+
+    true
 }
 
 /// Inverse of a matrix
 pub fn inv_normal(a: &[f64], n: usize) -> Vector<f64> {
     assert_eq!(a.len(), n * n);
 
-    let mut ac = a.to_vec();
-    let mut inv = (0..n * n)
-        .map(|c| if c % (n + 1) == 0 { 1.0 } else { 0.0 })
-        .collect::<Vector<f64>>();
+    let mut ac: Vector<f64> = Vector::zeroed(n * n);
+    ac.iter_mut().zip(a).for_each(|(aci, ai)| *aci = *ai);
+    let mut inv = Vector::zeroed(n * n);
+
+    diagonal_iter_mut(&mut inv, n).for_each(|c| *c = 1.0);
+
+    if !check_and_swap(&mut ac, &mut inv, n) {
+        panic!("No inverse for this matrix");
+    }
 
     // For each row
     for row in 0..n - 1 {
@@ -53,7 +78,6 @@ pub fn inv_normal(a: &[f64], n: usize) -> Vector<f64> {
         for prev_row in (0..row).rev() {
             let value = ac[prev_row * n + row];
             for col in 0..n {
-                // ac[prev_row * n + col] -= value * ac[row * n + col];
                 inv[prev_row * n + col] -= value * inv[row * n + col];
             }
 

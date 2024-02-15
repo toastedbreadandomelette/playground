@@ -10,9 +10,9 @@ checksum = "baf1de4339761588bc0619e3cbc0120ee582ebb74b53b4efbf79117bd2da40fd"
 
 [[package]]
 name = "getrandom"
-version = "0.2.9"
+version = "0.2.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c85e1d9ab2eadba7e5040d4e09cbd6d072b76a557ad64e797c2cb9d4da21d7e4"
+checksum = "190092ea657667030ac6a35e305e62fc4dd69fd98ac98631e5d3a2b1575a12b5"
 dependencies = [
  "cfg-if",
  "libc",
@@ -21,9 +21,9 @@ dependencies = [
 
 [[package]]
 name = "libc"
-version = "0.2.144"
+version = "0.2.153"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2b00cc1c228a6782d0f076e7b232802e0c5689d41bb5df366f2a6b6621cfdfe1"
+checksum = "9c198f91728a82281a64e1f4f9eeb25d82cb32a5de251c6bd1b5154d63a8e7bd"
 
 [[package]]
 name = "linalg"
@@ -72,7 +72,7 @@ dependencies = [
 [[package]]
 name = "vector"
 version = "0.1.0"
-source = "git+https://github.com/toastedbreadandomelette/vector-rs?branch=master#2d54f3f27679d5117f3f25e5eff8d2b53f522a8b"
+source = "git+https://github.com/toastedbreadandomelette/vector-rs?branch=master#d8f2e1e5396416cf8d0956430a6c7b3a1a754fe3"
 
 [[package]]
 name = "wasi"

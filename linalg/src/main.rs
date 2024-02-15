@@ -7,5 +7,7 @@ mod matmul;
 use matmul::*;
 
 fn main() {
-    inv::inverse();
+    let sz = 2048;
+    matmul::matmul(sz);
+    inv::inverse(sz);
 }

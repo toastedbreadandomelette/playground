@@ -1,5 +1,10 @@
 use core::simd::{f64x4, Simd};
 use vector::Vector;
+pub mod chunk_rem_slice_iter;
+pub mod diagonal_iter;
+pub mod rev_chunk_rem_slice_iter;
+pub mod split;
+mod tests;
 
 #[inline(always)]
 pub fn close_to(o: f64, a: f64) -> bool {

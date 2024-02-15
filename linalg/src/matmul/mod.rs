@@ -9,8 +9,7 @@ use crate::common::close_to;
 use rand::Rng;
 use vector::Vector;
 
-pub fn matmul() {
-    let sz = 512;
+pub fn matmul(sz: usize) {
     let mut rng = rand::thread_rng();
     let a: Vector<f64> = (0..sz * sz).map(|_| rng.gen::<f64>()).collect();
     let b: Vector<f64> = (0..sz * sz).map(|_| rng.gen::<f64>()).collect();
