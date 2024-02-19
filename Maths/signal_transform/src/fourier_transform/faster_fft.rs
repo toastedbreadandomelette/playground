@@ -43,9 +43,7 @@ unsafe fn join_4(input: &mut [C64], is_inverse: bool) {
     });
 }
 
-#[cfg(target_arch = "x86_64")]
-#[target_feature(enable = "avx,avx2,fma")]
-unsafe fn join_generic(input: &mut [C64], block_size: usize, is_inverse: bool) {
+fn join_generic(input: &mut [C64], block_size: usize, is_inverse: bool) {
     let angle = 2.0 * PI / (block_size as f64);
     let winit = if !is_inverse {
         C64::unit_ag_conj(angle)
@@ -64,8 +62,7 @@ unsafe fn join_generic(input: &mut [C64], block_size: usize, is_inverse: bool) {
             .zip(second_block.iter_mut())
             .for_each(|(first, second)| {
                 let (u, v) = (*first, *second * w);
-                *first = u + v;
-                *second = u - v;
+                (*first, *second) = (u + v, u - v);
                 w *= winit;
             })
     });
@@ -110,7 +107,7 @@ where
             match block_size {
                 2 => unsafe { join_2(&mut input, false) },
                 4 => unsafe { join_4(&mut input, false) },
-                _ => unsafe { join_generic(&mut input, block_size, false) },
+                _ => join_generic(&mut input, block_size, false),
             }
 
             block_size <<= 1;
@@ -164,7 +161,7 @@ where
             match block_size {
                 2 => unsafe { join_2(&mut input, true) },
                 4 => unsafe { join_4(&mut input, true) },
-                _ => unsafe { join_generic(&mut input, block_size, true) },
+                _ => join_generic(&mut input, block_size, true),
             }
 
             block_size <<= 1;
@@ -172,7 +169,8 @@ where
 
         let len = input.len();
 
-        input.iter()
+        input
+            .iter()
             .map(|x| (x.real / (len as f64)).into())
             .collect()
     }
