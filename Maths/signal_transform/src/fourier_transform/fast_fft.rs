@@ -1,17 +1,17 @@
 use crate::utils::c64::{Number, C64, PI};
 use core::ops::{Add, AddAssign, Mul};
-
+use vector::Vector;
 /// Perform Fast Fourier Transform
 /// on `n` values of Vector, and returns the floating values
 ///
 /// Uses Divide-and-Conquer method, and non-recursive method
-pub fn fast_fft<T>(array: &[T]) -> Vec<C64>
+pub fn fast_fft<T>(array: &[T]) -> Vector<C64>
 where
     T: Number + AddAssign + Mul + Add + core::convert::Into<f64> + Copy,
     f64: From<T>,
 {
     let dft = |array: &mut [C64]| {
-        let mut result = vec![C64::zero(); array.len()];
+        let mut result = Vector::<C64>::zeroed(array.len());
         let size = array.len();
         let angle = 2.0 * PI / (size as f64);
         let wlen = C64::unit_ag_conj(angle);
@@ -30,18 +30,16 @@ where
 
         array.copy_from_slice(&result);
     };
+
     let n = array.len();
-    if (n & 1) == 1 || n < 16 {
-        let mut input: Vec<C64> = array
-            .iter()
-            .map(|x| C64::new(f64::from(*x), 0.0))
-            .collect::<Vec<C64>>();
+    if (n & 1) == 1 {
+        let mut input: Vector<C64> =
+            array.iter().map(|x| C64::new(f64::from(*x), 0.0)).collect();
         dft(&mut input);
         input
     } else {
-        // vec![C64::unit(); 10]
         let ls = ((n ^ (n - 1)) + 1) >> 1;
-        let mut indexes: Vec<usize> = vec![0; n];
+        let mut indexes: Vector<usize> = Vector::zeroed(n);
         let (mut j, mut i) = (1, n);
         // This shuffling method is done for general FFT method.
         // If MSB is smaller, this method works faster of the order
@@ -65,10 +63,11 @@ where
             index <<= 1;
         }
 
-        let mut input: Vec<C64> = indexes
+        let mut input: Vector<C64> = indexes
             .iter()
             .map(|x| C64::new(f64::from(array[*x]), 0.0))
-            .collect::<Vec<C64>>();
+            .collect();
+        // display_bin(&indexes);
 
         if i > 1 {
             for index in (0..n).step_by(i) {

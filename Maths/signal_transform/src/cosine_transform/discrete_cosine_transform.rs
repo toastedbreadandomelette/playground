@@ -2,7 +2,7 @@ use crate::utils::c64::{Number, PI};
 use core::ops::{Add, AddAssign};
 
 /// DCT-I (DCT type 1)
-/// 
+///
 /// [See](https://en.wikipedia.org/wiki/Discrete_cosine_transform#DCT-I)
 pub fn dct1<T>(arr: &[T]) -> Vec<f64>
 where
@@ -32,7 +32,7 @@ where
 }
 
 /// DCT-II (DCT type 2)
-/// 
+///
 /// [See](https://en.wikipedia.org/wiki/Discrete_cosine_transform#DCT-II)
 pub fn dct2<T>(arr: &[T]) -> Vec<f64>
 where

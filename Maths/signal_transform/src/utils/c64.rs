@@ -53,6 +53,125 @@ impl core::fmt::Debug for C64 {
     }
 }
 
+macro_rules! impl_op_for_type {
+    ($type: ident) => {
+        impl core::convert::From<$type> for C64 {
+            #[inline(always)]
+            fn from(item: $type) -> C64 {
+                C64 {
+                    real: (item as f64),
+                    img: 0.0,
+                }
+            }
+        }
+
+        impl core::convert::From<C64> for $type {
+            #[inline(always)]
+            fn from(item: C64) -> Self {
+                item.real as $type
+            }
+        }
+
+        impl Add<C64> for $type
+        where
+            $type: Number,
+        {
+            type Output = C64;
+            #[inline(always)]
+            fn add(self, b: C64) -> C64 {
+                C64 {
+                    real: b.real + (self as f64),
+                    img: b.img,
+                }
+            }
+        }
+
+        impl AddAssign<C64> for $type {
+            #[inline(always)]
+            fn add_assign(&mut self, b: C64) {
+                *self += (b.real as $type);
+            }
+        }
+
+        impl Sub<C64> for $type {
+            type Output = C64;
+            #[inline(always)]
+            fn sub(self, b: C64) -> C64 {
+                C64 {
+                    real: -b.real + (self as f64),
+                    img: -b.img,
+                }
+            }
+        }
+
+        impl SubAssign<C64> for $type {
+            #[inline(always)]
+            fn sub_assign(&mut self, b: C64) {
+                *self -= (b.real as $type);
+            }
+        }
+
+        impl Mul<C64> for $type {
+            type Output = C64;
+            #[inline(always)]
+            fn mul(self, b: C64) -> C64 {
+                C64 {
+                    real: b.real * (self as f64),
+                    img: b.img * (self as f64),
+                }
+            }
+        }
+
+        impl MulAssign<C64> for $type {
+            #[inline(always)]
+            fn mul_assign(&mut self, b: C64) {
+                *self *= (b.real as $type);
+            }
+        }
+
+        impl Div<C64> for $type
+        where
+            $type: Number,
+        {
+            type Output = C64;
+            #[inline(always)]
+            fn div(self, b: C64) -> C64 {
+                let slf = (self as f64);
+                let abs = b.abs_sq();
+                C64 {
+                    real: (slf * b.real) / abs,
+                    img: (slf * b.img) / abs,
+                }
+            }
+        }
+    };
+}
+
+impl_op_for_type!(f64);
+impl_op_for_type!(f32);
+impl_op_for_type!(i8);
+impl_op_for_type!(i16);
+impl_op_for_type!(i32);
+impl_op_for_type!(i64);
+impl_op_for_type!(i128);
+impl_op_for_type!(u8);
+impl_op_for_type!(u16);
+impl_op_for_type!(u32);
+impl_op_for_type!(u64);
+impl_op_for_type!(u128);
+
+impl core::ops::Add<&C64> for C64 {
+    type Output = Self;
+
+    #[inline(always)]
+    fn add(self, b: &Self) -> Self {
+        Self {
+            real: self.real + b.real,
+            img: self.img + b.img,
+        }
+    }
+}
+
 impl AddAssign<&C64> for C64 {
     #[inline(always)]
     fn add_assign(&mut self, b: &Self) {
@@ -123,9 +242,21 @@ where
     }
 }
 
-impl<T> Add<T> for C64
+impl core::ops::Add<C64> for C64 {
+    type Output = Self;
+
+    #[inline(always)]
+    fn add(self, b: C64) -> Self {
+        Self {
+            real: self.real + b.real,
+            img: self.img + b.img,
+        }
+    }
+}
+
+impl<T: Number> Add<T> for C64
 where
-    T: Number + core::convert::Into<f64> + Clone + Copy,
+    T: core::convert::Into<f64> + Clone + Copy,
 {
     type Output = Self;
     #[inline(always)]
@@ -133,17 +264,6 @@ where
         Self {
             real: self.real + b.into(),
             img: self.img,
-        }
-    }
-}
-
-impl Add<C64> for C64 {
-    type Output = Self;
-    #[inline(always)]
-    fn add(self, b: C64) -> Self {
-        Self {
-            real: self.real + b.real,
-            img: self.img + b.img,
         }
     }
 }
@@ -301,107 +421,6 @@ impl core::fmt::Display for C64 {
     }
 }
 
-macro_rules! impl_op_for_type {
-    ($type: ident) => {
-        impl core::convert::From<$type> for C64 {
-            #[inline(always)]
-            fn from(item: $type) -> C64 {
-                C64 {
-                    real: (item as f64),
-                    img: 0.0,
-                }
-            }
-        }
-
-        impl core::convert::From<C64> for $type {
-            #[inline(always)]
-            fn from(item: C64) -> Self {
-                item.real as $type
-            }
-        }
-
-        impl Add<C64> for $type {
-            type Output = C64;
-            #[inline(always)]
-            fn add(self, b: C64) -> C64 {
-                C64 {
-                    real: b.real + (self as f64),
-                    img: b.img,
-                }
-            }
-        }
-
-        impl AddAssign<C64> for $type {
-            #[inline(always)]
-            fn add_assign(&mut self, b: C64) {
-                *self += (b.real as $type);
-            }
-        }
-
-        impl Sub<C64> for $type {
-            type Output = C64;
-            #[inline(always)]
-            fn sub(self, b: C64) -> C64 {
-                C64 {
-                    real: -b.real + (self as f64),
-                    img: -b.img,
-                }
-            }
-        }
-
-        impl SubAssign<C64> for $type {
-            #[inline(always)]
-            fn sub_assign(&mut self, b: C64) {
-                *self -= (b.real as $type);
-            }
-        }
-
-        impl Mul<C64> for $type {
-            type Output = C64;
-            #[inline(always)]
-            fn mul(self, b: C64) -> C64 {
-                C64 {
-                    real: b.real * (self as f64),
-                    img: b.img * (self as f64),
-                }
-            }
-        }
-
-        impl MulAssign<C64> for $type {
-            #[inline(always)]
-            fn mul_assign(&mut self, b: C64) {
-                *self *= (b.real as $type);
-            }
-        }
-
-        impl Div<C64> for $type {
-            type Output = C64;
-            #[inline(always)]
-            fn div(self, b: C64) -> C64 {
-                let slf = (self as f64);
-                let abs = b.abs_sq();
-                C64 {
-                    real: (slf * b.real) / abs,
-                    img: (slf * b.img) / abs,
-                }
-            }
-        }
-    };
-}
-
-impl_op_for_type!(f64);
-impl_op_for_type!(f32);
-impl_op_for_type!(i8);
-impl_op_for_type!(i16);
-impl_op_for_type!(i32);
-impl_op_for_type!(i64);
-impl_op_for_type!(i128);
-impl_op_for_type!(u8);
-impl_op_for_type!(u16);
-impl_op_for_type!(u32);
-impl_op_for_type!(u64);
-impl_op_for_type!(u128);
-
 impl Default for C64 {
     #[inline(always)]
     fn default() -> Self {
@@ -480,6 +499,14 @@ impl C64 {
     }
 
     #[inline(always)]
+    pub fn conj_swap(self) -> Self {
+        Self {
+            real: -self.img,
+            img: self.real,
+        }
+    }
+
+    #[inline(always)]
     pub fn conjugate(self) -> Self {
         Self {
             real: self.real,
@@ -487,3 +514,5 @@ impl C64 {
         }
     }
 }
+
+// impl Number for C64 {}

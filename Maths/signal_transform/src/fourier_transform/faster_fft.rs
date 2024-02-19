@@ -1,7 +1,75 @@
-use crate::utils::c64::{Number, C64, PI};
+use super::faster_dft;
+use crate::utils::index_generator::IndexGen;
+use crate::utils::{
+    c64::{Number, C64, PI},
+    c64x2::C64x2,
+};
 use core::ops::{Add, AddAssign, Mul};
 use vector::Vector;
-use super::faster_dft;
+
+#[cfg(target_arch = "x86_64")]
+#[target_feature(enable = "avx,avx2,fma")]
+unsafe fn join_2(input: &mut [C64], _: bool) {
+    let scal = C64x2::from_array([C64::new(1.0, 1.0), C64::new(-1.0, -1.0)]);
+
+    input.chunks_exact_mut(2).for_each(|chunk| {
+        let (mut mul0, smul0) =
+            (C64x2::splat(chunk[0]), C64x2::splat(chunk[1]));
+
+        mul0 += smul0.scalar_mul_vec(scal);
+        mul0.copy_to_slice(chunk);
+    });
+}
+
+#[cfg(target_arch = "x86_64")]
+#[target_feature(enable = "avx,avx2,fma")]
+unsafe fn join_4(input: &mut [C64], is_inverse: bool) {
+    let scal = C64x2::from_array([
+        C64::new(1.0, 0.0),
+        if !is_inverse {
+            C64::new(0.0, -1.0)
+        } else {
+            C64::new(0.0, 1.0)
+        },
+    ]);
+
+    input.chunks_exact_mut(4).for_each(|chunk| {
+        let (u1, v1) =
+            (C64x2::from_slice(chunk), C64x2::from_slice(&chunk[2..]));
+        let t1 = v1 * scal;
+
+        (u1 + t1).copy_to_slice(chunk);
+        (u1 - t1).copy_to_slice(&mut chunk[2..]);
+    });
+}
+
+#[cfg(target_arch = "x86_64")]
+#[target_feature(enable = "avx,avx2,fma")]
+unsafe fn join_generic(input: &mut [C64], block_size: usize, is_inverse: bool) {
+    let angle = 2.0 * PI / (block_size as f64);
+    let winit = if !is_inverse {
+        C64::unit_ag_conj(angle)
+    } else {
+        C64::unit_ag(angle)
+    };
+
+    let half_block = block_size >> 1;
+
+    input.chunks_exact_mut(block_size).for_each(|chunk| {
+        let mut w = C64::new(1.0, 0.0);
+        let (first_block, second_block) = chunk.split_at_mut(half_block);
+
+        first_block
+            .iter_mut()
+            .zip(second_block.iter_mut())
+            .for_each(|(first, second)| {
+                let (u, v) = (*first, *second * w);
+                *first = u + v;
+                *second = u - v;
+                w *= winit;
+            })
+    });
+}
 
 /// Perform Fast Fourier Transform
 /// on `n` values of Vector, and returns the floating values
@@ -11,77 +79,101 @@ pub fn faster_fft<T>(array: &[T]) -> Vector<C64>
 where
     T: Number + AddAssign + Mul + Add + core::convert::Into<f64> + Copy,
     f64: From<T>,
+    C64: From<T>,
 {
     let n = array.len();
     if (n & 1) == 1 || n < 16 {
         faster_dft::dft_fast(array)
     } else {
-        // vec![C64::unit(); 10]
-        let ls = ((n ^ (n - 1)) + 1) >> 1;
-        let mut indexes: Vector<usize> = Vector::zeroed(n);
-        let (mut j, mut i) = (1, n);
-        // This shuffling method is done for general FFT method.
-        // If MSB is smaller, this method works faster of the order
-        // n log(n), otherwise, runs at O(n2).
-        while (i & 1) == 0 {
-            indexes[i >> 1..i].fill(j);
-            j <<= 1;
-            i >>= 1;
+        let index_iter: IndexGen = IndexGen::new(array.len());
+        let mut block_size = index_iter.get_base_size();
+
+        let mut input: Vector<C64> = Vector::zeroed(array.len());
+        input
+            .iter_mut()
+            .zip(IndexGen::new(array.len()).map(|x| array[x]))
+            .for_each(|(x, element)| {
+                *x = C64::from(element);
+            });
+
+        if block_size > 1 {
+            input.chunks_exact_mut(block_size).for_each(|chunk| {
+                let res = &faster_dft::dft_fast_c64(chunk);
+                chunk.copy_from_slice(res);
+            });
         }
 
-        for k in 1..i {
-            indexes[k] = indexes[k - 1] + ls;
-            indexes[k + (n >> 1)] = indexes[k] + 1;
-        }
-        let mut index = i;
-        while index < (n >> 1) {
-            for k in 0..index {
-                indexes[k + index] += indexes[k];
-                indexes[k + index + (n >> 1)] = indexes[k + index] + 1;
-            }
-            index <<= 1;
-        }
+        // println!("{block_size}");
+        block_size <<= 1;
 
-        let mut input: Vector<C64> = Vector::zeroed(n);
-
-        if i > 1 {
-            for index in (0..n).step_by(i) {
-                input[index..index + i].copy_from_slice(&faster_dft::dft_fast(
-                    &indexes
-                        .iter()
-                        .skip(index)
-                        .take(i)
-                        .map(|c| array[*c])
-                        .collect::<Vector<T>>(),
-                ));
-            }
-        } else {
-            input.iter_mut()
-                .zip(indexes.iter())
-                .for_each(|(inp, idx)| {
-                    *inp = C64::new(f64::from(array[*idx]), 0.0);
-                })
-        }
-
-        let mut block_size = i << 1;
         while block_size <= n {
-            let angle = 2.0 * PI / (block_size as f64);
-            let winit = C64::unit_ag_conj(angle);
-            let half_block = block_size >> 1;
-            for i in (0..n).step_by(block_size) {
-                let mut w = C64::unit();
-
-                for j in 0..half_block {
-                    let (u, v) = (input[i + j], input[i + j + half_block] * w);
-
-                    input[i + j] = u + v;
-                    input[i + j + half_block] = u - v;
-                    w *= winit;
-                }
+            match block_size {
+                2 => unsafe { join_2(&mut input, false) },
+                4 => unsafe { join_4(&mut input, false) },
+                _ => unsafe { join_generic(&mut input, block_size, false) },
             }
+
             block_size <<= 1;
         }
 
         input
+    }
+}
+
+/// Perform Fast Fourier Transform
+/// on `n` values of Vector, and returns the floating values
+///
+/// Uses Divide-and-Conquer method, and non-recursive method
+pub fn faster_ifft<T>(array: &[C64]) -> Vector<T>
+where
+    T: Number
+        + AddAssign
+        + Mul
+        + Add
+        + core::convert::Into<f64>
+        + core::convert::From<f64>
+        + Copy,
+    f64: From<T>,
+    C64: From<T>,
+{
+    let n = array.len();
+    if (n & 1) == 1 || n < 16 {
+        faster_dft::idft_fast::<T>(array)
+    } else {
+        let index_iter: IndexGen = IndexGen::new(array.len());
+        let mut block_size = index_iter.get_base_size();
+
+        let mut input: Vector<C64> = Vector::zeroed(array.len());
+        input
+            .iter_mut()
+            .zip(IndexGen::new(array.len()).map(|x| array[x]))
+            .for_each(|(x, element)| {
+                *x = element;
+            });
+
+        if block_size > 1 {
+            input.chunks_exact_mut(block_size).for_each(|chunk| {
+                let res = &faster_dft::idft_fast_c64(chunk);
+                chunk.copy_from_slice(res);
+            });
+        }
+
+        block_size <<= 1;
+
+        while block_size <= n {
+            match block_size {
+                2 => unsafe { join_2(&mut input, true) },
+                4 => unsafe { join_4(&mut input, true) },
+                _ => unsafe { join_generic(&mut input, block_size, true) },
+            }
+
+            block_size <<= 1;
+        }
+
+        let len = input.len();
+
+        input.iter()
+            .map(|x| (x.real / (len as f64)).into())
+            .collect()
     }
 }
