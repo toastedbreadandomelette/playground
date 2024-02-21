@@ -1,5 +1,6 @@
 pub mod c64;
 pub mod c64x2;
+pub mod c64x4;
 pub mod index_generator;
 
 #[allow(unused)]
