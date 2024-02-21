@@ -1,6 +1,7 @@
 use crate::utils::c64::{Number, C64, PI};
 use core::ops::{Add, AddAssign, Mul};
 use vector::Vector;
+
 /// Perform Fast Fourier Transform
 /// on `n` values of Vector, and returns the floating values
 ///

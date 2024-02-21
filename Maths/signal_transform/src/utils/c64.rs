@@ -430,12 +430,12 @@ impl Default for C64 {
 
 impl C64 {
     #[inline(always)]
-    pub fn new(r: f64, i: f64) -> Self {
+    pub const fn new(r: f64, i: f64) -> Self {
         Self { real: r, img: i }
     }
 
     #[inline(always)]
-    pub fn zero() -> Self {
+    pub const fn zero() -> Self {
         Self {
             real: 0.0,
             img: 0.0,
@@ -443,7 +443,7 @@ impl C64 {
     }
 
     #[inline(always)]
-    pub fn unit() -> Self {
+    pub const fn unit() -> Self {
         Self {
             real: 1.0,
             img: 0.0,

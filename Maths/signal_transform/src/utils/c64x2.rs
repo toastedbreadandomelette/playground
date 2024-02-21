@@ -92,6 +92,10 @@ impl Mul for C64x2 {
             let realf = _mm256_hsub_pd(real, real);
             let imgf = _mm256_hadd_pd(img, img);
             Self(_mm256_blend_pd(realf, imgf, 0b1010))
+            // let (mut ans0, mut ans1) = ([C64::zero(); 2], [C64::zero(); 2]);
+            // self.copy_to_slice(&mut ans0);
+            // rhs.copy_to_slice(&mut ans1);
+            // return C64x2::from_array([ans0[0] * ans1[0], ans1[1] * ans0[1]]);
         }
     }
 }
@@ -105,6 +109,10 @@ impl MulAssign for C64x2 {
             let realf = _mm256_hsub_pd(real, real);
             let imgf = _mm256_hadd_pd(img, img);
             *self = Self(_mm256_blend_pd(realf, imgf, 0b1010))
+            // let (mut ans0, mut ans1) = ([C64::zero(); 2], [C64::zero(); 2]);
+            // self.copy_to_slice(&mut ans0);
+            // rhs.copy_to_slice(&mut ans1);
+            // *self = C64x2::from_array([ans0[0] * ans1[0], ans1[1] * ans0[1]]);
         }
     }
 }

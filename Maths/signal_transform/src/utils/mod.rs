@@ -2,6 +2,7 @@ pub mod c64;
 pub mod c64x2;
 pub mod index_generator;
 
+#[allow(unused)]
 pub fn display_bin(vec: &[usize]) {
     print!("[");
     for (index, x) in vec.iter().enumerate() {
@@ -11,4 +12,9 @@ pub fn display_bin(vec: &[usize]) {
         }
     }
     println!("]");
+}
+
+#[inline(always)]
+pub fn close_to(o: f64, a: f64) -> bool {
+    (o - a).abs() < 1e-4 + 1e-4 * o.abs()
 }

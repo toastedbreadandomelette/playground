@@ -1,1 +1,7 @@
 target/
+*.aux
+*.cls
+*.dvi
+*.log
+*.pdf
+*.tex
