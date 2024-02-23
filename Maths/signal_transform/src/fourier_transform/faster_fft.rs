@@ -1,9 +1,10 @@
-use super::faster_dft;
+use super::fast_dft;
 use crate::utils::index_generator::IndexGen;
 use crate::utils::{
     c64::{Number, C64, PI},
     c64x2::C64x2,
 };
+use core::convert::Into;
 use core::ops::{Add, AddAssign, Mul};
 use vector::Vector;
 
@@ -133,14 +134,14 @@ unsafe fn join_generic(input: &mut [C64], block_size: usize, is_inverse: bool) {
 /// Uses Divide-and-Conquer method, and non-recursive method
 pub fn faster_fft<T>(array: &[T]) -> Vector<C64>
 where
-    T: Number + AddAssign + Mul + Add + core::convert::Into<f64> + Copy,
+    T: Number + AddAssign + Mul + Add + Into<f64> + Copy,
     f64: From<T>,
     C64: From<T>,
 {
     let n = array.len();
 
     if (n & 1) == 1 || n < 16 {
-        faster_dft::dft_fast(array)
+        fast_dft::dft_fast(array)
     } else {
         let index_iter: IndexGen = IndexGen::new(array.len());
         let mut block_size = index_iter.get_base_size();
@@ -155,8 +156,8 @@ where
 
         if block_size > 1 {
             input.chunks_exact_mut(block_size).for_each(|chunk| {
-                let res = &faster_dft::dft_fast_c64(chunk);
-                chunk.copy_from_slice(res);
+                let res = fast_dft::dft_fast_c64(chunk);
+                chunk.copy_from_slice(&res);
             });
         }
 
@@ -194,7 +195,7 @@ where
 {
     let n = array.len();
     if (n & 1) == 1 || n < 16 {
-        faster_dft::idft_fast::<T>(array)
+        fast_dft::idft_fast::<T>(array)
     } else {
         let index_iter: IndexGen = IndexGen::new(array.len());
         let mut block_size = index_iter.get_base_size();
@@ -209,7 +210,7 @@ where
 
         if block_size > 1 {
             input.chunks_exact_mut(block_size).for_each(|chunk| {
-                let res = &faster_dft::idft_fast_c64(chunk);
+                let res = &fast_dft::idft_fast_c64(chunk);
                 chunk.copy_from_slice(res);
             });
         }

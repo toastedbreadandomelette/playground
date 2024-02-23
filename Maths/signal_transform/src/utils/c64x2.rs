@@ -7,15 +7,47 @@ type F64x4 = __m256d;
 #[derive(Debug, Clone, Copy)]
 pub struct C64x2(F64x4);
 
+impl Default for C64x2 {
+    #[inline(always)]
+    fn default() -> Self {
+        C64x2::splat(C64::zero())
+    }
+}
+
 impl C64x2 {
     #[inline(always)]
     pub fn from_slice(val: &[C64]) -> Self {
         unsafe { Self(_mm256_loadu_pd(val.as_ptr() as *const f64)) }
     }
 
+    #[allow(unused)]
+    #[inline(always)]
+    pub fn unit(val: &[C64]) -> Self {
+        unsafe { Self(_mm256_set_pd(0.0, 0.1, 0.0, 0.1)) }
+    }
+
     #[inline(always)]
     pub fn splat(val: C64) -> Self {
         unsafe { Self(_mm256_set_pd(val.img, val.real, val.img, val.real)) }
+    }
+
+    #[inline(always)]
+    pub fn as_array(&self) -> [C64; 2] {
+        let mut vec = [C64::zero(); 2];
+        unsafe { _mm256_storeu_pd(vec.as_mut_ptr() as *mut f64, self.0) };
+        vec
+    }
+
+    #[allow(unused)]
+    #[inline(always)]
+    pub fn reduce_sum(&self) -> C64 {
+        self.as_array().into_iter().fold(C64::zero(), |p, c| p + c)
+    }
+
+    #[allow(unused)]
+    #[inline(always)]
+    pub fn reduce_prod(&self) -> C64 {
+        self.as_array().into_iter().fold(C64::unit(), |p, c| p * c)
     }
 
     #[inline(always)]
@@ -31,18 +63,8 @@ impl C64x2 {
     }
 
     #[inline(always)]
-    pub fn scalar_mul(&self, val: f64) -> Self {
-        unsafe { Self(_mm256_mul_pd(self.0, _mm256_set1_pd(val))) }
-    }
-
-    #[inline(always)]
     pub fn scalar_mul_vec(&self, val: C64x2) -> Self {
         unsafe { Self(_mm256_mul_pd(self.0, val.0)) }
-    }
-
-    #[inline(always)]
-    pub fn scalar_mul_vec_self(&mut self, val: C64x2) {
-        unsafe { self.0 = _mm256_mul_pd(self.0, val.0) }
     }
 
     #[inline(always)]
