@@ -1,7 +1,4 @@
-use crate::common::{
-    dot_simd, dot_simd_2, dot_simd_2x3, dot_simd_2x4, dot_simd_3, dot_simd_4,
-};
-
+use crate::common::*;
 /// Iterate on 1 strip vector of [`a`] with block of vectors [`b`]
 ///
 /// Taking 4 strips of [`b_block`] at a time, and evaluating remainder strips later

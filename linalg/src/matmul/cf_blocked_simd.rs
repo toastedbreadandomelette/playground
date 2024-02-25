@@ -12,7 +12,6 @@ const C_BLOCKSIZE: usize = 32;
 /// `a` and `b` of shape `ashape (m x n)` and `bshape (n x p)` respectively
 ///
 /// Uses SIMD functions: calls unsafe functions internally for computation
-#[inline(always)]
 pub fn cf_blocked_simd(
     a: &[f64],
     b: &[f64],

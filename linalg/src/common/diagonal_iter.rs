@@ -34,13 +34,11 @@ impl<'a, T> Iterator for DiagonalIter<'a, T> {
 
     #[inline(always)]
     fn next(&mut self) -> Option<Self::Item> {
-        if self.ptr + self.len + 1 < self.slice.len() {
+        (self.ptr + self.len + 1 < self.slice.len()).then(|| {
             let index = self.ptr;
             self.ptr += self.len + 1;
-            Some(&self.slice[index])
-        } else {
-            None
-        }
+            &self.slice[index]
+        })
     }
 
     #[inline(always)]
@@ -61,7 +59,7 @@ pub struct DiagonalIterMut<'a, T> {
     /// Length of a 2-D Array.
     len: usize,
     /// Phantom data
-    _p: PhantomData<&'a mut T>,
+    _phantom_data: PhantomData<&'a mut T>,
 }
 
 impl<'a, T> DiagonalIterMut<'a, T> {
@@ -72,7 +70,7 @@ impl<'a, T> DiagonalIterMut<'a, T> {
             slice_len,
             len,
             ptr: 0,
-            _p: PhantomData,
+            _phantom_data: PhantomData,
         }
     }
 }
@@ -80,18 +78,14 @@ impl<'a, T> DiagonalIterMut<'a, T> {
 impl<'a, T> Iterator for DiagonalIterMut<'a, T> {
     type Item = &'a mut T;
 
-    #[inline(always)]
     fn next(&mut self) -> Option<Self::Item> {
-        if self.ptr < self.slice_len {
+        (self.ptr < self.slice_len).then(|| {
             let index = self.ptr;
             self.ptr += self.len + 1;
-            unsafe { Some(&mut *self.slice.add(index)) }
-        } else {
-            None
-        }
+            unsafe { &mut *self.slice.add(index) }
+        })
     }
 
-    #[inline(always)]
     fn size_hint(&self) -> (usize, Option<usize>) {
         let value = self.ptr / self.len;
         (value, Some(value))

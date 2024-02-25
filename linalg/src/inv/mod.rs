@@ -5,8 +5,6 @@ pub mod inv_normal;
 use crate::common::close_to;
 #[allow(unused)]
 use core::simd::{f64x4, Simd};
-// use crate::inv::inv_normal::display_mat;
-// use crate::matmul::matmul_normal;
 use rand::Rng;
 use vector::Vector;
 
@@ -18,6 +16,7 @@ pub fn check_inverse(a: &[f64], n: usize) -> bool {
         .all(|(i, el)| close_to(*el, if i % (n + 1) == 0 { 1.0 } else { 0.0 }))
 }
 
+#[inline]
 #[cfg(target_arch = "x86_64")]
 #[target_feature(enable = "avx,avx2,fma")]
 pub unsafe fn div(
@@ -43,8 +42,6 @@ pub unsafe fn div(
             let invbres = f64x4::from_slice(invbre);
             (acbres - acre_res).copy_to_slice(acbre);
             (invbres - invre_res).copy_to_slice(invbre);
-            // acbre.copy_from_slice(&(acbres - acre_res).to_array());
-            // invbre.copy_from_slice(&(invbres - invre_res).to_array());
         });
 }
 

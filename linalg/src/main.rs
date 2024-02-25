@@ -4,10 +4,9 @@
 mod common;
 mod inv;
 mod matmul;
-use matmul::*;
 
 fn main() {
-    let sz = 2048;
+    let sz = 1024;
     matmul::matmul(sz);
     inv::inverse(sz);
 }

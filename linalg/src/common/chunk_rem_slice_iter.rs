@@ -39,18 +39,14 @@ impl<'a, T> ChunkExactRemSliceIter<'a, T> {
 impl<'a, T> Iterator for ChunkExactRemSliceIter<'a, T> {
     type Item = (&'a [T], &'a [T]);
 
-    #[inline]
     fn next(&mut self) -> Option<Self::Item> {
-        if self.slice.len() > 0 {
+        (self.slice.len() > 0).then(|| {
             let (first, last) = self.slice.split_at(self.chunk_size);
             self.slice = last;
-            Some((first, last))
-        } else {
-            None
-        }
+            (first, last)
+        })
     }
 
-    #[inline(always)]
     fn size_hint(&self) -> (usize, Option<usize>) {
         let remaining_length = self.slice.len() / self.chunk_size;
         (remaining_length, Some(remaining_length))
@@ -73,7 +69,6 @@ pub struct ChunkExactRemSliceIterMut<'a, T> {
 }
 
 impl<'a, T> ChunkExactRemSliceIterMut<'a, T> {
-    #[inline(always)]
     pub fn new(slice: &'a mut [T], chunk_size: usize) -> Self {
         let len = slice.len();
         assert!(
@@ -93,9 +88,8 @@ impl<'a, T> ChunkExactRemSliceIterMut<'a, T> {
 impl<'a, T> Iterator for ChunkExactRemSliceIterMut<'a, T> {
     type Item = (&'a mut [T], &'a mut [T]);
 
-    #[inline(always)]
     fn next(&mut self) -> Option<Self::Item> {
-        if self.ptr < self.len {
+        (self.ptr < self.len).then(|| {
             let curr_row = unsafe {
                 core::ptr::slice_from_raw_parts_mut(
                     (self.slice as *mut T).add(self.ptr),
@@ -109,13 +103,10 @@ impl<'a, T> Iterator for ChunkExactRemSliceIterMut<'a, T> {
                     self.len - self.ptr,
                 )
             };
-            unsafe { Some((&mut *curr_row, &mut *next_remaining)) }
-        } else {
-            None
-        }
+            unsafe { (&mut *curr_row, &mut *next_remaining) }
+        })
     }
 
-    #[inline(always)]
     fn size_hint(&self) -> (usize, Option<usize>) {
         let remaining_length = self.len / self.chunk_size;
         (remaining_length, Some(remaining_length))

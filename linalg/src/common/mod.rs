@@ -32,7 +32,9 @@ pub fn reduce_sum(asimd: Simd<f64, 4>) -> f64 {
 ///
 /// Returns the value
 #[inline]
-pub fn dot_simd(avec: &[f64], bvec0: &[f64]) -> f64 {
+#[cfg(target_arch = "x86_64")]
+#[target_feature(enable = "avx,avx2,fma")]
+pub unsafe fn dot_simd(avec: &[f64], bvec0: &[f64]) -> f64 {
     let pre0 = avec
         .chunks_exact(4)
         .map(f64x4::from_slice)
@@ -51,7 +53,13 @@ pub fn dot_simd(avec: &[f64], bvec0: &[f64]) -> f64 {
 ///
 /// Returns the value
 #[inline]
-pub fn dot_simd_2(avec: &[f64], bvec0: &[f64], bvec1: &[f64]) -> (f64, f64) {
+#[cfg(target_arch = "x86_64")]
+#[target_feature(enable = "avx,avx2,fma")]
+pub unsafe fn dot_simd_2(
+    avec: &[f64],
+    bvec0: &[f64],
+    bvec1: &[f64],
+) -> (f64, f64) {
     let (pre0, pre1) = avec
         .chunks_exact(4)
         .map(f64x4::from_slice)
@@ -77,7 +85,9 @@ pub fn dot_simd_2(avec: &[f64], bvec0: &[f64], bvec1: &[f64]) -> (f64, f64) {
 ///
 /// Returns the value
 #[inline]
-pub fn dot_simd_3(
+#[cfg(target_arch = "x86_64")]
+#[target_feature(enable = "avx,avx2,fma")]
+pub unsafe fn dot_simd_3(
     avec: &[f64],
     bvec0: &[f64],
     bvec1: &[f64],
@@ -113,7 +123,9 @@ pub fn dot_simd_3(
 ///
 /// Returns the value
 #[inline]
-pub fn dot_simd_2x3(
+#[cfg(target_arch = "x86_64")]
+#[target_feature(enable = "avx,avx2,fma")]
+pub unsafe fn dot_simd_2x3(
     avec0: &[f64],
     avec1: &[f64],
     bvec0: &[f64],
@@ -221,7 +233,7 @@ pub unsafe fn dot_simd_4(
 /// Internal: Dot SIMD product of two against four simultaneous vectors.
 ///
 /// Returns the value
-#[inline]
+// #[inline]
 #[cfg(target_arch = "x86_64")]
 #[target_feature(enable = "avx,avx2,fma")]
 pub unsafe fn dot_simd_2x4(
@@ -500,7 +512,7 @@ pub fn transpose_vec(
     (m, n): (usize, usize),
 ) -> (Vector<f64>, (usize, usize)) {
     let mut ta: Vector<f64> = Vector::zeroed(a.len());
-    // let rblock: usize = 32;
+    let blocks: usize = 32;
 
     a.chunks(n).enumerate().for_each(|(i, avec)| {
         avec.iter().zip(ta.iter_mut().skip(i).step_by(m)).for_each(

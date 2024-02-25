@@ -1,6 +1,5 @@
 use std::marker::PhantomData;
 
-#[inline(always)]
 pub fn rev_chunk_exact_rem_slice_iter<'a, T>(
     arr: &'a [T],
     chunk_size: usize,
@@ -8,7 +7,6 @@ pub fn rev_chunk_exact_rem_slice_iter<'a, T>(
     RevChunkExactRemSliceIter::new(arr, chunk_size)
 }
 
-#[inline(always)]
 pub fn rev_chunk_exact_rem_slice_iter_mut<'a, T>(
     arr: &'a mut [T],
     chunk_size: usize,
@@ -44,21 +42,17 @@ impl<'a, T> RevChunkExactRemSliceIter<'a, T> {
 impl<'a, T> Iterator for RevChunkExactRemSliceIter<'a, T> {
     type Item = (&'a [T], &'a [T]);
 
-    #[inline]
     fn next(&mut self) -> Option<Self::Item> {
-        if self.slice.len() > self.ptr {
+        (self.slice.len() > self.ptr).then(|| {
             let (first, last) = self
                 .slice
                 .split_at(self.slice.len() - self.chunk_size - self.ptr);
             self.ptr += self.chunk_size;
             self.slice = first;
-            Some((first, last))
-        } else {
-            None
-        }
+            (first, last)
+        })
     }
 
-    #[inline(always)]
     fn size_hint(&self) -> (usize, Option<usize>) {
         let remaining_length = self.slice.len() / self.chunk_size;
         (remaining_length, Some(remaining_length))
@@ -103,7 +97,7 @@ impl<'a, T> Iterator for RevChunkExactRemSliceIterMut<'a, T> {
 
     #[inline]
     fn next(&mut self) -> Option<Self::Item> {
-        if self.ptr < self.len {
+        (self.ptr < self.len).then(|| {
             let curr_row = core::ptr::slice_from_raw_parts_mut(
                 self.slice as *mut T,
                 self.len - self.ptr - self.chunk_size,
@@ -117,10 +111,8 @@ impl<'a, T> Iterator for RevChunkExactRemSliceIterMut<'a, T> {
                 )
             };
 
-            unsafe { Some((&mut *curr_row, &mut *next_remaining)) }
-        } else {
-            None
-        }
+            unsafe { (&mut *curr_row, &mut *next_remaining) }
+        })
     }
 
     #[inline(always)]

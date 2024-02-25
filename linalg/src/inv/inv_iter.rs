@@ -5,11 +5,9 @@ use vector::Vector;
 
 pub fn inv_iter(a: &[f64], n: usize) -> Vector<f64> {
     let mut ac: Vector<f64> = Vector::zeroed(n * n);
-
     ac.iter_mut().zip(a).for_each(|(aci, ai)| *aci = *ai);
 
     let mut inv: Vector<f64> = Vector::zeroed(n * n);
-
     diagonal_iter_mut(&mut inv, n).for_each(|el| *el = 1.0);
 
     if !crate::inv::inv_normal::check_and_swap(&mut ac, &mut inv, n) {
