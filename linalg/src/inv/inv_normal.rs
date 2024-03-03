@@ -1,11 +1,6 @@
 use crate::common::diagonal_iter::diagonal_iter_mut;
 use vector::Vector;
 
-pub fn display_mat(arr: &[f64], n: usize) {
-    arr.chunks_exact(n).for_each(|c| println!("{:?}", c));
-    println!();
-}
-
 pub fn check_and_swap(a: &mut [f64], inv: &mut [f64], n: usize) -> bool {
     for x in (0..n * n).step_by(n + 1) {
         if a[x] == 0.0 {
