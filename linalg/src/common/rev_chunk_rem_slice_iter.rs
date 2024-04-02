@@ -25,6 +25,7 @@ pub struct RevChunkExactRemSliceIter<'a, T> {
 }
 
 impl<'a, T> RevChunkExactRemSliceIter<'a, T> {
+    #[inline]
     pub fn new(slice: &'a [T], chunk_size: usize) -> Self {
         let len = slice.len();
         assert!(
@@ -95,7 +96,6 @@ impl<'a, T> RevChunkExactRemSliceIterMut<'a, T> {
 impl<'a, T> Iterator for RevChunkExactRemSliceIterMut<'a, T> {
     type Item = (&'a mut [T], &'a mut [T]);
 
-    #[inline]
     fn next(&mut self) -> Option<Self::Item> {
         (self.ptr < self.len).then(|| {
             let curr_row = core::ptr::slice_from_raw_parts_mut(
@@ -115,7 +115,6 @@ impl<'a, T> Iterator for RevChunkExactRemSliceIterMut<'a, T> {
         })
     }
 
-    #[inline(always)]
     fn size_hint(&self) -> (usize, Option<usize>) {
         let remaining_length = (self.len - self.ptr) / self.chunk_size;
         (remaining_length, Some(remaining_length))

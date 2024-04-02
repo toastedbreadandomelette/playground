@@ -507,11 +507,13 @@ pub fn dot4(
 /// Also requires to pass shape of matrix, where
 /// `m` is total rows in matrix, and `n` is total columns
 /// in matrix
-pub fn transpose_vec(
-    a: &[f64],
+pub fn transpose_vec<T>(
+    a: &[T],
     (m, n): (usize, usize),
-) -> (Vector<f64>, (usize, usize)) {
-    let mut ta: Vector<f64> = Vector::zeroed(a.len());
+) -> (Vector<T>, (usize, usize))
+where
+    T: Copy {
+    let mut ta: Vector<T> = Vector::zeroed(a.len());
     let blocks: usize = 32;
 
     a.chunks(n).enumerate().for_each(|(i, avec)| {

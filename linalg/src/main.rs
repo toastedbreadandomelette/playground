@@ -4,9 +4,11 @@
 mod common;
 mod inv;
 mod matmul;
+mod matmul_modulo;
 
 fn main() {
-    let sz = 2048;
-    // matmul::matmul(sz);
-    inv::inverse(sz);
+    let sz = 1024;
+    matmul::matmul(sz);
+    // inv::inverse(sz);
+    matmul_modulo::matmul_mod();
 }

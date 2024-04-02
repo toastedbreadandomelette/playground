@@ -78,6 +78,7 @@ impl<'a, T> DiagonalIterMut<'a, T> {
 impl<'a, T> Iterator for DiagonalIterMut<'a, T> {
     type Item = &'a mut T;
 
+    #[inline]
     fn next(&mut self) -> Option<Self::Item> {
         (self.ptr < self.slice_len).then(|| {
             let index = self.ptr;

@@ -1,3 +1,4 @@
+#[inline]
 pub fn split_exact_3_mut<T>(
     a: &mut [T],
     n: usize,
@@ -13,6 +14,7 @@ pub fn split_exact_3_mut<T>(
     }
 }
 
+#[inline]
 pub fn split_exact_4_mut<T>(
     a: &mut [T],
     n: usize,

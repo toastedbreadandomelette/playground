@@ -24,10 +24,12 @@ pub fn inv_iter_simd(a: &[f64], n: usize) -> Vector<f64> {
                 .zip(invb.chunks_exact_mut(4 * n))
                 .enumerate()
                 .for_each(|(_, (acbr, invbr))| {
-                    let value0 = acbr[row] / acr[row];
-                    let value1 = acbr[row + n] / acr[row];
-                    let value2 = acbr[row + n + n] / acr[row];
-                    let value3 = acbr[row + n + n + n] / acr[row];
+                    let (value0, value1, value2, value3) = (
+                        acbr[row] / acr[row],
+                        acbr[row + n] / acr[row],
+                        acbr[row + n + n] / acr[row],
+                        acbr[row + n + n + n] / acr[row],
+                    );
 
                     let (acbr0, acbr1, acbr2, acbr3) =
                         split_exact_4_mut(acbr, n);
@@ -40,15 +42,19 @@ pub fn inv_iter_simd(a: &[f64], n: usize) -> Vector<f64> {
                             invbr3, acr, invr, value0, value1, value2, value3,
                         )
                     };
-                    acbr[row] = 0.0;
-                    acbr[row + n] = 0.0;
-                    acbr[row + n + n] = 0.0;
-                    acbr[row + n + n + n] = 0.0;
+
+                    (
+                        acbr[row],
+                        acbr[row + n],
+                        acbr[row + n + n],
+                        acbr[row + n + n + n],
+                    ) = (0.0, 0.0, 0.0, 0.0);
                 });
 
-            let mut acbrem = acb.chunks_exact_mut(4 * n).into_remainder();
-            let mut invbrem = invb.chunks_exact_mut(4 * n).into_remainder();
+            let acbrem = acb.chunks_exact_mut(4 * n).into_remainder();
+            let invbrem = invb.chunks_exact_mut(4 * n).into_remainder();
             let remstep = acbrem.len() / n;
+
             match remstep {
                 1 => {
                     let value0 = acbrem[row] / acr[row];

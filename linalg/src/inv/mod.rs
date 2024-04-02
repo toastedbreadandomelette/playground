@@ -21,6 +21,7 @@ pub fn display_mat(arr: &[f64], n: usize) {
     println!();
 }
 
+#[inline]
 #[cfg(target_arch = "x86_64")]
 #[target_feature(enable = "avx,avx2,fma")]
 pub unsafe fn div(
@@ -77,13 +78,15 @@ pub unsafe fn div2(
         .zip(prod_iter)
         .for_each(|(((acbre0, invbre0), (acbre1, invbre1)), (acre, invre))| {
             let acbres0 = f64x4::from_slice(acbre0);
-            let invbres0 = f64x4::from_slice(invbre0);
             let acbres1 = f64x4::from_slice(acbre1);
-            let invbres1 = f64x4::from_slice(invbre1);
 
             (acbres0 - value0 * acre).copy_to_slice(acbre0);
-            (invbres0 - value0 * invre).copy_to_slice(invbre0);
             (acbres1 - value1 * acre).copy_to_slice(acbre1);
+
+            let invbres0 = f64x4::from_slice(invbre0);
+            let invbres1 = f64x4::from_slice(invbre1);
+
+            (invbres0 - value0 * invre).copy_to_slice(invbre0);
             (invbres1 - value1 * invre).copy_to_slice(invbre1);
         });
 }
@@ -103,9 +106,11 @@ pub unsafe fn div3(
     factor1: f64,
     factor2: f64,
 ) {
-    let value0 = f64x4::splat(factor0);
-    let value1 = f64x4::splat(factor1);
-    let value2 = f64x4::splat(factor2);
+    let (value0, value1, value2) = (
+        f64x4::splat(factor0),
+        f64x4::splat(factor1),
+        f64x4::splat(factor2),
+    );
 
     let prod_iter = acr
         .chunks_exact(4)
@@ -125,22 +130,25 @@ pub unsafe fn div3(
                 (acre, invre),
             )| {
                 let acbres0 = f64x4::from_slice(acbre0);
-                let invbres0 = f64x4::from_slice(invbre0);
                 let acbres1 = f64x4::from_slice(acbre1);
-                let invbres1 = f64x4::from_slice(invbre1);
                 let acbres2 = f64x4::from_slice(acbre2);
-                let invbres2 = f64x4::from_slice(invbre2);
 
                 (acbres0 - value0 * acre).copy_to_slice(acbre0);
-                (invbres0 - value0 * invre).copy_to_slice(invbre0);
                 (acbres1 - value1 * acre).copy_to_slice(acbre1);
-                (invbres1 - value1 * invre).copy_to_slice(invbre1);
                 (acbres2 - value2 * acre).copy_to_slice(acbre2);
+
+                let invbres0 = f64x4::from_slice(invbre0);
+                let invbres1 = f64x4::from_slice(invbre1);
+                let invbres2 = f64x4::from_slice(invbre2);
+
+                (invbres0 - value0 * invre).copy_to_slice(invbre0);
+                (invbres1 - value1 * invre).copy_to_slice(invbre1);
                 (invbres2 - value2 * invre).copy_to_slice(invbre2);
             },
         );
 }
 
+#[inline]
 #[cfg(target_arch = "x86_64")]
 #[target_feature(enable = "avx,avx2,fma")]
 pub unsafe fn div4(
@@ -159,10 +167,12 @@ pub unsafe fn div4(
     factor2: f64,
     factor3: f64,
 ) {
-    let value0 = f64x4::splat(factor0);
-    let value1 = f64x4::splat(factor1);
-    let value2 = f64x4::splat(factor2);
-    let value3 = f64x4::splat(factor3);
+    let (value0, value1, value2, value3) = (
+        f64x4::splat(factor0),
+        f64x4::splat(factor1),
+        f64x4::splat(factor2),
+        f64x4::splat(factor3),
+    );
 
     let prod_iter = acr
         .chunks_exact(4)
@@ -186,21 +196,23 @@ pub unsafe fn div4(
                 (acre, invre),
             )| {
                 let acbres0 = f64x4::from_slice(acbre0);
-                let invbres0 = f64x4::from_slice(invbre0);
                 let acbres1 = f64x4::from_slice(acbre1);
-                let invbres1 = f64x4::from_slice(invbre1);
                 let acbres2 = f64x4::from_slice(acbre2);
-                let invbres2 = f64x4::from_slice(invbre2);
                 let acbres3 = f64x4::from_slice(acbre3);
-                let invbres3 = f64x4::from_slice(invbre3);
 
                 (acbres0 - value0 * acre).copy_to_slice(acbre0);
-                (invbres0 - value0 * invre).copy_to_slice(invbre0);
                 (acbres1 - value1 * acre).copy_to_slice(acbre1);
-                (invbres1 - value1 * invre).copy_to_slice(invbre1);
                 (acbres2 - value2 * acre).copy_to_slice(acbre2);
-                (invbres2 - value2 * invre).copy_to_slice(invbre2);
                 (acbres3 - value3 * acre).copy_to_slice(acbre3);
+
+                let invbres0 = f64x4::from_slice(invbre0);
+                let invbres1 = f64x4::from_slice(invbre1);
+                let invbres2 = f64x4::from_slice(invbre2);
+                let invbres3 = f64x4::from_slice(invbre3);
+
+                (invbres0 - value0 * invre).copy_to_slice(invbre0);
+                (invbres1 - value1 * invre).copy_to_slice(invbre1);
+                (invbres2 - value2 * invre).copy_to_slice(invbre2);
                 (invbres3 - value3 * invre).copy_to_slice(invbre3);
             },
         );
@@ -229,7 +241,7 @@ pub fn inverse(sz: usize) {
 
     let t = std::time::Instant::now();
     let some = inv_iter_simd::inv_iter_simd(&a, sz);
-    println!("Using Iters: {}ms", t.elapsed().as_millis());
+    println!("Using Iters SIMD: {}ms", t.elapsed().as_millis());
 
     // let check = crate::matmul::cf_blocked_simd::cf_blocked_simd(&a, &some, (sz, sz), (sz, sz));
     // display_mat(&check, sz);
