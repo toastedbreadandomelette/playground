@@ -1,4 +1,5 @@
 use core::simd::{f64x4, Simd};
+use std::simd::num::SimdFloat;
 use vector::Vector;
 pub mod chunk_rem_slice_iter;
 pub mod diagonal_iter;
@@ -25,7 +26,8 @@ pub fn dot(avec: &[f64], bvec: &[f64]) -> f64 {
 /// Returns f64
 #[inline(always)]
 pub fn reduce_sum(asimd: Simd<f64, 4>) -> f64 {
-    asimd.as_array().iter().fold(0.0, |p, c| p + c)
+    asimd.reduce_sum()
+    // asimd.as_array().iter().fold(0.0, |p, c| p + c)
 }
 
 /// Internal: Dot SIMD product of vector `a` and `b`.
@@ -39,7 +41,7 @@ pub unsafe fn dot_simd(avec: &[f64], bvec0: &[f64]) -> f64 {
         .chunks_exact(4)
         .map(f64x4::from_slice)
         .zip(bvec0.chunks_exact(4).map(f64x4::from_slice))
-        .fold(f64x4::splat(0.0), |prev0, (a, b0)| (prev0 + a * b0));
+        .fold(f64x4::default(), |prev0, (a, b0)| (prev0 + a * b0));
 
     let (posta, postb0) = (
         avec.chunks_exact(4).remainder(),
@@ -66,7 +68,7 @@ pub unsafe fn dot_simd_2(
         .zip(bvec0.chunks_exact(4).map(f64x4::from_slice))
         .zip(bvec1.chunks_exact(4).map(f64x4::from_slice))
         .fold(
-            (f64x4::splat(0.0), f64x4::splat(0.0)),
+            (f64x4::default(), f64x4::default()),
             |(prev0, prev1), ((a, b0), b1)| (prev0 + a * b0, prev1 + a * b1),
         );
 
@@ -100,7 +102,7 @@ pub unsafe fn dot_simd_3(
         .zip(bvec1.chunks_exact(4).map(f64x4::from_slice))
         .zip(bvec2.chunks_exact(4).map(f64x4::from_slice))
         .fold(
-            (f64x4::splat(0.0), f64x4::splat(0.0), f64x4::splat(0.0)),
+            (f64x4::default(), f64x4::default(), f64x4::default()),
             |(prev0, prev1, prev2), (((a, b0), b1), b2)| {
                 (prev0 + a * b0, prev1 + a * b1, prev2 + a * b2)
             },
@@ -141,12 +143,12 @@ pub unsafe fn dot_simd_2x3(
         .zip(bvec2.chunks_exact(4).map(f64x4::from_slice))
         .fold(
             (
-                f64x4::splat(0.0),
-                f64x4::splat(0.0),
-                f64x4::splat(0.0),
-                f64x4::splat(0.0),
-                f64x4::splat(0.0),
-                f64x4::splat(0.0),
+                f64x4::default(),
+                f64x4::default(),
+                f64x4::default(),
+                f64x4::default(),
+                f64x4::default(),
+                f64x4::default(),
             ),
             |(prev0, prev1, prev2, prev3, prev4, prev5),
              ((((a0, a1), b0), b1), b2)| {
@@ -200,10 +202,10 @@ pub unsafe fn dot_simd_4(
         .zip(bvec3.chunks_exact(4).map(f64x4::from_slice))
         .fold(
             (
-                f64x4::splat(0.0),
-                f64x4::splat(0.0),
-                f64x4::splat(0.0),
-                f64x4::splat(0.0),
+                f64x4::default(),
+                f64x4::default(),
+                f64x4::default(),
+                f64x4::default(),
             ),
             |(prev0, prev1, prev2, prev3), ((((a, b0), b1), b2), b3)| {
                 (
@@ -254,14 +256,14 @@ pub unsafe fn dot_simd_2x4(
         .zip(bvec3.chunks_exact(4).map(f64x4::from_slice))
         .fold(
             (
-                f64x4::splat(0.0),
-                f64x4::splat(0.0),
-                f64x4::splat(0.0),
-                f64x4::splat(0.0),
-                f64x4::splat(0.0),
-                f64x4::splat(0.0),
-                f64x4::splat(0.0),
-                f64x4::splat(0.0),
+                f64x4::default(),
+                f64x4::default(),
+                f64x4::default(),
+                f64x4::default(),
+                f64x4::default(),
+                f64x4::default(),
+                f64x4::default(),
+                f64x4::default(),
             ),
             |(prev0, prev1, prev2, prev3, prev4, prev5, prev6, prev7),
              (((((a0, a1), b0), b1), b2), b3)| {
@@ -360,22 +362,22 @@ pub unsafe fn dot_simd_4x4(
         .zip(bvec3.chunks_exact(4).map(f64x4::from_slice))
         .fold(
             (
-                f64x4::splat(0.0),
-                f64x4::splat(0.0),
-                f64x4::splat(0.0),
-                f64x4::splat(0.0),
-                f64x4::splat(0.0),
-                f64x4::splat(0.0),
-                f64x4::splat(0.0),
-                f64x4::splat(0.0),
-                f64x4::splat(0.0),
-                f64x4::splat(0.0),
-                f64x4::splat(0.0),
-                f64x4::splat(0.0),
-                f64x4::splat(0.0),
-                f64x4::splat(0.0),
-                f64x4::splat(0.0),
-                f64x4::splat(0.0),
+                f64x4::default(),
+                f64x4::default(),
+                f64x4::default(),
+                f64x4::default(),
+                f64x4::default(),
+                f64x4::default(),
+                f64x4::default(),
+                f64x4::default(),
+                f64x4::default(),
+                f64x4::default(),
+                f64x4::default(),
+                f64x4::default(),
+                f64x4::default(),
+                f64x4::default(),
+                f64x4::default(),
+                f64x4::default(),
             ),
             |(
                 prev0,
