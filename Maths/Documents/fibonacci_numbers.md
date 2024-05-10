@@ -139,6 +139,38 @@ $$
 
 The first one involves fewer terms.
 
+```python
+def fibonacci_recursive_2(n: int) -> int:
+    """
+    Solves fibonacci recurrence relation, significantly faster than the naive method.
+    Since each of f(n - k) term is expanded till n == 1.
+    
+    ```
+    f(n) = f(n >> 1) * (f(n >> 1) + 2 * f((n >> 1) - 1));    n > 1, n % 2 == 0
+         = f(n - 1) + f(n - 2);                              n > 1, n % 2 == 1
+         = 1;                                                n == 1
+         = 0;                                                n == 0
+    ```
+    >>> fibonacci_recursive_2(6)
+    8
+    >>> fibonacci_recursive_2(10)
+    55
+    >>> fibonacci_recursive_2(40)
+    102334155
+    >>> fibonacci_recursive_2(200) == fibonacci_rec_dynamic({}, 200)
+    True
+    >>> fibonacci_recursive_2(199) == fibonacci_rec_dynamic({}, 199)
+    True
+    """
+    if n <= 1:
+        return n
+    elif n & 1 == 1:
+        return fibonacci_recursive_2(n - 1) + fibonacci_recursive_2(n - 2)
+    
+    fn = fibonacci_recursive_2(n >> 1)
+    return fn * (2 * fibonacci_recursive_2((n >> 1) - 1) + fn)
+```
+
 ## Continued Fractional Form
 Continued fractional form for this series for golden ratio $\phi$ is
 
