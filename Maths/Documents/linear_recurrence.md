@@ -1,5 +1,3 @@
-# Intermediate Maths for CS: Part 2 
-[[intermediate_maths|See here for Part 1]]
 ## Linear Recurrence.
 A relation where a term is evaluated depending on values of previous terms:
 
@@ -43,6 +41,9 @@ The worst-case complexity for recursive tribonacci is $O(3^n)$.
 
 To evaluate $n^{th}$ term where $n$ is of the order $\geq 10^{12}$, [[matrix]] exponentiation can be used.
 We use a matrix and multiply with the base case solution vector $n$ times.
+
+## Matrix form for Fibonacci series
+
 E.g., For fibonacci (starting from $n = 0$):
 
 $$

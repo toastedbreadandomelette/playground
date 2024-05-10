@@ -51,6 +51,7 @@ impl IndexGen {
         }
     }
 
+    #[inline]
     pub const fn get_base_size(&self) -> usize {
         self.len >> self.head_log
     }

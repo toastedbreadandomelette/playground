@@ -72,7 +72,8 @@ f(n-1)+f(n-2)+f(n-3), & n>2
 \end{cases}
 $$
 
-- Number of ways/paths to climb the stairs: A guy on $k^{th}$ step can take either skip one and go to next (landing on $(k+2)^{th}$ step) or just climb (landing on $(k+1)^{th}$ step). (Here, $f(0)=1, f(1)=1$). This is similar to fibonacci, except that base condition is changed (skipped by $1$).
+#### Number of ways/paths to climb the stairs of $n$ steps
+-  A guy on $k^{th}$ step can take either skip one and go to next (landing on $(k+2)^{th}$ step) or just climb (landing on $(k+1)^{th}$ step). (Here, $f(0)=1, f(1)=1$). This is similar to fibonacci, except that base condition is changed (skipped by $1$).
 	- Why $f(0)=1$?: The number of ways to climb the stairs concerns about the total paths from $0\rightarrow n$ (for e.g., for $f(2)$, there are two paths that can be taken: $0\rightarrow1\rightarrow2$ and $0\rightarrow2$). But for $0$, the path is $0$, which is still a valid path.
 
 $$
@@ -82,7 +83,7 @@ f(n-1)+f(n-2), & n>1
 \end{cases}
 $$
 
-- The above problem looks attached to the real world, it's mathematically number of ways (different arrangements are considered different) you can add numbers upto $n$ using only $1$ and $2$. (for tribonacci, it's $1$, $2$ and $3$).
+- The above problem looks like it's number of ways (different arrangements are considered different) you can add numbers upto $n$ using only $1$ and $2$. (for tribonacci, it's $1$, $2$ and $3$).
 e.g., for Fibonacci: $f(5)=8$ has following solution:
 
 $$
@@ -295,7 +296,7 @@ $b_1=A_1$
 $b_2=A_1+A_2$
 $\vdots$
 $b_n=A_1+A_2+\ldots+A_n$
-- Now, if there is at least two prefix sums of equal modulo (say values $b_L$ and $b_R$) then $\sum\limits_{i=L+1}^{R}A_i=b_R-b_L\equiv 0\bmod{p}$: i.e., it's for sure that subarray is divisible by $p$. 
+- Now, if there is at least two prefix sums of equal modulo (say values $b_L$ and $b_R$) then $\sum\limits_{i=L+1}^{R}A_i=b_R-b_L\equiv 0\bmod{p}$: i.e., it's for sure that subset is divisible by $p$. 
 - This is guaranteed if $n\geq p$. (i.e., there are $n+1$ $b_k$ values: which are more than all the possible values of $p$ when $n\geq p$). hence at least $n+1-p$ values will coincide with some of the mod values.
 $\therefore$ The function (say $g$) for:
 	- $A$: Set of integers
@@ -369,7 +370,7 @@ M^n,&1\leq n\leq2,n\in\mathbb{N}\\
 \end{cases}
 $$
 
-This can be done efficiently by [[intermediate_maths_2#Linear Recurrence|matrix exponentiation]] in $O(2^3\log_2{n})$.
+This can be done efficiently by [[linear_recurrence#Linear Recurrence|matrix exponentiation]] in $O(2^3\log_2{n})$.
 
 ## Best Time to buy stocks.
 - [ ] To do

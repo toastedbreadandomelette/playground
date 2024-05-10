@@ -190,23 +190,3 @@ $$
 
 
 where $c=\sqrt{a'^2+b'^2}\cdot \dfrac{c_1}{\sqrt{a_1^2+b_1^2}}$ : considering the distance between the origin point and line $L_1$ is same as point of origin and new line $\hat L$.
-
-Note: Below set of equations will make sense in desmos graph.
-
-```desmos-graph
-3x-2y=10
-2x-4y=5
-\arctan\left(\frac{2}{4}\right)\cdot\frac{180}{\pi}
-\arctan\left(\frac{3}{2}\right)\cdot\frac{180}{\pi}
-\arctan\left(\frac{3}{2}\right)\cdot\frac{180}{\pi}-\arctan\left(\frac{2}{4}\right)\cdot\frac{180}{\pi}
--8x+14y+\left(\sqrt{5}\cdot20\right)=0
-\arctan\left(\frac{8}{14}\right)\cdot\frac{180}{\pi}
-14x+8y=0
-2x+3y=0
-\left(2.308\right)^{2}+\left(1.538\right)^{2}
-\left(1.376\right)^{2}+\left(2.408\right)^{2}
-\left(\arctan\left(\frac{14}{8}\right)-\arctan\left(\frac{2}{3}\right)\right)\cdot\frac{180}{\pi}
-\arctan\left(\frac{3}{2}\right)\cdot\frac{180}{\pi}-\arctan\left(\frac{8}{14}\right)\cdot\frac{180}{\pi}
-```
-
-

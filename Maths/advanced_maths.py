@@ -139,7 +139,6 @@ def shank_tonelli(n: int, m: int) -> int:
             n >>= 1
             s += 1
         return n, s
-        
 
     q, e = factor_2_power(n)
 

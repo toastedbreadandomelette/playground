@@ -1,4 +1,4 @@
-pub fn bubble_sort<T: std::cmp::PartialOrd + Copy>(array: &mut Vec<T>) {
+pub fn bubble_sort<T: std::cmp::PartialOrd + Copy>(array: &mut [T]) {
     for out in (0..array.len()).rev() {
         for i in 0..out {
             if array[i] > array[i + 1] {
@@ -9,7 +9,7 @@ pub fn bubble_sort<T: std::cmp::PartialOrd + Copy>(array: &mut Vec<T>) {
 }
 
 pub fn bubble_sort_cmp<T: std::cmp::PartialOrd + Copy>(
-    array: &mut Vec<T>,
+    array: &mut [T],
     cmp: &dyn Fn(T, T) -> bool,
 ) {
     for out in (0..array.len()).rev() {
@@ -21,7 +21,7 @@ pub fn bubble_sort_cmp<T: std::cmp::PartialOrd + Copy>(
     }
 }
 
-pub fn selection_sort<T: std::cmp::PartialOrd + Copy>(array: &mut Vec<T>) {
+pub fn selection_sort<T: std::cmp::PartialOrd + Copy>(array: &mut [T]) {
     for out in 0..array.len() {
         let min = (out..array.len())
             .into_iter()
@@ -33,7 +33,7 @@ pub fn selection_sort<T: std::cmp::PartialOrd + Copy>(array: &mut Vec<T>) {
 }
 
 pub fn selection_sort_cmp<T: std::cmp::PartialOrd + Copy>(
-    array: &mut Vec<T>,
+    array: &mut [T],
     cmp: &dyn Fn(T, T) -> bool,
 ) {
     for out in 0..array.len() {
@@ -46,7 +46,7 @@ pub fn selection_sort_cmp<T: std::cmp::PartialOrd + Copy>(
     }
 }
 
-pub fn insertion_sort<T: std::cmp::PartialOrd + Copy>(array: &mut Vec<T>) {
+pub fn insertion_sort<T: std::cmp::PartialOrd + Copy>(array: &mut [T]) {
     for out in 1..array.len() {
         let mut index = out;
         while index > 0 && array[index] < array[index - 1] {
@@ -57,7 +57,7 @@ pub fn insertion_sort<T: std::cmp::PartialOrd + Copy>(array: &mut Vec<T>) {
 }
 
 pub fn insertion_sort_cmp<T: std::cmp::PartialOrd + Copy>(
-    array: &mut Vec<T>,
+    array: &mut [T],
     cmp: &dyn Fn(T, T) -> bool,
 ) {
     for out in 1..array.len() {
@@ -70,11 +70,11 @@ pub fn insertion_sort_cmp<T: std::cmp::PartialOrd + Copy>(
 }
 
 // A non-recursive quick sort implementation
-pub fn quick_sort<T: std::cmp::PartialOrd + Copy>(array: &mut Vec<T>) {
+pub fn quick_sort<T: std::cmp::PartialOrd + Copy>(array: &mut [T]) {
     let mut sort_stack: Vec<(usize, usize)> = Vec::new();
     sort_stack.push((0, array.len() - 1));
     while sort_stack.len() > 0 {
-        let (mut i, mut j) = sort_stack.pop().unwrap();
+        let (mut i, j) = sort_stack.pop().unwrap();
         if j <= i {
             continue;
         }
@@ -110,17 +110,17 @@ pub fn quick_sort<T: std::cmp::PartialOrd + Copy>(array: &mut Vec<T>) {
 
 // A non-recursive quick sort implementation
 pub fn quick_sort_cmp<T: std::cmp::PartialOrd + Copy>(
-    array: &mut Vec<T>,
+    array: &mut [T],
     cmp: &dyn Fn(T, T) -> bool,
 ) {
     let mut sort_stack: Vec<(usize, usize)> = Vec::new();
     sort_stack.push((0, array.len() - 1));
     while sort_stack.len() > 0 {
-        let (mut i, mut j) = sort_stack.pop().unwrap();
+        let (mut i, j) = sort_stack.pop().unwrap();
         if j <= i {
             continue;
         }
-        if j - i > 4 {
+        if j - i > 16 {
             let pivot = array[i];
             let pivot_index = i;
             i = i + 1;
@@ -176,7 +176,7 @@ pub fn test_bubble_cmp() {
     // If bits are same then sort according to their magnitude
     s = vec![4, 3, 2, 1, 6, 5, 123, 132, 556];
     bubble_sort_cmp(&mut s, &|a, b| {
-        (count_bits(a) < count_bits(b) || (count_bits(a) == count_bits(b) && a < b))
+        count_bits(a) < count_bits(b) || (count_bits(a) == count_bits(b) && a < b)
     });
     assert_eq!(s, [1, 2, 4, 3, 5, 6, 132, 556, 123]);
 }
@@ -248,11 +248,11 @@ pub fn merge_sort<
     cmp: &dyn Fn(T, T) -> bool,
 ) {
     // Placeholder, this takes care of copying the arrangment of array.
-    let mut placeholder: Vec<T> = vec![std::default::Default::default(); arr.len()];
-
+    let mut placeholder: Vec<T> = Vec::with_capacity(arr.len());
+    (0..arr.len()).for_each(|_| placeholder.push(core::default::Default::default()));
     // sort 16 length of block by insertion method, then merge
     // them, for that placeholder is the array used to keep them
-    let mut block_size = 8;
+    let mut block_size = 16;
     for x in (0..arr.len()).step_by(block_size) {
         let end = if x + block_size > arr.len() {
             arr.len()
@@ -335,14 +335,30 @@ pub fn test_merge_sort() {
 
 fn main() {
     let sz = 10000000;
-    let mut s = (0..=sz)
-        .into_iter()
-        .rev()
-        .map(|x| x as u32)
-        .collect::<Vec<u32>>();
-    merge_sort(&mut s, &|curr, next| curr < next);
-    assert_eq!(
-        (0..=sz).into_iter().map(|x| x as u32).collect::<Vec<u32>>(),
-        s
-    );
+    {
+        let mut s = (0..=sz)
+            .into_iter()
+            .rev()
+            .collect::<Vec<u32>>();
+        let t = std::time::Instant::now();
+        merge_sort(&mut s, &|curr, next| curr < next);
+        println!("{}ms", t.elapsed().as_millis());
+        assert_eq!(
+            (0..=sz).into_iter().collect::<Vec<u32>>(),
+            s
+        );
+    }
+    {
+        let mut s = (0..=sz)
+            .into_iter()
+            .rev()
+            .collect::<Vec<u32>>();
+        let t = std::time::Instant::now();
+        s.sort();
+        println!("{}ms", t.elapsed().as_millis());
+        assert_eq!(
+            (0..=sz).into_iter().collect::<Vec<u32>>(),
+            s
+        );
+    }
 }

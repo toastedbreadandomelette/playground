@@ -13,7 +13,7 @@ main = do
   let t = Coeff2d 2 3 15
   let u = Coeff2d 4 6 10
 
-  -- print (allPointIntersection [p, q, r, s, t, u])
+  print (allPointIntersection [p, q, r, s, t, u])
   let perp = perpendicularLine q (Point2d 10.0 5)
 
   let cir = CenterRadius (Point2d 3 4) 5

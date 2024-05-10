@@ -1,5 +1,4 @@
 #![feature(portable_simd)]
-#![feature(stdsimd)]
 
 use crate::fourier_transform::{fast_fft::fast_fft, faster_fft::faster_fft};
 use vector::Vector;
@@ -9,7 +8,7 @@ mod fourier_transform;
 mod utils;
 
 fn main() {
-    let sz = 2097152;
+    let sz = 32767;
     let x = (0..sz).map(|c| c as f64).collect::<Vector<f64>>();
 
     let t = std::time::Instant::now();

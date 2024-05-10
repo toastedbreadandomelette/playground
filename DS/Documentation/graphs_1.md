@@ -182,14 +182,14 @@ where $P(u,v)$ is a set of paths from vertex $u$ to $v$ and $|P(u,v)|$ is number
 ## Weighted Graph
 A weighted graph is defined as set of edges with a certain value assigned $E=\lbrace(u,v,w): u\in V, v\in V, w \in \mathbb{R}\rbrace$. 
 
-Mostly we denote it as weight or cost of that edge (in Prim/Kruskal and Djikstra, we use them to minimize tree cost/distance between two vertices respectively). 
+Mostly we denote it as weight or cost of that edge (in Prim/Kruskal and Dijkstra, we use them to minimize tree cost/distance between two vertices respectively). 
 
 One famous problem: [[np-hard|Travelling Salesman Problem]] also uses weighted graph to determine smallest weight sum.
 
 # Searching Graphs
 ## [[searching|Depth First Search]].
-- [x] Code: Done
-- [x] Explaination: Done
+- [x] Code.
+- [x] Explanation.
 
 ### Combining results using DFS.
 There are a lot of instances where we want to return to a visited vertex and combine the results based on their neighboring vertices.
@@ -241,8 +241,8 @@ The first one for $v$ is when:
 And the second visit is when we pop visited vertex $v$ from stack. This makes $O(|V|)$ plus we perform check on each edge to see other vertices which is $O(|E|)$.
 
 ## [[searching#Breadth First Search|Breadth First Search]]
-- [x] Code: Done
-- [x] Explaination: Done
+- [x] Code.
+- [x] Explanation.
 
 
 # Minimum Spanning Tree.

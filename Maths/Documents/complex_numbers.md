@@ -22,7 +22,7 @@ Consider $z_1=a+i\cdot b,\quad z_2=c+i\cdot d$.
 
 A conjugate for $z=a+i\cdot b$ is $\bar{z}=a-i\cdot b$. It's a reflection of a vector along $X$-Axis.
 
-## Addition & Substraction
+## Addition & Subtraction
 $$
 \begin{matrix}
 z_1=a+i\cdot b,\quad z_2=c+i\cdot d\\

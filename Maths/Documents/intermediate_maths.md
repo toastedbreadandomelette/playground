@@ -302,13 +302,14 @@ would be a better approximate value than $x_{n-1}$. The above equation is derive
 
 $$f'(x_{n-1}) = \frac{f(x_{n-1}) - 0}{x_{n-1} - x_{n}}$$
 
-Starting from $x_0$ (which can be an arbitrary value, but the closer to zero, the better), we evaluate the method till certain condition is satisfied (the below solution keeps the precision check upto $10^{-18}$).
+Starting from $x_0$ (which can be an arbitrary value, but the closer to zero, the better), we evaluate the method till certain condition is satisfied (the below solution keeps the precision check of $10^{-8}$).
 
 For solving $x^2 - n = 0$,
 
 $$x_{n+1} = x_{n} - \frac{x_n^2-n}{2x_n}$$
 
 $$x_{n+1} = \frac{1}{2} \left(x_n + \frac{n}{x_n} \right)$$
+
 The convergence is very high for this method.
 
 ```python
@@ -408,9 +409,6 @@ def isqrt(n: int) -> int:
         return n
 ```
 
-This technique is also used for dividing two numbers.
-
-## Dividing two numbers.
 
 ## Sieve of Eratosthenes
 Sieve of eratosthenes is a special method of marking [[basic_maths#Composite numbers|composite numbers]], leaving prime values unmarked: these values are then used to mark their multiples as composites. [A useful demonstration of this method can be found here](https://en.wikipedia.org/wiki/File:Sieve_of_Eratosthenes_animation.gif).

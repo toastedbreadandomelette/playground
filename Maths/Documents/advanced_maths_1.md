@@ -19,7 +19,7 @@ $$\begin{array}{l}
 1+1+1+1+1+1
 \end{array}$$
 
-The parititon numbers $p(n)$ will be defined as possible parititon of the number $n$: for e.g., $p(6)=11$.
+The partition numbers $p(n)$ will be defined as possible partition of the number $n$: for e.g., $p(6)=11$.
 A function $p(n)$ is defined:
 
 $$
@@ -77,7 +77,7 @@ def partitioning_numbers(n: int) -> int:
 ```
 
 ## Linear Recurrence Relations - 2
-[[intermediate_maths_2|Click here for Matrix Exponentiation]].
+[[linear_recurrence|Click here for Matrix Exponentiation]].
 
 Source: https://discuss.codechef.com/t/linear-recurrence-using-cayley-hamilton-theorem/6776
 
