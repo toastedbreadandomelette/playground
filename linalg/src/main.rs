@@ -1,4 +1,8 @@
-#![feature(step_trait, array_windows, portable_simd)]
+#![feature(
+    step_trait,
+    array_windows,
+    portable_simd,
+)]
 // #![no_std]
 
 mod common;

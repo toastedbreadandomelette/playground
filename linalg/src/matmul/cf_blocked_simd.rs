@@ -5,8 +5,8 @@ use crate::matmul::cf_process_blocks::{
 };
 use vector::Vector;
 
-const R_BLOCKSIZE: usize = 32;
-const C_BLOCKSIZE: usize = 32;
+const R_BLOCKSIZE: usize = 128;
+const C_BLOCKSIZE: usize = 128;
 
 /// Cache friendly and blocked matrix multiplication of two matrices
 /// `a` and `b` of shape `ashape (m x n)` and `bshape (n x p)` respectively
@@ -21,13 +21,13 @@ pub fn cf_blocked_simd(
     unsafe { cf_blocked_simd_unsafe(a, b, ashape, bshape) }
 }
 
-/// - Todo: 
+/// - Todo:
 /// - [ ] Perform the task multi-threaded (probably rayon `par_iter`)
 /// - [ ] Use alternative sub-sizes (E.g, `2x5`, `4x4`, etc.)
-/// 
+///
 /// Matrix multiplication:
 /// Computes values of `4x4` sub-matrix of `c`.
-/// Current implementation supports only 
+/// Current implementation supports only
 /// 16 dot products at a time.
 /// i.e. for submatrices,
 ///

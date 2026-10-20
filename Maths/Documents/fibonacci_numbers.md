@@ -127,7 +127,7 @@ F_nF_{m-1}+F_{n+1}F_m & F_nF_m+F_{n+1}F_{m+1}
 \end{array}
 $$
 
-Putting $m=n$, and $m=n+1$, we get:
+Putting $m=n$, we get:
 
 $$
 \begin{array}{cl}

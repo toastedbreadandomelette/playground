@@ -41,7 +41,7 @@ pub unsafe fn dot_simd(avec: &[f64], bvec0: &[f64]) -> f64 {
         .chunks_exact(4)
         .map(f64x4::from_slice)
         .zip(bvec0.chunks_exact(4).map(f64x4::from_slice))
-        .fold(f64x4::default(), |prev0, (a, b0)| (prev0 + a * b0));
+        .fold(f64x4::default(), |prev0, (a, b0)| prev0 + a * b0);
 
     let (posta, postb0) = (
         avec.chunks_exact(4).remainder(),
@@ -514,7 +514,8 @@ pub fn transpose_vec<T>(
     (m, n): (usize, usize),
 ) -> (Vector<T>, (usize, usize))
 where
-    T: Copy {
+    T: Copy,
+{
     let mut ta: Vector<T> = Vector::zeroed(a.len());
     let blocks: usize = 32;
 

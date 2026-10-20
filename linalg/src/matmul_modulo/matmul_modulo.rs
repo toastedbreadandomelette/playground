@@ -22,20 +22,19 @@ pub fn matmul_modulo(
     b: &[u64],
     (m, n): (usize, usize),
     (_, p): (usize, usize),
-    modulo: u64
+    modulo: u64,
 ) -> Vector<u64> {
     let c = Vector::zeroed(m * p);
     let (tb, _) = transpose_vec(b, (n, p));
-    
+
     a.chunks(n).zip(c.chunks_mut(p)).for_each(|(avec, cvec)| {
         tb.chunks(n).zip(cvec).for_each(|(bvec, cval)| {
-            *cval = avec
-                .iter()
-                .zip(bvec)
-                .fold(0, |prev, (a1, b1)| {
-                    // println!("{prev} {a1} {b1}");
-                    (prev % modulo).wrapping_add(((a1 % modulo) * (b1 % modulo)) % modulo) % modulo
-                });
+            *cval = avec.iter().zip(bvec).fold(0, |prev, (a1, b1)| {
+                // println!("{prev} {a1} {b1}");
+                (prev % modulo)
+                    .wrapping_add(((a1 % modulo) * (b1 % modulo)) % modulo)
+                    % modulo
+            });
         });
     });
 

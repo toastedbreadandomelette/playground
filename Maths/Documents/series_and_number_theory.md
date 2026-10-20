@@ -1,5 +1,3 @@
-# Basic Maths
-
 ## Sum of first $n$ numbers.
 
 $$\begin{array}{lll}S=1+2+3+\ldots+n  && -\ (1)\end{array}$$
@@ -401,7 +399,30 @@ $$\textrm{e.g., } 2520 = 2^3 \times 3^2 \times 5^1 \times 7^1$$
 
 The euler totient function is defined as:
 $$\phi(n) = n\cdot\left(1-\frac{1}{p_1}\right)\cdot \left(1-\frac{1}{p_2}\right)\cdots\left(1-\frac{1}{p_n}\right)$$
-For prime numbers, $\phi(n) = n-1$; Some observations:
+For prime numbers, $\phi(n) = n-1$.
+
+If there are two number $p_1$ and $p_2$, then:
+
+$$
+\begin{matrix}
+\phi(p_1) = p_1\cdot\left(1 - \dfrac{1}{d_1}\right)\cdot\left(1-\dfrac{1}{d_2}\right)\cdots\left(1-\dfrac{1}{d_n}\right) \\
+\phi(p_2) = p_2\cdot\left(1 - \dfrac{1}{e_1}\right)\cdot\left(1-\dfrac{1}{e_2}\right)\cdots\left(1-\dfrac{1}{e_m}\right)
+\end{matrix}
+$$
+
+Note that $n\neq m$, In these, the common factor between these two: $\gcd(p_1, p_2)=d$ 
+
+$$
+\phi(d)=d\cdot\left(1-\dfrac{1}{f_1}\right)\cdot\left(1-\dfrac{1}{f_2}\right)\cdots\left(1-\dfrac{1}{f_p}\right)
+$$
+
+Note that $f_1, f_2, \dots, f_p$ are distinct prime numbers and $\forall\ f_i, f_i=d_j=e_k$.
+
+Now instead of calculating the totient function for $p_1\times p_2$, we can multiply these two, and remove the common terms by calculating totient function of the evaluated greatest common divisor and perform this adjustment:
+
+$$
+\phi(p_1\times p_2) = \dfrac{p_1 \cdot \left(1 - \dfrac{1}{d_1}\right)\cdot\left(1-\dfrac{1}{d_2}\right)\cdots\left(1-\dfrac{1}{d_n}\right) \cdot p_2\cdot\left(1 - \dfrac{1}{e_1}\right)\cdot\left(1-\dfrac{1}{e_2}\right)\cdots\left(1-\dfrac{1}{e_m}\right)\cdot d}{d\cdot\left(1-\dfrac{1}{f_1}\right)\cdot\left(1-\dfrac{1}{f_2}\right)\cdots\left(1-\dfrac{1}{f_p}\right)}
+$$
 
 $$
 \phi(p_1\times p_2)=\begin{cases}

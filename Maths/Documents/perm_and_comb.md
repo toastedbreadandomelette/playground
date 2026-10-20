@@ -1,10 +1,25 @@
 # Permutations and Combinations
 ## Permutation
-Permutation is an arrangement of elements.
-For e.g., total permutation set of a set $S=\{1,2,3\}$ are $P(S)=\lbrace\lbrace1,2,3\rbrace,\lbrace1,3,2\rbrace, \lbrace2,1,3 \rbrace, \lbrace2,3,1 \rbrace, \lbrace3,1,2 \rbrace, \lbrace3,2,1 \rbrace \rbrace$.
+A permutation is an arrangement of group of elements in a certain fashion.
+For e.g., all permutations of a set $S=\{1,2,3\}$ are $P(S)=\lbrace\lbrace1,2,3\rbrace,\lbrace1,3,2\rbrace, \lbrace2,1,3 \rbrace, \lbrace2,3,1 \rbrace, \lbrace3,1,2 \rbrace, \lbrace3,2,1 \rbrace \rbrace$.
 
-Total permutation of $r$ objects out of $n$ objects is denoted by $P^n_r$.
-In above case it's $P^3_3=6$.
+We denote $P^n_r$ as count of permutations of $r$ objects taken from pool of $n$ unique objects. In case of set $S$, the permutation is $P^3_3=6=|P(S)|$.
+
+Explanation:
+We have a set $S$ of total elements $|S|=n$, and $r$ empty containers to put.
+- We have $n$ choices of elements to select and put it in $1^{st}$ container. 
+- Next time, we're left with $(n-1)$ elements. Which means we have $n-1$ choices.
+- After above steps, we have $n-2$ elements to choose from. This goes on till we do not have containers left to put elements in.
+Since it's essential to add all element in a container to call it a permutation, we're multiplying these values (by rule of AND)
+
+$$
+\begin{matrix}
+{}^nP_r&=&n\cdot (n-1)\cdot (n - 2)\cdots (n - r + 1) \\
+&=&\dfrac{n\cdot (n-1)\cdot (n - 2)\cdots (n - r + 1)\cdot(n - r)\cdot (n-r-1)\cdots 3\cdot 2 \cdot 1}{(n - r)\cdot (n-r-1)\cdots 3\cdot 2 \cdot 1} \\
+&=&\dfrac{n!}{(n-r)!}
+\end{matrix}
+$$
+
 Generalizing for $n$ and $r$, ${}^nP_r=\dfrac{n!}{(n-r)!}$, where $n!$ is a [[series_and_number_theory#Factorial of a number|factorial operation]]. 
 
 ```haskell
@@ -18,7 +33,7 @@ main = do
 ### Note:
 1. Arranging $n$ items where $m_1$ are of same kind, $m_2$ are of same kind (and so on): ${}^nP_r=\dfrac{n!}{(n-r)!\cdot m_1!\cdot m_2!\cdot \cdots}$. (Here, $m_1+m_2+\cdot+m_k\leq r\leq n$). This are called multiset permutation.
 2. Permutation of $n$ objects in circle: $(n-1)!$
-	1. A way to summarise: in a circle, performing $n!$ will count rotations which are pointless when arranged in a circle: (e.g., in a set $A=\lbrace1,2,3,4\rbrace$, looking at permutations $\lbrace1,2,3,4\rbrace,\ \lbrace2,3,4,1\rbrace,\ \lbrace3,4,1,2\rbrace,\ \lbrace4,1,2,3\rbrace$, starting from $1$ the sequence looks same). So, we'll divide total permutation by number of rotations for a particular sequence to remove counting this sequences.
+	1. A way to summarise: in a circle, performing $n!$ will count rotations which are pointless when arranged in a circle: (e.g., in a set $A=\lbrace1,2,3,4\rbrace$, looking at permutations $\lbrace1,2,3,4\rbrace,\ \lbrace2,3,4,1\rbrace,\ \lbrace3,4,1,2\rbrace,\ \lbrace4,1,2,3\rbrace$, there is no starting point. From a fixed point $1$, the sequence looks same). So, we'll divide total permutation by number of rotations for a particular sequence to remove counting this sequences.
 		i.e., $P=\dfrac{\text{Total Permutations}}{\text{Arrangement Set Size (to remove rotations)}}=\dfrac{n!}{n}=(n-1)!$.
 3. Extending this: permutation of $r$ items out of $n$ in a circle: $\dfrac{{}^nP_r}r$. 
 	Another way to look at this is selecting $r$ out of $n$ objects and permutation of such $r$ objects in a circle: 
@@ -26,11 +41,11 @@ main = do
 	2. Permutation of these $r$ objects in a circle: $(r-1)!$.
 	Result: $(r-1)!\cdot\dbinom{n}{r}=(r-1)!\cdot\dfrac{n!}{r!\cdot(n-r)!}=\dfrac{{}^nP_r}r$.
 4. Grouping objects, number of permutations where $k < r$ objects are grouped together: $P=\dfrac{(n-k+1)!}{(n-r)!}\cdot k!$
-5. Permutation with repitition: selecting $n$ objects: $n^n$; selecting $r$ out of $n$ objects: $n^r$.
+5. Permutation with repetition: selecting $n$ objects: $n^n$; selecting $r$ out of $n$ objects: $n^r$.
 
 ___
 ## Combination:
-Combination is a selection of $r$ elements out of $n$ elements. Here, order of element do not matter.
+Combining here means finding ways of selecting $r$ elements out of $n$ available elements. This means we do not care about the order in which they are picked.
 
 For e.g., out of $4$ elements in set $A=\{1,2,3,4\}$, if we want to select $2$ items, then there are $6$ ways to do: 
 

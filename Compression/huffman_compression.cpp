@@ -24,7 +24,7 @@ struct Node {
     character(0), count(count), left(nullptr), right(nullptr) {}
 
   Node(char character, size_t count):
-    character(0), count(count), left(nullptr), right(nullptr) {}
+    character(character), count(count), left(nullptr), right(nullptr) {}
 };
 /**
  * @brief Common function necessary for both compression and decompression.
@@ -333,7 +333,7 @@ void generate_huffman_tree(Node * const root, const std::string &codes,
 std::pair<Node*, std::pair<unsigned char, int>> decode_header(FILE *iptr) {
   Node *root = new Node(0);
   size_t character_count, buffer, total_length = 1;
-  register char ch, len;
+  char ch, len;
   character_count = fgetc(iptr);
   std::string codes;
   ++character_count;

@@ -249,6 +249,69 @@ pub fn test_quick() {
   assert_eq!(s, [1, 2, 4, 3, 5, 6, 132, 556, 123]);
 }
 
+pub fn merge_sort_val(arr: &mut [u32]) {
+  // Placeholder, this takes care of copying the arrangment of array.
+  let mut placeholder: Vec<u32> = vec![];
+  placeholder.resize_with(arr.len(), || core::default::Default::default());
+
+  // sort 8 length of block by insertion method, then merge
+  // them, for that placeholder is the array used to keep them
+  let mut block_size = 4;
+
+  for x in (0..arr.len()).step_by(block_size) {
+    let end = if x + block_size > arr.len() {
+      arr.len()
+    } else {
+      x + block_size
+    };
+
+    for y in (x + 1)..end {
+      let mut index = y;
+
+      while index > x && arr[index - 1] > arr[index] {
+        (arr[index], arr[index - 1]) = (arr[index - 1], arr[index]);
+        index -= 1;
+      }
+    }
+  }
+
+  while block_size < arr.len() {
+    for x in (0..arr.len()).step_by(2 * block_size) {
+      if x + block_size > arr.len() {
+        break;
+      } else {
+        let (start, mid) = (x, x + block_size);
+        let end = core::cmp::min(x + (block_size << 1), arr.len());
+        let (mut fptr, mut sptr, mut pptr) = (start, mid, start);
+
+        while fptr < mid && sptr < end {
+          if arr[fptr] < arr[sptr] {
+            placeholder[pptr] = arr[fptr];
+            fptr += 1;
+          } else {
+            placeholder[pptr] = arr[sptr];
+            sptr += 1;
+          }
+
+          pptr += 1;
+        }
+        
+        let rem = mid - fptr;
+
+        if rem > 0 {
+          placeholder[pptr..pptr + rem].copy_from_slice(&arr[fptr..fptr + rem]);
+          pptr += rem;
+          fptr += rem;
+        }
+
+        arr[start..pptr].copy_from_slice(&placeholder[start..pptr]);
+      }
+    }
+
+    block_size <<= 1;
+  }
+}
+
 /// A non-recursive merge sort
 /// At base insertion sort is used (for e.g., subarray of window size 16),
 /// and then working way upto larger sizes until we're in final stage of merging two
@@ -415,6 +478,21 @@ fn test_radix_sort() {
 
 fn main() {
   let sz = 10485760;
+  {
+    let mut s = (0..=sz)
+      .into_iter()
+      .rev()
+      .collect::<Vec<u32>>();
+
+    let t = std::time::Instant::now();
+    merge_sort_val(&mut s);
+    println!("{}ms", t.elapsed().as_millis());
+
+    assert_eq!(
+      (0..=sz).into_iter().collect::<Vec<u32>>(),
+      s
+    );
+  }
   {
     let mut s = (0..=sz)
       .into_iter()
